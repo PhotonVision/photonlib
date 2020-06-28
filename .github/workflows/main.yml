@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  # Windows Server
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - run: ./gradlew build publish
+      - uses: actions/upload-artifact@master
+        with:
+          name: windows-artifact
+          path: build/repos
+          
+  # macOS Catalina
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - run: |
+          chmod +x gradlew
+          ./gradlew build publish
+      - uses: actions/upload-artifact@master
+        with:
+          name: macos-artifact
+          path: build/repos
+ 
+  # Ubuntu 18.04 LTS
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - run: |
+          chmod +x gradlew
+          ./gradlew build publish
+      - uses: actions/upload-artifact@master
+        with:
+          name: linux-artifact
+          path: build/repos
+          
+          
+  # roboRIO
+  build-roborio:
+    runs-on: ubuntu-latest
+    container: wpilib/roborio-cross-ubuntu:2020-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - run: |
+          chmod +x gradlew
+          ./gradlew build publish -Ponlylinuxathena
+      - uses: actions/upload-artifact@master
+        with:
+          name: roborio-artifact
+          path: build/repos
+  
+  # Raspbian
+  build-raspbian:
+    runs-on: ubuntu-latest
+    container: wpilib/raspbian-cross-ubuntu:10-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - run: |
+          chmod +x gradlew
+          ./gradlew build publish -Ponlylinuxraspbian
+      - uses: actions/upload-artifact@master
+        with:
+          name: raspbian-artifact
+          path: build/repos
+  
+  # Linux Aarch64
+  build-linux-aarch64:
+    runs-on: ubuntu-latest
+    container: wpilib/aarch64-cross-ubuntu:bionic-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - run: |
+          chmod +x gradlew
+          ./gradlew build publish -Ponlylinuxaarch64bionic
+      - uses: actions/upload-artifact@master
+        with:
+          name: aarch64-artifact
+          path: build/repos
+          
+  # Combine Job
+  combine:
+    needs: [build-windows, build-macos, build-linux, build-roborio, build-raspbian, build-linux-aarch64]
+    runs-on: macos-latest
+    steps:
+      - run: mkdir build-tools
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: windows-artifact
+          path: build-tools/repos
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: macos-artifact
+          path: build-tools/repos
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: linux-artifact
+          path: build-tools/repos
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: roborio-artifact
+          path: build-tools/repos
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: raspbian-artifact
+          path: build-tools/repos
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: aarch64-artifact
+          path: build-tools/repos
+      
+      - uses: actions/upload-artifact@master
+        with:
+          name: combined-build
+          path: build-tools/repos
