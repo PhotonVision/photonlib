@@ -35,7 +35,7 @@ jobs:
       run: |
         ls
         chmod +x clang-format.sh
-        sudo clang-format.sh 10
+        sudo ./clang-format.sh 10
     - name: Install wpiformat
       run: sudo pip3 install wpiformat
 
