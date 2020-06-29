@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+          architecture: 'x64'
       - run: |
           sudo apt-get update -q
           sudo apt-get install gnupg lsb-release software-properties-common -y
