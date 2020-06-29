@@ -15,6 +15,7 @@ jobs:
       - run: |
           sudo apt-get update -q
           sudo apt-get install gnupg lsb-release software-properties-common -y
+          sudo apt-get install python-setuptools
           chmod +x clang-format.sh
           sudo ./clang-format.sh 10
           sudo pip3 install wpiformat
