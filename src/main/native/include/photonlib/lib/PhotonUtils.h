@@ -32,7 +32,7 @@ class PhotonUtils {
    * robot pose is not required.
    *
    * @param cameraHeight The height of the camera off the floor.
-   * @param targetHeight The physical height of the camera off the floor.
+   * @param targetHeight The height of the target off the floor.
    * @param cameraPitch The pitch of the camera from the horizontal plane.
    * Positive valueBytes up.
    * @param targetPitch The pitch of the target in the camera's lens. Positive
