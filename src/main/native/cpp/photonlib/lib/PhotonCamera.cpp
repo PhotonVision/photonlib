@@ -15,8 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "driverheader.h"
+#include "photonlib/lib/PhotonCamera.h"
 
-extern "C" {
-void c_doThing(void) {}
-}  // extern "C"
+#include <networktables/NetworkTableInstance.h>
+
+using namespace photonlib;
+
+PhotonCamera::PhotonCamera(const nt::NetworkTable& rootTable)
+    : rawBytesEntry(rootTable.GetEntry("rawBytes")) {}
+
+PhotonCamera::PhotonCamera(const std::string& tableName)
+    : rawBytesEntry(
+          nt::NetworkTableInstance::GetDefault().GetTable(tableName)->GetEntry(
+              "rawBytes")) {}
+
+SimplePipelineResult PhotonCamera::GetLastResult() {
+  SimplePipelineResult result;
+  result.FromByteArray(rawBytesEntry.GetRaw(std::string()));
+  return result;
+}
