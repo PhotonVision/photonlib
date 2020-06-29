@@ -7,48 +7,6 @@ on:
     branches: [ master ]
 
 jobs:
-  # Styleguide
-  styleguide:
-     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # This grabs the WPILib docker container
-    container: wpilib/roborio-cross-ubuntu:2020-18.04
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    - name: Install add-apt-repository
-      run: |
-        sudo apt-get update -q
-        sudo apt-get install gnupg lsb-release software-properties-common -y
-    - name: Upgrade Git to 2.18+
-      run: |
-        sudo add-apt-repository ppa:git-core/ppa
-        sudo apt-get update -q
-        sudo apt-get install git -y
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-
-    - name: Install clang-format
-      run: |
-        ls
-        chmod +x clang-format.sh
-        sudo ./clang-format.sh 10
-    - name: Install wpiformat
-      run: sudo pip3 install wpiformat
-
-    - name: Run wpiformat
-      run: |
-        git checkout -b pr
-        git checkout master
-        git checkout pr
-        wpiformat -clang 10
-    # Ensure formatter made no changes
-    - name: Check wpiformat output
-      run: git --no-pager diff --exit-code HEAD
-  
   # Windows Server
   build-windows:
     runs-on: windows-latest
