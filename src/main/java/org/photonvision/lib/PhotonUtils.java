@@ -12,7 +12,10 @@ public final class PhotonUtils {
   /**
    * Algorithm from https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
    * Estimates range to a target using the target's elevation. This method can produce more stable
-   * results than SolvePNP when well tuned, if the full 6d robot pose is not required.
+   * results than SolvePNP when well tuned, if the full 6d robot pose is not required. Note that
+   * this method requires the camera to have 0 roll (not be skewed clockwise or CCW relative to
+   * the floor), and for there to exist a height differential between goal and camera. The larger
+   * this differential, the more accurate the distance estimate will be.
    *
    * <p> Units can be converted using the {@link edu.wpi.first.wpilibj.util.Units} class.
    *
