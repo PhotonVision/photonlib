@@ -15,8 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "driverheader.h"
+#pragma once
 
-extern "C" {
-void c_doThing(void) {}
-}  // extern "C"
+#include <frc/geometry/Pose2d.h>
+
+#include <vector>
+
+namespace photonlib {
+struct PhotonTrackedTarget {
+  double pitch, yaw, skew, area;
+  frc::Pose2d robotRelativePose;
+  std::vector<double> rawTVec, rawRVec;
+
+  PhotonTrackedTarget(double pitch, double yaw, double skew, double area,
+                      frc::Pose2d robotRelativePose,
+                      std::vector<double> rawTVec,
+                      std::vector<double> rawRVec) {
+    this->pitch = pitch;
+    this->yaw = yaw;
+    this->skew = skew;
+    this->area = area;
+    this->robotRelativePose = robotRelativePose;
+    this->rawTVec = rawTVec;
+    this->rawRVec = rawRVec;
+  }
+};
+}  // namespace photonlib
