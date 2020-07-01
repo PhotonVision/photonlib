@@ -31,6 +31,7 @@ PhotonCamera::PhotonCamera(const std::string& tableName)
 
 SimplePipelineResult PhotonCamera::GetLastResult() {
   SimplePipelineResult result;
-  result.FromByteArray(rawBytesEntry.GetRaw(std::string()));
+  std::string raw = rawBytesEntry.GetRaw(std::string());
+  result.FromByteArray(std::vector<char>(raw.begin(), raw.end()));
   return result;
 }

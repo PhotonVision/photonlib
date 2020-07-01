@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <units/units.h>
+#include <units/time.h>
 
 #include <string>
 #include <vector>
@@ -42,8 +42,8 @@ class SimplePipelineResult : public BytePackable {
   bool operator==(const SimplePipelineResult& other) const;
   bool operator!=(const SimplePipelineResult& other) const;
 
-  std::string ToByteArray() override;
-  void FromByteArray(std::string src) override;
+  std::vector<char> ToByteArray() override;
+  void FromByteArray(std::vector<char> src) override;
 
  private:
   units::second_t latency;

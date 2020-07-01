@@ -23,11 +23,8 @@ SimplePipelineResult::SimplePipelineResult() {}
 
 SimplePipelineResult::SimplePipelineResult(
     units::second_t latency, bool hasTargets,
-    std::vector<SimpleTrackedTarget> targets) {
-  this->latency = latency;
-  this->hasTargets = hasTargets;
-  this->targets = targets;
-}
+    std::vector<SimpleTrackedTarget> targets)
+    : latency(latency), hasTargets(hasTargets), targets(targets) {}
 
 bool SimplePipelineResult::operator==(const SimplePipelineResult& other) const {
   return latency == other.latency && hasTargets == other.hasTargets &&
@@ -38,33 +35,57 @@ bool SimplePipelineResult::operator!=(const SimplePipelineResult& other) const {
   return !operator==(other);
 }
 
-std::string SimplePipelineResult::ToByteArray() {
+std::vector<char> SimplePipelineResult::ToByteArray() {
+  // Reset the buffer position to zero.
   ResetBufferPosition();
+
+  // Calculate the buffer size based on the number of targets.
   int bufferSize = 10 + targets.size() * 48;
-  std::string buff(bufferSize, ' ');
 
-  BufferData(latency.to<double>() * 1000, &buff);
-  BufferData(hasTargets, &buff);
-  BufferData(static_cast<char>(targets.size()), &buff);
+  // Create the byte array.
+  std::vector<char> bytes(bufferSize);
 
+  // Encoded latency, existence of targets, and the number of targets.
+  BufferData<double>(latency.to<double>() * 1000, &bytes);
+  BufferData<bool>(hasTargets, &bytes);
+  BufferData<char>(static_cast<char>(targets.size()), &bytes);
+
+  // Encode the information of each target.
   for (auto& target : targets) {
-    BufferData(target.ToByteArray(), &buff);
-  }
+    // Get the bytes representing the target.
+    auto targetBytes = target.ToByteArray();
 
-  return buff;
+    // Copy the target bytes into the byte array of this object.
+    bytes.insert(bytes.begin() + bufferPosition, targetBytes.begin(),
+                 targetBytes.end());
+    bufferPosition += targetBytes.size();
+  }
+  return bytes;
 }
 
-void SimplePipelineResult::FromByteArray(std::string src) {
+void SimplePipelineResult::FromByteArray(std::vector<char> src) {
+  // Reset the buffer position to zero.
   ResetBufferPosition();
 
-  latency = units::second_t(UnbufferDouble(src) / 1000.0);
-  hasTargets = UnbufferBoolean(src);
-  char targetCount = UnbufferByte(src);
+  // Get latency, existence of targets, and the number of targets.
+  latency = units::second_t(UnbufferData<double>(src) / 1000.0);
+  hasTargets = UnbufferData<bool>(src);
+  char targetCount = UnbufferData<char>(src);
 
+  // Clear the targets vector.
   targets.clear();
+
+  // Populate the targets vector.
   for (int i = 0; i < static_cast<int>(targetCount); i++) {
+    // Create a simple tracked target.
     SimpleTrackedTarget target;
-    target.FromByteArray(UnbufferBytes(src, 48));
+
+    // Populate the target with data.
+    target.FromByteArray(std::vector<char>(src.begin() + bufferPosition,
+                                           src.begin() + bufferPosition + 48));
+    bufferPosition += 48;
+
+    // Add the target to the list.
     targets.emplace_back(target);
   }
 }

@@ -44,8 +44,8 @@ class SimpleTrackedTarget : public BytePackable {
   bool operator==(const SimpleTrackedTarget& other) const;
   bool operator!=(const SimpleTrackedTarget& other) const;
 
-  std::string ToByteArray() override;
-  void FromByteArray(std::string src) override;
+  std::vector<char> ToByteArray() override;
+  void FromByteArray(std::vector<char> src) override;
 
  private:
   double yaw = 0;

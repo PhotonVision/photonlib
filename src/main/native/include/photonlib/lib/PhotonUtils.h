@@ -19,7 +19,8 @@
 
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
-#include <units/units.h>
+#include <units/length.h>
+#include <units/angle.h>
 
 namespace photonlib {
 class PhotonUtils {

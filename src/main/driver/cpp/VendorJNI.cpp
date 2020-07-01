@@ -38,9 +38,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {}
  * Method:    initialize
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL
-Java_com_vendor_jni_VendorJNI_initialize
-  (JNIEnv*, jclass)
-{
+JNIEXPORT jint JNICALL Java_com_vendor_jni_VendorJNI_initialize(JNIEnv*,
+                                                                jclass) {
   return 0;
 }

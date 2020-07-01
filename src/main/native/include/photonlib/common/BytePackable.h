@@ -17,75 +17,64 @@
 
 #pragma once
 
-#include <cstddef>
 #include <cstring>
-#include <string>
 #include <vector>
 
 namespace photonlib {
-
+/**
+ * Represents a byte packable message that is sent over NetworkTables.
+ */
 class BytePackable {
  public:
-  virtual std::string ToByteArray() = 0;
-  virtual void FromByteArray(std::string src) = 0;
+  /**
+   * Converts this object to a serialized byte array.
+   */
+  virtual std::vector<char> ToByteArray() = 0;
+
+  /**
+   * Deserializes the byte array into the current object.
+   */
+  virtual void FromByteArray(std::vector<char> src) = 0;
+
+  /**
+   * Get the current buffer position.
+   */
   int GetBufferPosition() const { return bufferPosition; }
+
+  /**
+   * Resets the buffer position to zero.
+   */
   void ResetBufferPosition() { bufferPosition = 0; }
 
  protected:
   int bufferPosition = 0;
 
-  void BufferData(std::string src, std::string* dest) {
-    (*dest).assign(src, bufferPosition, src.length());
-    bufferPosition += src.length();
+  /**
+   * Converts a source to bytes and copies it into a destination byte array at
+   * the index of the buffer position.
+   *
+   * @param src The source to convert to bytes.
+   * @param dest The destination byte array.
+   */
+  template <typename T>
+  void BufferData(T src, std::vector<char>* dest) {
+    std::memcpy((*dest).data() + bufferPosition, &src, sizeof(T));
+    bufferPosition += sizeof(T);
   }
 
-  void BufferData(char src, std::string* dest) {
-    BufferData(std::string(1, src), dest);
-  }
-
-  void BufferData(int src, std::string* dest) {
-    BufferData(std::to_string(src), dest);
-  }
-
-  void BufferData(double src, std::string* dest) {
-    BufferData(std::to_string(src), dest);
-  }
-
-  void BufferData(bool src, std::string* dest) {
-    BufferData(std::string(src ? "1" : "0"), dest);
-  }
-
-  char UnbufferByte(std::string src) {
-    auto& value = src.at(bufferPosition);
-    bufferPosition++;
-    return value;
-  }
-
-  std::string UnbufferBytes(std::string src, int len) {
-    auto value = src.substr(bufferPosition, bufferPosition + len);
-    bufferPosition += len;
-    return value;
-  }
-
-  int UnbufferInt(std::string src) {
-    int value;
-    std::memcpy(&value, &(src.at(bufferPosition)), sizeof(int));
-    bufferPosition += sizeof(int);
-    return value;
-  }
-
-  double UnbufferDouble(std::string src) {
-    double value;
-    std::memcpy(&value, &(src.at(bufferPosition)), sizeof(double));
-    bufferPosition += sizeof(double);
-    return value;
-  }
-
-  bool UnbufferBoolean(std::string src) {
-    bool value = src.at(bufferPosition) != 0;
-    bufferPosition++;
+  /**
+   * Returns an object (of a specified type) that is extracted from the provided
+   * source byte array at the index of the buffer position.
+   *
+   * @param src The source byte array.
+   * @return The extracted object.
+   */
+  template <typename T>
+  T UnbufferData(const std::vector<char>& src) {
+    T value;
+    std::memcpy(&value, src.data() + bufferPosition, sizeof(T));
+    bufferPosition += sizeof(T);
     return value;
   }
 };
-
 }  // namespace photonlib

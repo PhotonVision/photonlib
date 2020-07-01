@@ -23,12 +23,8 @@ using namespace photonlib;
 
 SimpleTrackedTarget::SimpleTrackedTarget() {}
 SimpleTrackedTarget::SimpleTrackedTarget(double yaw, double pitch, double area,
-                                         const frc::Pose2d& pose) {
-  this->yaw = yaw;
-  this->pitch = pitch;
-  this->area = area;
-  robotRelativePose = pose;
-}
+                                         const frc::Pose2d& pose)
+    : yaw(yaw), pitch(pitch), area(area), robotRelativePose(pose) {}
 
 bool SimpleTrackedTarget::operator==(const SimpleTrackedTarget& other) const {
   return other.yaw == yaw && other.pitch == pitch && other.area == area &&
@@ -39,34 +35,36 @@ bool SimpleTrackedTarget::operator!=(const SimpleTrackedTarget& other) const {
   return !operator==(other);
 }
 
-std::string SimpleTrackedTarget::ToByteArray() {
+std::vector<char> SimpleTrackedTarget::ToByteArray() {
+  // Reset the buffer position to zero.
   ResetBufferPosition();
-  std::string data(kPackSizeBytes, ' ');
 
-  BufferData(yaw, &data);
-  BufferData(pitch, &data);
-  BufferData(area, &data);
-  BufferData(robotRelativePose.Translation().X().to<double>(), &data);
-  BufferData(robotRelativePose.Translation().Y().to<double>(), &data);
-  BufferData(robotRelativePose.Rotation().Degrees().to<double>(), &data);
+  // Create the byte array.
+  std::vector<char> bytes(kPackSizeBytes);
 
-  return data;
+  // Encode information.
+  BufferData<double>(yaw, &bytes);
+  BufferData<double>(pitch, &bytes);
+  BufferData<double>(area, &bytes);
+  BufferData<double>(robotRelativePose.Translation().X().to<double>(), &bytes);
+  BufferData<double>(robotRelativePose.Translation().Y().to<double>(), &bytes);
+  BufferData<double>(robotRelativePose.Rotation().Degrees().to<double>(),
+                     &bytes);
+
+  return bytes;
 }
 
-void SimpleTrackedTarget::FromByteArray(std::string src) {
+void SimpleTrackedTarget::FromByteArray(std::vector<char> src) {
+  // Reset the buffer position to zero.
   ResetBufferPosition();
-  if (src.length() < kPackSizeBytes) {
-    std::cout << "An error occurred when deserializing data." << std::endl;
-    return;
-  }
 
-  yaw = UnbufferDouble(src);
-  pitch = UnbufferDouble(src);
-  area = UnbufferDouble(src);
+  yaw = UnbufferData<double>(src);
+  pitch = UnbufferData<double>(src);
+  area = UnbufferData<double>(src);
 
-  auto poseX = units::meter_t(UnbufferDouble(src));
-  auto poseY = units::meter_t(UnbufferDouble(src));
-  auto poseR = units::degree_t(UnbufferDouble(src));
+  auto poseX = units::meter_t(UnbufferData<double>(src));
+  auto poseY = units::meter_t(UnbufferData<double>(src));
+  auto poseR = units::degree_t(UnbufferData<double>(src));
 
   robotRelativePose = frc::Pose2d(poseX, poseY, frc::Rotation2d(poseR));
 }
