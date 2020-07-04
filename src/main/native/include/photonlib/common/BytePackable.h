@@ -18,7 +18,6 @@
 #pragma once
 
 #include <algorithm>
-#include <arpa/inet.h>
 #include <cstring>
 #include <vector>
 
@@ -95,8 +94,8 @@ class BytePackable {
 
  private:
   static bool IsLittleEndian() {
-    static bool isLittleEndian = 69420 != htonl(69420);
-    return isLittleEndian;
+    static int num = 69420;
+    return *(char*)(&num) != 0;
   }
 };
 }  // namespace photonlib
