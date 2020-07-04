@@ -60,12 +60,16 @@ TEST(BytePackableTest, SimplePipelineResult) {
 }
 
 TEST(BytePackableTest, BytePackFromJava) {
-  std::vector<char> bytePack{
+  std::vector<signed char> bytePack{
       64, 8,  0, 0, 0, 0, 0, 0, 64, 16,  0,   0,   0,  0,   0,   0,
       64, 34, 0, 0, 0, 0, 0, 0, 63, -16, 0,   0,   0,  0,   0,   0,
       64, 0,  0, 0, 0, 0, 0, 0, 64, 85,  124, 101, 19, -54, -47, 122};
+
+  std::vector<char> bytes;
+  for (auto a : bytePack) bytes.emplace_back(static_cast<char>(a));
+
   photonlib::SimpleTrackedTarget res;
-  res.FromByteArray(bytePack);
+  res.FromByteArray(bytes);
 
   photonlib::SimpleTrackedTarget target{3.0, 4.0, 9.0,
                                         frc::Pose2d(1_m, 2_m, 1.5_rad)};
