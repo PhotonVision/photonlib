@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <wpi/Endian.h>
+
 #include <algorithm>
 #include <cstring>
 #include <vector>
@@ -60,7 +62,8 @@ class BytePackable {
   void BufferData(T src, std::vector<char>* dest) {
     std::memcpy((*dest).data() + bufferPosition, &src, sizeof(T));
 
-    if (IsLittleEndian()) {
+    if constexpr (wpi::support::endian::system_endianness() ==
+                  wpi::support::endianness::little) {
       // Reverse to big endian for network conventions.
       std::reverse((*dest).data() + bufferPosition,
                    (*dest).data() + bufferPosition + sizeof(T));
@@ -82,7 +85,8 @@ class BytePackable {
     char bytes[sizeof(T)];
     std::memcpy(&bytes, src.data() + bufferPosition, sizeof(T));
 
-    if (IsLittleEndian()) {
+    if constexpr (wpi::support::endian::system_endianness() ==
+                  wpi::support::endianness::little) {
       // Reverse to little endian for host.
       std::reverse(&bytes[0], &bytes[sizeof(T)]);
     }
@@ -90,13 +94,6 @@ class BytePackable {
     std::memcpy(&value, &bytes, sizeof(T));
     bufferPosition += sizeof(T);
     return value;
-  }
-
- private:
-  static bool IsLittleEndian() {
-    static int num = 69420;
-    static bool ret = *(char*)(&num) != 0;
-    return ret;
   }
 };
 }  // namespace photonlib
