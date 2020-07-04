@@ -60,9 +60,11 @@ class BytePackable {
   void BufferData(T src, std::vector<char>* dest) {
     std::memcpy((*dest).data() + bufferPosition, &src, sizeof(T));
 
-    // Reverse to big endian for network conventions.
-    std::reverse((*dest).data() + bufferPosition,
-                 (*dest).data() + bufferPosition + sizeof(T));
+    if (IsLittleEndian()) {
+      // Reverse to big endian for network conventions.
+      std::reverse((*dest).data() + bufferPosition,
+                   (*dest).data() + bufferPosition + sizeof(T));
+    }
 
     bufferPosition += sizeof(T);
   }
@@ -80,12 +82,21 @@ class BytePackable {
     char bytes[sizeof(T)];
     std::memcpy(&bytes, src.data() + bufferPosition, sizeof(T));
 
-    // Reverse to little endian for host.
-    std::reverse(&bytes[0], &bytes[sizeof(T)]);
+    if (IsLittleEndian()) {
+      // Reverse to little endian for host.
+      std::reverse(&bytes[0], &bytes[sizeof(T)]);
+    }
 
     std::memcpy(&value, &bytes, sizeof(T));
     bufferPosition += sizeof(T);
     return value;
+  }
+
+ private:
+  static bool IsLittleEndian() {
+    static int num = 69420;
+    static bool ret = *(char*)(&num) != 0;
+    return ret;
   }
 };
 }  // namespace photonlib
