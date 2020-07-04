@@ -95,7 +95,8 @@ class BytePackable {
  private:
   static bool IsLittleEndian() {
     static int num = 69420;
-    return *(char*)(&num) != 0;
+    static bool ret = *(char*)(&num) != 0;
+    return ret;
   }
 };
 }  // namespace photonlib
