@@ -21,6 +21,7 @@
 
 #include <cstddef>
 #include <string>
+#include <vector>
 
 #include "photonlib/common/BytePackable.h"
 

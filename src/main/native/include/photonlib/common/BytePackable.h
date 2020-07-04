@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cstring>
 #include <vector>
 
@@ -48,7 +49,6 @@ class BytePackable {
 
  protected:
   int bufferPosition = 0;
-
   /**
    * Converts a source to bytes and copies it into a destination byte array at
    * the index of the buffer position.
@@ -59,6 +59,11 @@ class BytePackable {
   template <typename T>
   void BufferData(T src, std::vector<char>* dest) {
     std::memcpy((*dest).data() + bufferPosition, &src, sizeof(T));
+
+    // Reverse to big endian for network conventions.
+    std::reverse((*dest).data() + bufferPosition,
+                 (*dest).data() + bufferPosition + sizeof(T));
+
     bufferPosition += sizeof(T);
   }
 
@@ -72,7 +77,13 @@ class BytePackable {
   template <typename T>
   T UnbufferData(const std::vector<char>& src) {
     T value;
-    std::memcpy(&value, src.data() + bufferPosition, sizeof(T));
+    char bytes[sizeof(T)];
+    std::memcpy(&bytes, src.data() + bufferPosition, sizeof(T));
+
+    // Reverse to little endian for host.
+    std::reverse(&bytes[0], &bytes[sizeof(T)]);
+
+    std::memcpy(&value, &bytes, sizeof(T));
     bufferPosition += sizeof(T);
     return value;
   }
