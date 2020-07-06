@@ -7,25 +7,13 @@
     "https://maven.photonvision.org/artifactory/libs-release/"
   ],
   "jsonUrl": "https://maven.photonvision.org/artifactory/libs-release/photonlib.json",
+  "jniDependencies": [],
   "cppDependencies": [
     {
       "groupId": "org.photonvision.lib",
       "artifactId": "PhotonLib-cpp",
       "version": "2020.0.1",
       "libName": "PhotonLib",
-      "headerClassifier": "headers",
-      "sharedLibrary": true,
-      "skipInvalidPlatforms": true,
-      "binaryPlatforms": [
-        "windowsx86-64",
-        "linuxathena"
-      ]
-    },
-    {
-      "groupId": "org.photonvision.lib",
-      "artifactId": "PhotonLib-driver",
-      "version": "2020.0.1",
-      "libName": "PhotonDriver",
       "headerClassifier": "headers",
       "sharedLibrary": true,
       "skipInvalidPlatforms": true,

@@ -47,12 +47,6 @@ nativeUtils {
     Photon {
     }
   }
-  privateExportsConfigs {
-    // Only export explicit symbols from driver library
-    PhotonDriver {
-      exportsFile = project.file("src/main/driver/symbols.txt")
-    }
-  }
 }
 
 model {
@@ -69,32 +63,7 @@ model {
           }
         }
       }
-      binaries.all {
-        lib library: 'PhotonDriver', linkage: 'shared'
-      }
       nativeUtils.useRequiredLibrary(it, 'wpilib_shared')
-    }
-
-    PhotonDriver(JniNativeLibrarySpec) {
-      enableCheckTask true
-      javaCompileTasks << compileJava
-      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.roborio)
-      // Leave these for future proofing
-      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.raspbian)
-      jniCrossCompileOptions << JniCrossCompileOptions(nativeUtils.wpi.platforms.aarch64bionic)
-      sources {
-        cpp {
-          source {
-            srcDirs 'src/main/driver/cpp'
-            include '**/*.cpp'
-          }
-          exportedHeaders {
-            srcDirs 'src/main/driver/include'
-          }
-        }
-      }
-
-       nativeUtils.useRequiredLibrary(it, "driver_shared")
     }
   }
   testSuites {
