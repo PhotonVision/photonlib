@@ -15,11 +15,14 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - run: ./gradlew build publish
-      - uses: actions/upload-artifact@master
-        with:
-          name: windows-artifact
-          path: build/repos
+      - name: Build
+        run: ./gradlew build
+      - name: Publish
+        run: ./gradlew publish
+        env:
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+        if: github.event_name == 'push'
+
 
   # macOS Catalina
   build-macos:
@@ -29,13 +32,15 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - run: |
+      - name: Build
+        run: |
           chmod +x gradlew
-          ./gradlew build publish
-      - uses: actions/upload-artifact@master
-        with:
-          name: macos-artifact
-          path: build/repos
+          ./gradlew build
+      - name: Publish
+        run: ./gradlew publish
+        env:
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+        if: github.event_name == 'push'
 
   # Ubuntu 18.04 LTS
   build-linux:
@@ -45,13 +50,20 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - run: |
+      - name: Build
+        run: |
           chmod +x gradlew
-          ./gradlew build publish
-      - uses: actions/upload-artifact@master
-        with:
-          name: linux-artifact
-          path: build/repos
+          ./gradlew build
+      - name: Publish
+        run: ./gradlew publish
+        env:
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+        if: github.event_name == 'push'
+      - name: Deploy Vendor JSON
+        run: curl -u ghactions:${{ secrets.ARTIFACTORY_API_KEY }}! -X PUT "https://maven.photonvision.org/artifactory/libs-release/photonlib.json" -T vendordeps/photonlib.json
+        env:
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+        if: github.event_name == 'push'
 
 
   # roboRIO
@@ -63,13 +75,16 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - run: |
+      - name: Build
+        run: |
           chmod +x gradlew
-          ./gradlew build publish -Ponlylinuxathena
-      - uses: actions/upload-artifact@master
-        with:
-          name: roborio-artifact
-          path: build/repos
+          ./gradlew build -Ponlylinuxathena
+      - name: Publish
+        run: ./gradlew publish -Ponlylinuxathena
+        env:
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+        if: github.event_name == 'push'
+
 
   # Raspbian
   build-raspbian:
@@ -80,13 +95,16 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - run: |
+      - name: Build
+        run: |
           chmod +x gradlew
-          ./gradlew build publish -Ponlylinuxraspbian
-      - uses: actions/upload-artifact@master
-        with:
-          name: raspbian-artifact
-          path: build/repos
+          ./gradlew build -Ponlylinuxraspbian
+      - name: Publish
+        run: ./gradlew publish -Ponlylinuxraspbian
+        env:
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+        if: github.event_name == 'push'
+
 
   # Linux Aarch64
   build-linux-aarch64:
@@ -97,52 +115,12 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - run: |
+      - name: Build
+        run: |
           chmod +x gradlew
-          ./gradlew build publish -Ponlylinuxaarch64bionic
-      - uses: actions/upload-artifact@master
-        with:
-          name: aarch64-artifact
-          path: build/repos
-
-  # Combine Job
-  combine:
-    needs: [build-windows, build-macos, build-linux, build-roborio, build-raspbian, build-linux-aarch64]
-    runs-on: macos-latest
-    steps:
-      - run: mkdir build-tools
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: windows-artifact
-          path: build-tools/repos
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: macos-artifact
-          path: build-tools/repos
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: linux-artifact
-          path: build-tools/repos
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: roborio-artifact
-          path: build-tools/repos
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: raspbian-artifact
-          path: build-tools/repos
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: aarch64-artifact
-          path: build-tools/repos
-
-      - uses: actions/upload-artifact@master
-        with:
-          name: combined-build
-          path: build-tools/repos
+          ./gradlew build -Ponlylinuxaarch64bionic
+      - name: Publish
+        run: ./gradlew publish -Ponlylinuxaarch64bionic
+        env:
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
+        if: github.event_name == 'push'

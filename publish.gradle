@@ -137,7 +137,7 @@ publishing {
             url 'https://maven.photonvision.org/artifactory/libs-release'
             credentials {
                 username 'ghactions'
-                password System.getenv("ARTIFACTORY_API_KEY")
+                password 'witty.moose'
             }
         }
     }
