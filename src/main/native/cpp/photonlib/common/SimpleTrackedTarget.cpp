@@ -54,7 +54,7 @@ std::vector<char> SimpleTrackedTarget::ToByteArray() {
   return bytes;
 }
 
-void SimpleTrackedTarget::FromByteArray(std::vector<char> src) {
+void SimpleTrackedTarget::FromByteArray(const std::vector<char>& src) {
   // Reset the buffer position to zero.
   ResetBufferPosition();
 
