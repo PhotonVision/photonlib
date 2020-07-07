@@ -63,7 +63,7 @@ std::vector<char> SimplePipelineResult::ToByteArray() {
   return bytes;
 }
 
-void SimplePipelineResult::FromByteArray(std::vector<char> src) {
+void SimplePipelineResult::FromByteArray(const std::vector<char>& src) {
   // Reset the buffer position to zero.
   ResetBufferPosition();
 

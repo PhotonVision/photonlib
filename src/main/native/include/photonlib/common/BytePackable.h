@@ -37,7 +37,7 @@ class BytePackable {
   /**
    * Deserializes the byte array into the current object.
    */
-  virtual void FromByteArray(std::vector<char> src) = 0;
+  virtual void FromByteArray(const std::vector<char>& src) = 0;
 
   /**
    * Get the current buffer position.

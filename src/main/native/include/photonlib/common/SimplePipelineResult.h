@@ -43,7 +43,7 @@ class SimplePipelineResult : public BytePackable {
   bool operator!=(const SimplePipelineResult& other) const;
 
   std::vector<char> ToByteArray() override;
-  void FromByteArray(std::vector<char> src) override;
+  void FromByteArray(const std::vector<char>& src) override;
 
  private:
   units::second_t latency;
