@@ -130,9 +130,9 @@ def releasesRepoUrl = "$buildDir/repos/releases"
 
 publishing {
     repositories {
-//        maven {
-//            url = releasesRepoUrl
-//        }
+        maven {
+            url = releasesRepoUrl
+        }
         maven {
             url 'https://maven.photonvision.org/artifactory/libs-release'
             credentials {
