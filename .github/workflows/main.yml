@@ -22,7 +22,10 @@ jobs:
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         if: github.event_name == 'push'
-
+      - uses: actions/upload-artifact@master
+        with:
+          name: windows-artifact
+          path: build/repos
 
   # macOS Catalina
   build-macos:
@@ -41,7 +44,11 @@ jobs:
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         if: github.event_name == 'push'
-
+      - uses: actions/upload-artifact@master
+        with:
+          name: macos-artifact
+          path: build/repos
+      
   # Ubuntu 18.04 LTS
   build-linux:
     runs-on: ubuntu-latest
@@ -64,7 +71,10 @@ jobs:
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         if: github.event_name == 'push'
-
+      - uses: actions/upload-artifact@master
+        with:
+          name: linux-artifact
+          path: build/repos
 
   # roboRIO
   build-roborio:
@@ -84,7 +94,10 @@ jobs:
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         if: github.event_name == 'push'
-
+      - uses: actions/upload-artifact@master
+        with:
+          name: roborio-artifact
+          path: build/repos
 
   # Raspbian
   build-raspbian:
@@ -104,7 +117,10 @@ jobs:
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         if: github.event_name == 'push'
-
+      - uses: actions/upload-artifact@master
+        with:
+          name: raspbian-artifact
+          path: build/repos
 
   # Linux Aarch64
   build-linux-aarch64:
@@ -124,3 +140,53 @@ jobs:
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         if: github.event_name == 'push'
+      - uses: actions/upload-artifact@master
+        with:
+          name: aarch64-artifact
+          path: build/repos
+  
+  # Combine Job
+  combine:
+    needs: [build-windows, build-macos, build-linux, build-roborio, build-raspbian, build-linux-aarch64]
+    runs-on: macos-latest
+    steps:
+      - run: mkdir build-tools
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: windows-artifact
+          path: build-tools/repos
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: macos-artifact
+          path: build-tools/repos
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: linux-artifact
+          path: build-tools/repos
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: roborio-artifact
+          path: build-tools/repos
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: raspbian-artifact
+          path: build-tools/repos
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: aarch64-artifact
+          path: build-tools/repos
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: combined-build
+          path: build-tools/repos
+      
+      - run: sudo apt-get install zip
+      - run: zip -r photonlib-offline-latest.zip build-tools/repos/      
+      
