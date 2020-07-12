@@ -22,7 +22,6 @@ jobs:
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         if: github.event_name == 'push'
-      - run: ls -r build/repos/releases
       - uses: actions/upload-artifact@master
         with:
           name: windows-artifact
@@ -45,6 +44,7 @@ jobs:
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         if: github.event_name == 'push'
+      - run: ls -r
       - uses: actions/upload-artifact@master
         with:
           name: macos-artifact
