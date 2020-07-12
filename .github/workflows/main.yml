@@ -25,7 +25,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: windows-artifact
-          path: build/repos
+          path: build/repos/releases
 
   # macOS Catalina
   build-macos:
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: macos-artifact
-          path: build/repos
+          path: build/repos/releases
       
   # Ubuntu 18.04 LTS
   build-linux:
@@ -74,7 +74,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: linux-artifact
-          path: build/repos
+          path: build/repos/releases
 
   # roboRIO
   build-roborio:
@@ -97,7 +97,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: roborio-artifact
-          path: build/repos
+          path: build/repos/releases
 
   # Raspbian
   build-raspbian:
@@ -120,7 +120,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: raspbian-artifact
-          path: build/repos
+          path: build/repos/releases
 
   # Linux Aarch64
   build-linux-aarch64:
@@ -143,12 +143,12 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: aarch64-artifact
-          path: build/repos
+          path: build/repos/releases
   
   # Combine Job
   combine:
     needs: [build-windows, build-macos, build-linux, build-roborio, build-raspbian, build-linux-aarch64]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - run: mkdir build-tools
 
