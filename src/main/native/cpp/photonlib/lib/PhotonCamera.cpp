@@ -21,15 +21,17 @@
 
 using namespace photonlib;
 
-PhotonCamera::PhotonCamera(const nt::NetworkTable& rootTable)
-    : rawBytesEntry(rootTable.GetEntry("rawBytes")),
-      driverModeEntry(rootTable.GetEntry("driverMode")),
-      pipelineIndexEntry(rootTable.GetEntry("pipelineIndex")) {}
+PhotonCamera::PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable)
+    : rawBytesEntry(rootTable->GetEntry("rawBytes")),
+      driverModeEntry(rootTable->GetEntry("driverMode")),
+      pipelineIndexEntry(rootTable->GetEntry("pipelineIndex")) {
+  driverMode = driverModeEntry.GetBoolean(false);
+  pipelineIndex = static_cast<int>(pipelineIndexEntry.GetDouble(0.0));
+}
 
 PhotonCamera::PhotonCamera(const std::string& tableName)
-    : rawBytesEntry(
-          nt::NetworkTableInstance::GetDefault().GetTable(tableName)->GetEntry(
-              "rawBytes")) {}
+    : PhotonCamera(nt::NetworkTableInstance::GetDefault().GetTable(tableName)) {
+}
 
 SimplePipelineResult PhotonCamera::GetLastResult() {
   SimplePipelineResult result;
@@ -42,6 +44,10 @@ void PhotonCamera::SetDriverMode(bool driverMode) {
   driverModeEntry.SetBoolean(driverMode);
 }
 
+bool PhotonCamera::GetDriverMode() const { return driverMode; }
+
 void PhotonCamera::SetPipelineIndex(int index) {
-  pipelineIndexEntry.SetDouble((double) index);
+  pipelineIndexEntry.SetDouble(static_cast<double>(index));
 }
+
+int PhotonCamera::GetPipelineIndex() const { return pipelineIndex; }

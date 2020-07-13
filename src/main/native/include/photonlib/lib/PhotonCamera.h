@@ -27,14 +27,16 @@
 namespace photonlib {
 class PhotonCamera {
  public:
-  explicit PhotonCamera(const nt::NetworkTable& rootTable);
+  explicit PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable);
   explicit PhotonCamera(const std::string& tableName);
 
   SimplePipelineResult GetLastResult();
 
   void SetDriverMode(bool driverMode);
+  bool GetDriverMode() const;
 
   void SetPipelineIndex(int index);
+  int GetPipelineIndex() const;
 
   bool HasTargets() { return GetLastResult().HasTargets(); }
 
@@ -54,6 +56,9 @@ class PhotonCamera {
   nt::NetworkTableEntry rawBytesEntry;
   nt::NetworkTableEntry driverModeEntry;
   nt::NetworkTableEntry pipelineIndexEntry;
+
+  bool driverMode;
+  double pipelineIndex;
 };
 
 }  // namespace photonlib

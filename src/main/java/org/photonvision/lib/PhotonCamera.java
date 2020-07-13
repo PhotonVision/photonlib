@@ -27,10 +27,16 @@ public class PhotonCamera {
   private final NetworkTableEntry driverModeEntry;
   private final NetworkTableEntry pipelineIndexEntry;
 
+  private boolean driverMode;
+  private int pipelineIndex;
+
   public PhotonCamera(NetworkTable rootTable) {
     rawBytesEntry = rootTable.getEntry("rawBytes");
     driverModeEntry = rootTable.getEntry("driverMode");
     pipelineIndexEntry = rootTable.getEntry("pipelineIndex");
+
+    driverMode = driverModeEntry.getBoolean(false);
+    pipelineIndex = (int) pipelineIndexEntry.getNumber(0);
   }
 
   public PhotonCamera(String tableName) {
@@ -52,7 +58,16 @@ public class PhotonCamera {
    * @param driverMode Whether the camera should be in driver mode.
    */
   public void setDriverMode(boolean driverMode) {
-    driverModeEntry.setBoolean(driverMode);
+    this.driverMode = driverMode;
+    driverModeEntry.setBoolean(this.driverMode);
+  }
+
+  /**
+   * Returns whether driver mode is enabled.
+   * @return Whether driver mode is enabled.
+   */
+  public boolean getDriverMode() {
+    return driverMode;
   }
 
   /**
@@ -60,7 +75,16 @@ public class PhotonCamera {
    * @param index The pipeline index number.
    */
   public void setPipelineIndex(int index) {
-    pipelineIndexEntry.setNumber(index);
+    pipelineIndex = index;
+    pipelineIndexEntry.setNumber(pipelineIndex);
+  }
+
+  /**
+   * Returns the pipeline index number.
+   * @return The pipeline index number.
+   */
+  public int getPipelineIndex() {
+    return pipelineIndex;
   }
 
   public boolean hasTargets() {
