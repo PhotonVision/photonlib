@@ -42,7 +42,7 @@ SimplePipelineResult PhotonCamera::GetLastResult() {
 
 void PhotonCamera::SetDriverMode(bool driverMode) {
   this->driverMode = driverMode;
-  driverModeEntry.SetBoolean(this->driverMode;);
+  driverModeEntry.SetBoolean(this->driverMode);
 }
 
 bool PhotonCamera::GetDriverMode() const { return driverMode; }
