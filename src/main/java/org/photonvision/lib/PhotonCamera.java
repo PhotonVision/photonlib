@@ -24,9 +24,19 @@ import org.photonvision.common.SimplePipelineResult;
 
 public class PhotonCamera {
   private final NetworkTableEntry rawBytesEntry;
+  private final NetworkTableEntry driverModeEntry;
+  private final NetworkTableEntry pipelineIndexEntry;
+
+  private boolean driverMode;
+  private int pipelineIndex;
 
   public PhotonCamera(NetworkTable rootTable) {
     rawBytesEntry = rootTable.getEntry("rawBytes");
+    driverModeEntry = rootTable.getEntry("driverMode");
+    pipelineIndexEntry = rootTable.getEntry("pipelineIndex");
+
+    driverMode = driverModeEntry.getBoolean(false);
+    pipelineIndex = (int) pipelineIndexEntry.getNumber(0);
   }
 
   public PhotonCamera(String tableName) {
@@ -41,6 +51,40 @@ public class PhotonCamera {
     var ret = new SimplePipelineResult();
     ret.fromByteArray(rawBytesEntry.getRaw(new byte[]{}));
     return ret;
+  }
+
+  /**
+   * Sets whether the camera is in driver mode.
+   * @param driverMode Whether the camera should be in driver mode.
+   */
+  public void setDriverMode(boolean driverMode) {
+    this.driverMode = driverMode;
+    driverModeEntry.setBoolean(this.driverMode);
+  }
+
+  /**
+   * Returns whether driver mode is enabled.
+   * @return Whether driver mode is enabled.
+   */
+  public boolean getDriverMode() {
+    return driverMode;
+  }
+
+  /**
+   * Sets the pipeline index number.
+   * @param index The pipeline index number.
+   */
+  public void setPipelineIndex(int index) {
+    pipelineIndex = index;
+    pipelineIndexEntry.setNumber(pipelineIndex);
+  }
+
+  /**
+   * Returns the pipeline index number.
+   * @return The pipeline index number.
+   */
+  public int getPipelineIndex() {
+    return pipelineIndex;
   }
 
   public boolean hasTargets() {
