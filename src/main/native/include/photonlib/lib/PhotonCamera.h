@@ -20,6 +20,7 @@
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
 
+#include <memory>
 #include <string>
 
 #include "photonlib/common/SimplePipelineResult.h"

@@ -41,13 +41,15 @@ SimplePipelineResult PhotonCamera::GetLastResult() {
 }
 
 void PhotonCamera::SetDriverMode(bool driverMode) {
-  driverModeEntry.SetBoolean(driverMode);
+  this->driverMode = driverMode;
+  driverModeEntry.SetBoolean(this->driverMode;);
 }
 
 bool PhotonCamera::GetDriverMode() const { return driverMode; }
 
 void PhotonCamera::SetPipelineIndex(int index) {
-  pipelineIndexEntry.SetDouble(static_cast<double>(index));
+  pipelineIndex = index;
+  pipelineIndexEntry.SetDouble(static_cast<double>(pipelineIndex));
 }
 
 int PhotonCamera::GetPipelineIndex() const { return pipelineIndex; }
