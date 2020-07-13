@@ -22,7 +22,9 @@
 using namespace photonlib;
 
 PhotonCamera::PhotonCamera(const nt::NetworkTable& rootTable)
-    : rawBytesEntry(rootTable.GetEntry("rawBytes")) {}
+    : rawBytesEntry(rootTable.GetEntry("rawBytes")),
+      driverModeEntry(rootTable.GetEntry("driverMode")),
+      pipelineIndexEntry(rootTable.GetEntry("pipelineIndex")) {}
 
 PhotonCamera::PhotonCamera(const std::string& tableName)
     : rawBytesEntry(
@@ -34,4 +36,12 @@ SimplePipelineResult PhotonCamera::GetLastResult() {
   std::string raw = rawBytesEntry.GetRaw(std::string());
   result.FromByteArray(std::vector<char>(raw.begin(), raw.end()));
   return result;
+}
+
+void PhotonCamera::SetDriverMode(bool driverMode) {
+  driverModeEntry.SetBoolean(driverMode);
+}
+
+void PhotonCamera::SetPipelineIndex(int index) {
+  pipelineIndexEntry.SetDouble((double) index);
 }

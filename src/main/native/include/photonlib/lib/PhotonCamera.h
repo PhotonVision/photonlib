@@ -32,6 +32,10 @@ class PhotonCamera {
 
   SimplePipelineResult GetLastResult();
 
+  void SetDriverMode(bool driverMode);
+
+  void SetPipelineIndex(int index);
+
   bool HasTargets() { return GetLastResult().HasTargets(); }
 
   double GetFirstTargetPitch() {
@@ -48,6 +52,8 @@ class PhotonCamera {
 
  private:
   nt::NetworkTableEntry rawBytesEntry;
+  nt::NetworkTableEntry driverModeEntry;
+  nt::NetworkTableEntry pipelineIndexEntry;
 };
 
 }  // namespace photonlib
