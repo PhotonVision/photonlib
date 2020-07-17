@@ -46,9 +46,11 @@ import java.util.List;
 class BytePackableTest {
   @Test
   void testSimpleTrackedTarget() {
-    var target = new SimpleTrackedTarget(3.0, 4.0, 9.0,
+    var target = new SimpleTrackedTarget(3.0, 4.0, 9.0, -5.0,
         new Pose2d(1, 2, new Rotation2d(1.5)));
     byte[] packed = target.toByteArray();
+
+    System.out.println(Arrays.toString(packed));
 
     var b = new SimpleTrackedTarget();
     b.fromByteArray(packed);
@@ -73,9 +75,9 @@ class BytePackableTest {
 
     var result2 = new SimplePipelineResult(2, true,
         List.of(
-            new SimpleTrackedTarget(3.0, -4.0, 9.0,
+            new SimpleTrackedTarget(3.0, -4.0, 9.0, 4.0,
                 new Pose2d(1, 2, new Rotation2d(1.5))),
-            new SimpleTrackedTarget(3.0, -4.0, 9.1,
+            new SimpleTrackedTarget(3.0, -4.0, 9.1, 6.7,
                 new Pose2d(1, 5, new Rotation2d(1.5)))));
     byte[] packed2 = result2.toByteArray();
 
@@ -87,12 +89,13 @@ class BytePackableTest {
 
   @Test
   void testBytePackFromCpp() {
-    byte[] bytePack = {64, 8, 0, 0, 0, 0, 0, 0, 64, 16, 0, 0, 0, 0, 0, 0, 64, 34, 0, 0, 0, 0,
-        0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 85, 124, 101, 19, -54, -47, 122};
+    byte[] bytePack = {64, 8, 0, 0, 0, 0, 0, 0, 64, 16, 0, 0, 0, 0, 0, 0, 64, 34, 0, 0, 0, 0, 0, 0,
+        -64, 20, 0, 0, 0, 0, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 85, 124,
+        101, 19, -54, -47, 122};
     var t = new SimpleTrackedTarget();
     t.fromByteArray(bytePack);
 
-    var target = new SimpleTrackedTarget(3.0, 4.0, 9.0,
+    var target = new SimpleTrackedTarget(3.0, 4.0, 9.0, -5.0,
         new Pose2d(1, 2, new Rotation2d(1.5)));
 
     Assertions.assertEquals(t, target);

@@ -28,10 +28,10 @@
 namespace photonlib {
 class SimpleTrackedTarget : public BytePackable {
  public:
-  constexpr static int kPackSizeBytes = sizeof(double) / sizeof(std::byte) * 6;
+  constexpr static int kPackSizeBytes = sizeof(double) * 7;
 
   SimpleTrackedTarget();
-  SimpleTrackedTarget(double yaw, double pitch, double area,
+  SimpleTrackedTarget(double yaw, double pitch, double area, double skew,
                       const frc::Pose2d& pose);
 
   virtual ~SimpleTrackedTarget() = default;
@@ -39,6 +39,7 @@ class SimpleTrackedTarget : public BytePackable {
   double GetYaw() const { return yaw; }
   double GetPitch() const { return pitch; }
   double GetArea() const { return area; }
+  double GetSkew() const { return skew; }
 
   frc::Pose2d GetRobotRelativePose() const { return robotRelativePose; }
 
@@ -52,6 +53,7 @@ class SimpleTrackedTarget : public BytePackable {
   double yaw = 0;
   double pitch = 0;
   double area = 0;
+  double skew = 0;
   frc::Pose2d robotRelativePose;
 };
 }  // namespace photonlib

@@ -23,12 +23,12 @@ using namespace photonlib;
 
 SimpleTrackedTarget::SimpleTrackedTarget() {}
 SimpleTrackedTarget::SimpleTrackedTarget(double yaw, double pitch, double area,
-                                         const frc::Pose2d& pose)
-    : yaw(yaw), pitch(pitch), area(area), robotRelativePose(pose) {}
+                                         double skew, const frc::Pose2d& pose)
+    : yaw(yaw), pitch(pitch), area(area), skew(skew), robotRelativePose(pose) {}
 
 bool SimpleTrackedTarget::operator==(const SimpleTrackedTarget& other) const {
   return other.yaw == yaw && other.pitch == pitch && other.area == area &&
-         other.robotRelativePose == robotRelativePose;
+         other.skew == skew && other.robotRelativePose == robotRelativePose;
 }
 
 bool SimpleTrackedTarget::operator!=(const SimpleTrackedTarget& other) const {
@@ -46,6 +46,7 @@ std::vector<char> SimpleTrackedTarget::ToByteArray() {
   BufferData<double>(yaw, &bytes);
   BufferData<double>(pitch, &bytes);
   BufferData<double>(area, &bytes);
+  BufferData<double>(skew, &bytes);
   BufferData<double>(robotRelativePose.Translation().X().to<double>(), &bytes);
   BufferData<double>(robotRelativePose.Translation().Y().to<double>(), &bytes);
   BufferData<double>(robotRelativePose.Rotation().Degrees().to<double>(),
@@ -61,6 +62,7 @@ void SimpleTrackedTarget::FromByteArray(const std::vector<char>& src) {
   yaw = UnbufferData<double>(src);
   pitch = UnbufferData<double>(src);
   area = UnbufferData<double>(src);
+  skew = UnbufferData<double>(src);
 
   auto poseX = units::meter_t(UnbufferData<double>(src));
   auto poseY = units::meter_t(UnbufferData<double>(src));
