@@ -22,11 +22,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class SimplePipelineResult extends BytePackable {
+  public final List<SimpleTrackedTarget> targets = new ArrayList<>();
   private double latencyMillis;
   private boolean hasTargets;
-  public final List<SimpleTrackedTarget> targets = new ArrayList<>();
 
-  public SimplePipelineResult() {}
+  public SimplePipelineResult() {
+  }
 
   public SimplePipelineResult(
       double latencyMillis, boolean hasTargets, List<SimpleTrackedTarget> targets) {
@@ -63,7 +64,7 @@ public class SimplePipelineResult extends BytePackable {
   public byte[] toByteArray() {
     bufferPosition = 0;
     int bufferSize =
-        8 + 1 + 1 + (targets.size() * 48); // latencyMillis + hasTargets + targetCount + targets
+        8 + 1 + 1 + (targets.size() * SimpleTrackedTarget.PACK_SIZE_BYTES);
     var buff = new byte[bufferSize];
 
     bufferData(latencyMillis, buff);
@@ -87,8 +88,8 @@ public class SimplePipelineResult extends BytePackable {
     targets.clear();
     for (int i = 0; i < targetCount; i++) {
       var target = new SimpleTrackedTarget();
-      target.fromByteArray(unbufferBytes(src, 48));
-      bufferPosition += 48;
+      target.fromByteArray(unbufferBytes(src, SimpleTrackedTarget.PACK_SIZE_BYTES));
+      bufferPosition += SimpleTrackedTarget.PACK_SIZE_BYTES;
       targets.add(target);
     }
   }

@@ -23,7 +23,7 @@
 #include "photonlib/common/SimpleTrackedTarget.h"
 
 TEST(BytePackableTest, SimpleTrackedTarget) {
-  photonlib::SimpleTrackedTarget target{3.0, 4.0, 9.0,
+  photonlib::SimpleTrackedTarget target{3.0, 4.0, 9.0, -5.0,
                                         frc::Pose2d(1_m, 2_m, 1.5_rad)};
   std::vector<char> packed = target.ToByteArray();
 
@@ -47,9 +47,9 @@ TEST(BytePackableTest, SimplePipelineResult) {
   photonlib::SimplePipelineResult result2{
       2_s,
       true,
-      {photonlib::SimpleTrackedTarget{3.0, -4.0, 9.0,
+      {photonlib::SimpleTrackedTarget{3.0, -4.0, 9.0, 4.0,
                                       frc::Pose2d(1_m, 2_m, 1.5_rad)},
-       photonlib::SimpleTrackedTarget{3.0, -4.0, 9.1,
+       photonlib::SimpleTrackedTarget{3.0, -4.0, 9.1, 6.7,
                                       frc::Pose2d(1_m, 5_m, 1.5_rad)}}};
   std::vector<char> packed2 = result2.ToByteArray();
 
@@ -61,9 +61,10 @@ TEST(BytePackableTest, SimplePipelineResult) {
 
 TEST(BytePackableTest, BytePackFromJava) {
   std::vector<signed char> bytePack{
-      64, 8,  0, 0, 0, 0, 0, 0, 64, 16,  0,   0,   0,  0,   0,   0,
-      64, 34, 0, 0, 0, 0, 0, 0, 63, -16, 0,   0,   0,  0,   0,   0,
-      64, 0,  0, 0, 0, 0, 0, 0, 64, 85,  124, 101, 19, -54, -47, 122};
+      64, 8, 0,  0,  0,  0,   0,  0,  64,  16,  0,   0,   0,   0,
+      0,  0, 64, 34, 0,  0,   0,  0,  0,   0,   -64, 20,  0,   0,
+      0,  0, 0,  0,  63, -16, 0,  0,  0,   0,   0,   0,   64,  0,
+      0,  0, 0,  0,  0,  0,   64, 85, 124, 101, 19,  -54, -47, 122};
 
   std::vector<char> bytes;
   for (auto a : bytePack) bytes.emplace_back(static_cast<char>(a));
@@ -71,7 +72,7 @@ TEST(BytePackableTest, BytePackFromJava) {
   photonlib::SimpleTrackedTarget res;
   res.FromByteArray(bytes);
 
-  photonlib::SimpleTrackedTarget target{3.0, 4.0, 9.0,
+  photonlib::SimpleTrackedTarget target{3.0, 4.0, 9.0, -5.0,
                                         frc::Pose2d(1_m, 2_m, 1.5_rad)};
 
   EXPECT_EQ(res, target);
