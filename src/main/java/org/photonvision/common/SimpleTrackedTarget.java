@@ -19,22 +19,25 @@ package org.photonvision.common;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
 import java.util.Objects;
 
 public class SimpleTrackedTarget extends BytePackable {
-  public static final int PACK_SIZE_BYTES = Double.BYTES * 6;
+  public static final int PACK_SIZE_BYTES = Double.BYTES * 7;
 
   private double yaw;
   private double pitch;
   private double area;
+  private double skew;
   private Pose2d robotRelativePose = new Pose2d();
 
   public SimpleTrackedTarget() {}
 
-  public SimpleTrackedTarget(double yaw, double pitch, double area, Pose2d pose) {
+  public SimpleTrackedTarget(double yaw, double pitch, double area, double skew, Pose2d pose) {
     this.yaw = yaw;
     this.pitch = pitch;
     this.area = area;
+    this.skew = skew;
     robotRelativePose = pose;
   }
 
@@ -50,6 +53,10 @@ public class SimpleTrackedTarget extends BytePackable {
     return area;
   }
 
+  public double getSkew() {
+    return skew;
+  }
+
   public Pose2d getRobotRelativePose() {
     return robotRelativePose;
   }
@@ -62,6 +69,7 @@ public class SimpleTrackedTarget extends BytePackable {
     return Double.compare(that.yaw, yaw) == 0
         && Double.compare(that.pitch, pitch) == 0
         && Double.compare(that.area, area) == 0
+        && Double.compare(that.skew, skew) == 0
         && Objects.equals(robotRelativePose, that.robotRelativePose);
   }
 
@@ -78,6 +86,7 @@ public class SimpleTrackedTarget extends BytePackable {
     bufferData(yaw, data);
     bufferData(pitch, data);
     bufferData(area, data);
+    bufferData(skew, data);
     bufferData(robotRelativePose.getTranslation().getX(), data);
     bufferData(robotRelativePose.getTranslation().getY(), data);
     bufferData(robotRelativePose.getRotation().getDegrees(), data);
@@ -96,6 +105,7 @@ public class SimpleTrackedTarget extends BytePackable {
     yaw = unbufferDouble(src);
     pitch = unbufferDouble(src);
     area = unbufferDouble(src);
+    skew = unbufferDouble(src);
 
     var poseX = unbufferDouble(src);
     var poseY = unbufferDouble(src);

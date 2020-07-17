@@ -81,9 +81,10 @@ void SimplePipelineResult::FromByteArray(const std::vector<char>& src) {
     SimpleTrackedTarget target;
 
     // Populate the target with data.
-    target.FromByteArray(std::vector<char>(src.begin() + bufferPosition,
-                                           src.begin() + bufferPosition + 48));
-    bufferPosition += 48;
+    target.FromByteArray(std::vector<char>(
+        src.begin() + bufferPosition,
+        src.begin() + bufferPosition + SimpleTrackedTarget::kPackSizeBytes));
+    bufferPosition += SimpleTrackedTarget::kPackSizeBytes;
 
     // Add the target to the list.
     targets.emplace_back(target);
