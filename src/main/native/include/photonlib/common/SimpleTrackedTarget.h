@@ -43,8 +43,8 @@ class SimpleTrackedTarget {
   bool operator==(const SimpleTrackedTarget& other) const;
   bool operator!=(const SimpleTrackedTarget& other) const;
 
-  friend Packet& photonlib::operator<<(Packet& packet, const SimpleTrackedTarget& target);
-  friend Packet& photonlib::operator>>(Packet& packet, SimpleTrackedTarget& target);
+  friend Packet& operator<<(Packet& packet, const SimpleTrackedTarget& target);
+  friend Packet& operator>>(Packet& packet, SimpleTrackedTarget& target);
 
  private:
   double yaw = 0;

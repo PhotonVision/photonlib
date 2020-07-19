@@ -12,7 +12,3 @@ cppSrcFileInclude {
 includeProject {
   ^photonLib/
 }
-
-generatedFileExclude {
-   thirdparty/
-}

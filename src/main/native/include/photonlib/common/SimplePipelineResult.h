@@ -40,8 +40,8 @@ class SimplePipelineResult {
   bool operator==(const SimplePipelineResult& other) const;
   bool operator!=(const SimplePipelineResult& other) const;
 
-  friend Packet& photonlib::operator<<(Packet& packet, const SimplePipelineResult& result);
-  friend Packet& photonlib::operator>>(Packet& packet, SimplePipelineResult& result);
+  friend Packet& operator<<(Packet& packet, const SimplePipelineResult& result);
+  friend Packet& operator>>(Packet& packet, SimplePipelineResult& result);
 
  private:
   units::second_t latency;

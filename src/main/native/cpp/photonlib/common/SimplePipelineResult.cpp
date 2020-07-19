@@ -17,8 +17,7 @@
 
 #include "photonlib/common/SimplePipelineResult.h"
 
-using namespace photonlib;
-
+namespace photonlib {
 SimplePipelineResult::SimplePipelineResult(
     units::second_t latency, wpi::ArrayRef<SimpleTrackedTarget> targets)
     : latency(latency), targets(targets) {
@@ -30,8 +29,7 @@ bool SimplePipelineResult::operator==(const SimplePipelineResult& other) const {
          targets == other.targets;
 }
 
-Packet& photonlib::operator<<(Packet& packet,
-                              const SimplePipelineResult& result) {
+Packet& operator<<(Packet& packet, const SimplePipelineResult& result) {
   // Encode latency, existence of targets, and number of targets.
   packet << result.latency.to<double>() * 1000 << result.hasTargets
          << static_cast<char>(result.targets.size());
@@ -43,7 +41,7 @@ Packet& photonlib::operator<<(Packet& packet,
   return packet;
 }
 
-Packet& photonlib::operator>>(Packet& packet, SimplePipelineResult& result) {
+Packet& operator>>(Packet& packet, SimplePipelineResult& result) {
   // Decode latency, existence of targets, and number of targets.
   char targetCount = 0;
   double latencyMillis = 0;
@@ -61,3 +59,5 @@ Packet& photonlib::operator>>(Packet& packet, SimplePipelineResult& result) {
   result.targets = targets;
   return packet;
 }
+
+}  // namespace photonlib
