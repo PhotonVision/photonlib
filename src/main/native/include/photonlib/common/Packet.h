@@ -19,6 +19,7 @@
 
 #include <wpi/Endian.h>
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -99,8 +100,10 @@ class Packet {
   // Current reading position in the packet
   size_t m_readPos = 0;
 
-  bool operator==(const Packet& right) const;
-  bool operator!=(const Packet& right) const;
+  bool operator==(const Packet& right) const {
+    return m_packetData == right.m_packetData;
+  }
+  bool operator!=(const Packet& right) const { return !operator==(right); }
 };
 
 }  // namespace photonlib

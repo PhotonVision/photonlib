@@ -48,5 +48,4 @@ class SimplePipelineResult {
   bool hasTargets;
   wpi::ArrayRef<SimpleTrackedTarget> targets;
 };
-
 }  // namespace photonlib
