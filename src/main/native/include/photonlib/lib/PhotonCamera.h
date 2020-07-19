@@ -26,29 +26,81 @@
 #include "photonlib/common/SimplePipelineResult.h"
 
 namespace photonlib {
+/**
+ * Represents a camera that is connected to PhotonVision.ß
+ */
 class PhotonCamera {
  public:
+  /**
+   * Constructs a PhotonCamera from a root table.
+   * @param rootTable The root table that the camera is broadcasting information
+   * over.
+   */
   explicit PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable);
+
+  /**
+   * Constructs a PhotonCamera from the name of the camera.
+   * @param cameraName The nickname of the camera (found in the PhotonVision
+   * UI).
+   */
   explicit PhotonCamera(const std::string& cameraName);
 
+  /**
+   * Returns the latest pipeline result.
+   * @return The latest pipeline result.
+   */
   SimplePipelineResult GetLastResult();
 
+  /**
+   * Toggles driver mode.
+   * @param driverMode Whether to set driver mode.
+   */
   void SetDriverMode(bool driverMode);
+
+  /**
+   * Returns whether the camera is in driver mode.
+   * @return Whether the camera is in driver mode.
+   */
   bool GetDriverMode() const;
 
+  /**
+   * Allows the user to select the active pipeline index.
+   * @param index The active pipeline index.
+   */
   void SetPipelineIndex(int index);
+
+  /**
+   * Returns the active pipeline index.
+   * @return The active pipeline index.
+   */
   int GetPipelineIndex() const;
 
+  /**
+   * Returns whether the latest target result has targets.
+   * @return Whether the latest target result has targets.
+   */
   bool HasTargets() { return GetLastResult().HasTargets(); }
 
+  /**
+   * Returns the pitch of the best target.
+   * @return The pitch of the best target.
+   */
   double GetFirstTargetPitch() {
     return GetLastResult().GetTargets()[0].GetPitch();
   }
 
+  /**
+   * Returns the yaw of the best target.
+   * @return The yaw of the best target.
+   */
   double GetFirstTargetYaw() {
     return GetLastResult().GetTargets()[0].GetYaw();
   }
 
+  /**
+   * Returns the area of the best target (0-100).
+   * @return The area of the best target.
+   */
   double GetBestTargetArea() {
     return GetLastResult().GetTargets()[0].GetArea();
   }
@@ -57,6 +109,8 @@ class PhotonCamera {
   nt::NetworkTableEntry rawBytesEntry;
   nt::NetworkTableEntry driverModeEntry;
   nt::NetworkTableEntry pipelineIndexEntry;
+
+  Packet packet;
 
   bool driverMode;
   double pipelineIndex;

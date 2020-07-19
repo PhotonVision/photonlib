@@ -36,10 +36,17 @@ PhotonCamera::PhotonCamera(const std::string& cameraName)
                        ->GetSubTable(cameraName)) {}
 
 SimplePipelineResult PhotonCamera::GetLastResult() {
+  // Clear the current packet.
+  packet.clear();
+
+  // Create the new result;
   SimplePipelineResult result;
-  Packet packet;
+
+  // Fill the packet with latest data and populate result.
   packet << rawBytesEntry.GetRaw(std::string());
   packet >> result;
+
+  // Return result
   return result;
 }
 

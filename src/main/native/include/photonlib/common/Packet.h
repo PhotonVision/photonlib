@@ -40,15 +40,8 @@ class Packet {
     m_isValid = true;
   }
 
-  /* Get a pointer to the data contained in the packet
-   *
-   * Warning: the returned pointer may become invalid after you append data
-   * to the packet, therefore it should never be stored.
-   *
-   * The return pointer is nullptr if the packet is empty.
-   */
-  const void* getData() const {
-    return !m_packetData.empty() ? &m_packetData[0] : nullptr;
+  const std::vector<char> getData() {
+    return m_packetData;
   }
 
   /* Get the size of the data contained in the packet in bytes
@@ -61,16 +54,17 @@ class Packet {
  public:
   template <typename T>
   Packet& operator<<(T src) {
-    std::memcpy(m_packetData.data() + m_readPos, &src, sizeof(T));
+    m_packetData.resize(m_packetData.size() + sizeof(T));
+    std::memcpy(m_packetData.data() + m_writePos, &src, sizeof(T));
 
     if constexpr (wpi::support::endian::system_endianness() ==
                   wpi::support::endianness::little) {
       // Reverse to big endian for network conventions.
-      std::reverse(m_packetData.data() + m_readPos,
-                   m_packetData.data() + m_readPos + sizeof(T));
+      std::reverse(m_packetData.data() + m_writePos,
+                   m_packetData.data() + m_writePos + sizeof(T));
     }
 
-    m_readPos += sizeof(T);
+    m_writePos += sizeof(T);
     return *this;
   }
 
@@ -99,6 +93,7 @@ class Packet {
 
   // Current reading position in the packet
   size_t m_readPos = 0;
+  size_t m_writePos = 0;
 
   bool operator==(const Packet& right) const {
     return m_packetData == right.m_packetData;

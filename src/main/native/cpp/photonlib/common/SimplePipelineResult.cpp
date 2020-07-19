@@ -20,13 +20,18 @@
 namespace photonlib {
 SimplePipelineResult::SimplePipelineResult(
     units::second_t latency, wpi::ArrayRef<SimpleTrackedTarget> targets)
-    : latency(latency), targets(targets) {
+    : latency(latency),
+      targets(targets.data(), targets.data() + targets.size()) {
   hasTargets = targets.size() != 0;
 }
 
 bool SimplePipelineResult::operator==(const SimplePipelineResult& other) const {
   return latency == other.latency && hasTargets == other.hasTargets &&
          targets == other.targets;
+}
+
+bool SimplePipelineResult::operator!=(const SimplePipelineResult& other) const {
+  return !operator==(other);
 }
 
 Packet& operator<<(Packet& packet, const SimplePipelineResult& result) {
@@ -48,15 +53,14 @@ Packet& operator>>(Packet& packet, SimplePipelineResult& result) {
   packet >> latencyMillis >> result.hasTargets >> targetCount;
   result.latency = units::second_t(latencyMillis / 1000.0);
 
-  wpi::SmallVector<SimpleTrackedTarget, 10> targets;
+  result.targets.clear();
 
   // Decode the information of each target.
   for (int i = 0; i < static_cast<int>(targetCount); ++i) {
     SimpleTrackedTarget target;
     packet >> target;
-    targets.push_back(target);
+    result.targets.push_back(target);
   }
-  result.targets = targets;
   return packet;
 }
 
