@@ -29,9 +29,10 @@ PhotonCamera::PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable)
   pipelineIndex = static_cast<int>(pipelineIndexEntry.GetDouble(0.0));
 }
 
-PhotonCamera::PhotonCamera(const std::string& tableName)
-    : PhotonCamera(nt::NetworkTableInstance::GetDefault().GetTable(tableName)) {
-}
+PhotonCamera::PhotonCamera(const std::string& cameraName)
+    : PhotonCamera(nt::NetworkTableInstance::GetDefault()
+                       .GetTable("photonvision")
+                       ->GetSubTable(cameraName)) {}
 
 SimplePipelineResult PhotonCamera::GetLastResult() {
   SimplePipelineResult result;
