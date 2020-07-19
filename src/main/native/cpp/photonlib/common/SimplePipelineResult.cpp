@@ -37,7 +37,7 @@ bool SimplePipelineResult::operator!=(const SimplePipelineResult& other) const {
 Packet& operator<<(Packet& packet, const SimplePipelineResult& result) {
   // Encode latency, existence of targets, and number of targets.
   packet << result.latency.to<double>() * 1000 << result.hasTargets
-         << static_cast<char>(result.targets.size());
+         << static_cast<int8_t>(result.targets.size());
 
   // Encode the information of each target.
   for (auto& target : result.targets) packet << target;
@@ -48,7 +48,7 @@ Packet& operator<<(Packet& packet, const SimplePipelineResult& result) {
 
 Packet& operator>>(Packet& packet, SimplePipelineResult& result) {
   // Decode latency, existence of targets, and number of targets.
-  char targetCount = 0;
+  int8_t targetCount = 0;
   double latencyMillis = 0;
   packet >> latencyMillis >> result.hasTargets >> targetCount;
   result.latency = units::second_t(latencyMillis / 1000.0);
@@ -56,7 +56,7 @@ Packet& operator>>(Packet& packet, SimplePipelineResult& result) {
   result.targets.clear();
 
   // Decode the information of each target.
-  for (int i = 0; i < static_cast<int>(targetCount); ++i) {
+  for (int i = 0; i < targetCount; ++i) {
     SimpleTrackedTarget target;
     packet >> target;
     result.targets.push_back(target);

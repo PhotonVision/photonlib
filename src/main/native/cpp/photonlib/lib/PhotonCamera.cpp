@@ -35,9 +35,9 @@ PhotonCamera::PhotonCamera(const std::string& cameraName)
                        .GetTable("photonvision")
                        ->GetSubTable(cameraName)) {}
 
-SimplePipelineResult PhotonCamera::GetLastResult() {
+SimplePipelineResult PhotonCamera::GetLastResult() const {
   // Clear the current packet.
-  packet.clear();
+  packet.Clear();
 
   // Create the new result;
   SimplePipelineResult result;

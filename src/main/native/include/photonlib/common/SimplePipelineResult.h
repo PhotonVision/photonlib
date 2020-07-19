@@ -61,7 +61,9 @@ class SimplePipelineResult {
    * Returns a reference to the vector of targets.
    * @return A reference to the vector of targets.
    */
-  wpi::ArrayRef<SimpleTrackedTarget> GetTargets() { return targets; }
+  const wpi::ArrayRef<SimpleTrackedTarget> GetTargets() const {
+    return targets;
+  }
 
   bool operator==(const SimplePipelineResult& other) const;
   bool operator!=(const SimplePipelineResult& other) const;

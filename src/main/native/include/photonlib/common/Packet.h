@@ -26,71 +26,96 @@
 namespace photonlib {
 
 /**
- * Utility class to build blocks of data to transfer over the network
+ * A packet that holds byte-packed data to be sent over NetworkTables.
  */
 class Packet {
  public:
+  /**
+   * Constructs an empty packet.
+   */
   Packet() = default;
-  explicit Packet(std::vector<char> data) : m_packetData(data) {}
 
-  // Empty the packet
-  void clear() {
-    m_packetData.clear();
-    m_readPos = 0;
+  /**
+   * Constructs a packet with the given data.
+   * @param data The packet data.
+   */
+  explicit Packet(std::vector<char> data) : packetData(data) {}
+
+  /**
+   * Clears the packet and resets the read and write positions.
+   */
+  void Clear() {
+    packetData.clear();
+    readPos = 0;
+    writePos = 0;
   }
 
-  const std::vector<char> getData() { return m_packetData; }
-
-  /* Get the size of the data contained in the packet in bytes
-   *
-   * This function returns the number of bytes pointed to by what getData
-   * returns.
+  /**
+   * Returns the packet data.
+   * @return The packet data.
    */
-  size_t getDataSize() const { return m_packetData.size(); }
+  const std::vector<char>& GetData() { return packetData; }
 
+  /**
+   * Returns the number of bytes in the data.
+   * @return The number of bytes in the data.
+   */
+  size_t GetDataSize() const { return packetData.size(); }
+
+  /**
+   * Adds a value to the data buffer. This should only be used with PODs.
+   * @tparam T The data type.
+   * @param src The data source.
+   * @return A reference to the current object.
+   */
   template <typename T>
   Packet& operator<<(T src) {
-    m_packetData.resize(m_packetData.size() + sizeof(T));
-    std::memcpy(m_packetData.data() + m_writePos, &src, sizeof(T));
+    packetData.resize(packetData.size() + sizeof(T));
+    std::memcpy(packetData.data() + writePos, &src, sizeof(T));
 
     if constexpr (wpi::support::endian::system_endianness() ==
                   wpi::support::endianness::little) {
       // Reverse to big endian for network conventions.
-      std::reverse(m_packetData.data() + m_writePos,
-                   m_packetData.data() + m_writePos + sizeof(T));
+      std::reverse(packetData.data() + writePos,
+                   packetData.data() + writePos + sizeof(T));
     }
 
-    m_writePos += sizeof(T);
+    writePos += sizeof(T);
     return *this;
   }
 
+  /**
+   * Extracts a value to the provided destination.
+   * @tparam T The type of value to extract.
+   * @param value The value to extract.
+   * @return A reference to the current object.
+   */
   template <typename T>
   Packet& operator>>(T& value) {
-    char bytes[sizeof(T)];
-    std::memcpy(&bytes, m_packetData.data() + m_readPos, sizeof(T));
+    std::memcpy(&value, packetData.data() + readPos, sizeof(T));
 
     if constexpr (wpi::support::endian::system_endianness() ==
                   wpi::support::endianness::little) {
       // Reverse to little endian for host.
-      std::reverse(&bytes[0], &bytes[sizeof(T)]);
+      char& raw = reinterpret_cast<char&>(value);
+      std::reverse(&raw, &raw + sizeof(T));
     }
 
-    std::memcpy(&value, &bytes, sizeof(T));
-    m_readPos += sizeof(T);
+    readPos += sizeof(T);
     return *this;
   }
 
- private:
-  // Data stored in the packet
-  std::vector<char> m_packetData;
-
-  size_t m_readPos = 0;
-  size_t m_writePos = 0;
-
   bool operator==(const Packet& right) const {
-    return m_packetData == right.m_packetData;
+    return packetData == right.packetData;
   }
   bool operator!=(const Packet& right) const { return !operator==(right); }
+
+ private:
+  // Data stored in the packet
+  std::vector<char> packetData;
+
+  size_t readPos = 0;
+  size_t writePos = 0;
 };
 
 }  // namespace photonlib

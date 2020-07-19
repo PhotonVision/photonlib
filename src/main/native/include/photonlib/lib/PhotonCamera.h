@@ -49,7 +49,7 @@ class PhotonCamera {
    * Returns the latest pipeline result.
    * @return The latest pipeline result.
    */
-  SimplePipelineResult GetLastResult();
+  SimplePipelineResult GetLatestResult() const;
 
   /**
    * Toggles driver mode.
@@ -79,30 +79,42 @@ class PhotonCamera {
    * Returns whether the latest target result has targets.
    * @return Whether the latest target result has targets.
    */
-  bool HasTargets() { return GetLastResult().HasTargets(); }
+  bool HasTargets() const { return GetLatestResult().HasTargets(); }
 
   /**
-   * Returns the pitch of the best target.
+   * Returns the pitch of the best target. The best target is defined in the
+   * PhotonVision UI.
    * @return The pitch of the best target.
    */
-  double GetFirstTargetPitch() {
-    return GetLastResult().GetTargets()[0].GetPitch();
+  double GetBestTargetPitch() const {
+    return GetLatestResult().GetTargets()[0].GetPitch();
   }
 
   /**
-   * Returns the yaw of the best target.
+   * Returns the yaw of the best target. The best target is defined in the
+   * PhotonVision UI.
    * @return The yaw of the best target.
    */
-  double GetFirstTargetYaw() {
-    return GetLastResult().GetTargets()[0].GetYaw();
+  double GetBestTargetYaw() const {
+    return GetLatestResult().GetTargets()[0].GetYaw();
   }
 
   /**
-   * Returns the area of the best target (0-100).
+   * Returns the area of the best target (0-100). The best target is defined in
+   * the PhotonVision UI.
    * @return The area of the best target.
    */
-  double GetBestTargetArea() {
-    return GetLastResult().GetTargets()[0].GetArea();
+  double GetBestTargetArea() const {
+    return GetLatestResult().GetTargets()[0].GetArea();
+  }
+
+  /**
+   * Returns the skew of the best target (counter-clockwise positive). The best
+   * target is defined in the PhotonVision UI.
+   * @return The skew of the best target.
+   */
+  double GetBestTargetSkew() const {
+    return GetLatestResult().GetTargets()[0].GetSkew();
   }
 
  private:
@@ -110,7 +122,7 @@ class PhotonCamera {
   nt::NetworkTableEntry driverModeEntry;
   nt::NetworkTableEntry pipelineIndexEntry;
 
-  Packet packet;
+  mutable Packet packet;
 
   bool driverMode;
   double pipelineIndex;

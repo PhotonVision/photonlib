@@ -32,6 +32,10 @@ TEST(PacketTest, SimpleTrackedTarget) {
   photonlib::SimpleTrackedTarget b;
   p >> b;
 
+  for (auto& c : p.GetData()) {
+    std::cout << static_cast<int>(c) << ",";
+  }
+
   EXPECT_EQ(target, b);
 }
 
