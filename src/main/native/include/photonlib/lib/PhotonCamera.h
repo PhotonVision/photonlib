@@ -29,7 +29,7 @@ namespace photonlib {
 class PhotonCamera {
  public:
   explicit PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable);
-  explicit PhotonCamera(const std::string& tableName);
+  explicit PhotonCamera(const std::string& cameraName);
 
   SimplePipelineResult GetLastResult();
 
