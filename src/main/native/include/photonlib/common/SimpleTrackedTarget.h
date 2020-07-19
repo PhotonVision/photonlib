@@ -47,7 +47,8 @@ class SimpleTrackedTarget {
   bool operator==(const SimpleTrackedTarget& other) const;
   bool operator!=(const SimpleTrackedTarget& other) const;
 
-  void FromPacket(Packet packet);
+  friend Packet& operator<<(Packet& packet, const SimpleTrackedTarget& target);
+  friend Packet& operator>>(Packet& packet, SimpleTrackedTarget& target);
 
   double yaw = 0;
   double pitch = 0;

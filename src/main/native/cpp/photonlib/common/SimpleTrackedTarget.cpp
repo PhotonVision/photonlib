@@ -35,11 +35,22 @@ bool SimpleTrackedTarget::operator!=(const SimpleTrackedTarget& other) const {
   return !operator==(other);
 }
 
-void SimpleTrackedTarget::FromPacket(Packet packet) {
+Packet& photonlib::operator<<(Packet& packet, const SimpleTrackedTarget& target) {
+  return packet << target.yaw << target.pitch << target.area << target.skew
+                << target.robotRelativePose.Translation().X().to<double>()
+                << target.robotRelativePose.Translation().Y().to<double>()
+                << target.robotRelativePose.Rotation().Degrees().to<double>();
+}
+
+Packet& photonlib::operator>>(Packet& packet, SimpleTrackedTarget& target) {
+  packet >> target.yaw >> target.pitch >> target.area >> target.skew;
   double x = 0;
   double y = 0;
   double rot = 0;
-  packet >> yaw >> pitch >> area >> skew >> x >> y >> rot;
-  robotRelativePose =
+  packet >> x >> y >> rot;
+
+  target.robotRelativePose =
       frc::Pose2d(units::meter_t(x), units::meter_t(y), units::degree_t(rot));
+  return packet;
 }
+

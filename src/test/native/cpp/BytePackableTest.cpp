@@ -34,7 +34,7 @@ TEST(BytePackableTest, BytePackFromJava) {
   photonlib::Packet packet{bytes};
 
   photonlib::SimpleTrackedTarget res;
-  res.FromPacket(packet);
+  packet >> res;
 
   photonlib::SimpleTrackedTarget target{3.0, 4.0, 9.0, -5.0,
                                         frc::Pose2d(1_m, 2_m, 1.5_rad)};

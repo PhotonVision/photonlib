@@ -43,10 +43,12 @@ class SimplePipelineResult {
   bool operator==(const SimplePipelineResult& other) const;
   bool operator!=(const SimplePipelineResult& other) const;
 
-  void FromPacket(Packet packet);
+  friend Packet& operator<<(Packet& packet, const SimplePipelineResult& result);
+  friend Packet& operator>>(Packet& packet, SimplePipelineResult& result);
 
   units::second_t latency;
   bool hasTargets;
   std::vector<SimpleTrackedTarget> targets;
 };
+
 }  // namespace photonlib

@@ -31,27 +31,30 @@ bool SimplePipelineResult::operator==(const SimplePipelineResult& other) const {
          targets == other.targets;
 }
 
-void SimplePipelineResult::FromPacket(Packet packet) {
-  // Decode latency, existence of targets, and number of targets.
-  double latencyMillis = 0;
-  char size = 0;
-  packet >> latencyMillis >> hasTargets >> size;
-
-  latency = units::second_t(latencyMillis / 1000);
+Packet& photonlib::operator<<(Packet& packet, const SimplePipelineResult& result) {
+  // Encode latency, existence of targets, and number of targets.
+  packet << result.latency.to<double>() * 1000 << result.hasTargets
+         << static_cast<char>(result.targets.size());
 
   // Encode the information of each target.
-  for (int i = 0; i < static_cast<int>(size); ++i) {
-    double yaw = 0;
-    double area = 0;
-    double pitch = 0;
-    double skew = 0;
-    double x = 0;
-    double y = 0;
-    double rot = 0;
+  for (auto& target : result.targets) packet << target;
 
-    packet >> yaw >> pitch >> area >> skew >> x >> y >> rot;
-    targets.emplace_back(yaw, pitch, area, skew,
-                         frc::Pose2d(units::meter_t(x), units::meter_t(y),
-                                     units::degree_t(rot)));
+  // Return the packet
+  return packet;
+}
+
+Packet& photonlib::operator>>(Packet& packet, SimplePipelineResult& result) {
+  // Decode latency, existence of targets, and number of targets.
+  char targetCount = 0;
+  double latencyMillis = 0;
+  packet >> latencyMillis >> result.hasTargets >> targetCount;
+  result.latency = units::second_t(latencyMillis / 1000.0);
+
+  // Decode the information of each target.
+  for (int i = 0; i < static_cast<int>(targetCount); ++i) {
+    SimpleTrackedTarget target;
+    packet >> target;
+    result.targets.push_back(target);
   }
+  return packet;
 }

@@ -40,7 +40,7 @@ SimplePipelineResult PhotonCamera::GetLastResult() {
   SimplePipelineResult result;
   Packet packet;
   packet << rawBytesEntry.GetRaw(std::string());
-  result.FromPacket(packet);
+  packet >> result;
   return result;
 }
 
