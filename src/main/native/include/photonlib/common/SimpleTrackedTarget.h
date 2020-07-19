@@ -17,37 +17,71 @@
 
 #pragma once
 
-#include <frc/geometry/Pose2d.h>
-
 #include <cstddef>
 #include <string>
 #include <vector>
 
-#include "photonlib/common/BytePackable.h"
+#include <frc/geometry/Pose2d.h>
+
+#include "photonlib/common/Packet.h"
 
 namespace photonlib {
-class SimpleTrackedTarget : public BytePackable {
+/**
+ * Represents a tracked target within a pipeline.
+ */
+class SimpleTrackedTarget {
  public:
-  constexpr static int kPackSizeBytes = sizeof(double) * 7;
+  /**
+   * Constructs an empty target.
+   */
+  SimpleTrackedTarget() = default;
 
-  SimpleTrackedTarget();
+  /**
+   * Constructs a target.
+   * @param yaw The yaw of the target.
+   * @param pitch The pitch of the target.
+   * @param area The area of the target.
+   * @param skew The skew of the target.
+   * @param pose The robot-relative pose of the target.
+   */
   SimpleTrackedTarget(double yaw, double pitch, double area, double skew,
                       const frc::Pose2d& pose);
 
-  virtual ~SimpleTrackedTarget() = default;
-
+  /**
+   * Returns the target yaw (positive-left).
+   * @return The target yaw.
+   */
   double GetYaw() const { return yaw; }
+
+  /**
+   * Returns the target pitch (positive-up)
+   * @return The target pitch.
+   */
   double GetPitch() const { return pitch; }
+
+  /**
+   * Returns the target area (0-100).
+   * @return The target area.
+   */
   double GetArea() const { return area; }
+
+  /**
+   * Returns the target skew (counter-clockwise positive).
+   * @return The target skew.
+   */
   double GetSkew() const { return skew; }
 
+  /**
+   * Returns the pose of the target relative to the robot.
+   * @return The pose of the target relative to the robot.
+   */
   frc::Pose2d GetRobotRelativePose() const { return robotRelativePose; }
 
   bool operator==(const SimpleTrackedTarget& other) const;
   bool operator!=(const SimpleTrackedTarget& other) const;
 
-  std::vector<char> ToByteArray() override;
-  void FromByteArray(const std::vector<char>& src) override;
+  friend Packet& operator<<(Packet& packet, const SimpleTrackedTarget& target);
+  friend Packet& operator>>(Packet& packet, SimpleTrackedTarget& target);
 
  private:
   double yaw = 0;

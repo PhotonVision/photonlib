@@ -17,37 +17,63 @@
 
 #pragma once
 
-#include <units/time.h>
-
 #include <string>
-#include <vector>
 
-#include "photonlib/common/BytePackable.h"
+#include <units/time.h>
+#include <wpi/ArrayRef.h>
+#include <wpi/SmallVector.h>
+
+#include "photonlib/common/Packet.h"
 #include "photonlib/common/SimpleTrackedTarget.h"
 
 namespace photonlib {
-
-class SimplePipelineResult : public BytePackable {
+/**
+ * Represents a pipeline result from a PhotonCamera.
+ */
+class SimplePipelineResult {
  public:
-  SimplePipelineResult();
-  SimplePipelineResult(units::second_t latency, bool hasTargets,
-                       std::vector<SimpleTrackedTarget> targets);
+  /**
+   * Constructs an empty pipeline result.
+   */
+  SimplePipelineResult() = default;
 
-  virtual ~SimplePipelineResult() = default;
+  /**
+   * Constructs a pipeline result.
+   * @param latency The latency in the pipeline.
+   * @param targets The list of targets identified by the pipeline.
+   */
+  SimplePipelineResult(units::second_t latency,
+                       wpi::ArrayRef<SimpleTrackedTarget> targets);
 
+  /**
+   * Returns the latency in the pipeline.
+   * @return The latency in the pipeline.
+   */
   units::second_t GetLatency() const { return latency; }
+
+  /**
+   * Returns whether the pipeline has targets.
+   * @return Whether the pipeline has targets.
+   */
   bool HasTargets() const { return hasTargets; }
-  const std::vector<SimpleTrackedTarget>& GetTargets() { return targets; }
+
+  /**
+   * Returns a reference to the vector of targets.
+   * @return A reference to the vector of targets.
+   */
+  const wpi::ArrayRef<SimpleTrackedTarget> GetTargets() const {
+    return targets;
+  }
 
   bool operator==(const SimplePipelineResult& other) const;
   bool operator!=(const SimplePipelineResult& other) const;
 
-  std::vector<char> ToByteArray() override;
-  void FromByteArray(const std::vector<char>& src) override;
+  friend Packet& operator<<(Packet& packet, const SimplePipelineResult& result);
+  friend Packet& operator>>(Packet& packet, SimplePipelineResult& result);
 
  private:
   units::second_t latency;
   bool hasTargets;
-  std::vector<SimpleTrackedTarget> targets;
+  wpi::SmallVector<SimpleTrackedTarget, 10> targets;
 };
 }  // namespace photonlib

@@ -17,14 +17,13 @@
 
 #include "photonlib/common/SimplePipelineResult.h"
 
-using namespace photonlib;
-
-SimplePipelineResult::SimplePipelineResult() {}
-
+namespace photonlib {
 SimplePipelineResult::SimplePipelineResult(
-    units::second_t latency, bool hasTargets,
-    std::vector<SimpleTrackedTarget> targets)
-    : latency(latency), hasTargets(hasTargets), targets(targets) {}
+    units::second_t latency, wpi::ArrayRef<SimpleTrackedTarget> targets)
+    : latency(latency),
+      targets(targets.data(), targets.data() + targets.size()) {
+  hasTargets = targets.size() != 0;
+}
 
 bool SimplePipelineResult::operator==(const SimplePipelineResult& other) const {
   return latency == other.latency && hasTargets == other.hasTargets &&
@@ -35,58 +34,34 @@ bool SimplePipelineResult::operator!=(const SimplePipelineResult& other) const {
   return !operator==(other);
 }
 
-std::vector<char> SimplePipelineResult::ToByteArray() {
-  // Reset the buffer position to zero.
-  ResetBufferPosition();
-
-  // Calculate the buffer size based on the number of targets.
-  int bufferSize = 10 + targets.size() * 48;
-
-  // Create the byte array.
-  std::vector<char> bytes(bufferSize);
-
-  // Encoded latency, existence of targets, and the number of targets.
-  BufferData<double>(latency.to<double>() * 1000, &bytes);
-  BufferData<bool>(hasTargets, &bytes);
-  BufferData<char>(static_cast<char>(targets.size()), &bytes);
+Packet& operator<<(Packet& packet, const SimplePipelineResult& result) {
+  // Encode latency, existence of targets, and number of targets.
+  packet << result.latency.to<double>() * 1000 << result.hasTargets
+         << static_cast<int8_t>(result.targets.size());
 
   // Encode the information of each target.
-  for (auto& target : targets) {
-    // Get the bytes representing the target.
-    auto targetBytes = target.ToByteArray();
+  for (auto& target : result.targets) packet << target;
 
-    // Copy the target bytes into the byte array of this object.
-    bytes.insert(bytes.begin() + bufferPosition, targetBytes.begin(),
-                 targetBytes.end());
-    bufferPosition += targetBytes.size();
-  }
-  return bytes;
+  // Return the packet
+  return packet;
 }
 
-void SimplePipelineResult::FromByteArray(const std::vector<char>& src) {
-  // Reset the buffer position to zero.
-  ResetBufferPosition();
+Packet& operator>>(Packet& packet, SimplePipelineResult& result) {
+  // Decode latency, existence of targets, and number of targets.
+  int8_t targetCount = 0;
+  double latencyMillis = 0;
+  packet >> latencyMillis >> result.hasTargets >> targetCount;
+  result.latency = units::second_t(latencyMillis / 1000.0);
 
-  // Get latency, existence of targets, and the number of targets.
-  latency = units::second_t(UnbufferData<double>(src) / 1000.0);
-  hasTargets = UnbufferData<bool>(src);
-  char targetCount = UnbufferData<char>(src);
+  result.targets.clear();
 
-  // Clear the targets vector.
-  targets.clear();
-
-  // Populate the targets vector.
-  for (int i = 0; i < static_cast<int>(targetCount); i++) {
-    // Create a simple tracked target.
+  // Decode the information of each target.
+  for (int i = 0; i < targetCount; ++i) {
     SimpleTrackedTarget target;
-
-    // Populate the target with data.
-    target.FromByteArray(std::vector<char>(
-        src.begin() + bufferPosition,
-        src.begin() + bufferPosition + SimpleTrackedTarget::kPackSizeBytes));
-    bufferPosition += SimpleTrackedTarget::kPackSizeBytes;
-
-    // Add the target to the list.
-    targets.emplace_back(target);
+    packet >> target;
+    result.targets.push_back(target);
   }
+  return packet;
 }
+
+}  // namespace photonlib

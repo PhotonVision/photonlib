@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include <frc/geometry/Pose2d.h>
-
 #include <vector>
+
+#include <frc/geometry/Pose2d.h>
 
 namespace photonlib {
 struct PhotonTrackedTarget {
