@@ -39,8 +39,8 @@ public class PhotonCamera {
     pipelineIndex = (int) pipelineIndexEntry.getNumber(0);
   }
 
-  public PhotonCamera(String tableName) {
-    this(NetworkTableInstance.getDefault().getTable(tableName));
+  public PhotonCamera(String cameraName) {
+    this(NetworkTableInstance.getDefault().getTable("photonvision").getSubTable(cameraName));
   }
 
   /**
