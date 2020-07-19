@@ -18,16 +18,17 @@
 #pragma once
 
 #include <units/time.h>
+#include <wpi/ArrayRef.h>
 
 #include <string>
 #include <vector>
 
-#include "photonlib/common/BytePackable.h"
+#include "photonlib/common/Packet.h"
 #include "photonlib/common/SimpleTrackedTarget.h"
 
 namespace photonlib {
 
-class SimplePipelineResult : public BytePackable {
+class SimplePipelineResult {
  public:
   SimplePipelineResult();
   SimplePipelineResult(units::second_t latency, bool hasTargets,
@@ -42,10 +43,8 @@ class SimplePipelineResult : public BytePackable {
   bool operator==(const SimplePipelineResult& other) const;
   bool operator!=(const SimplePipelineResult& other) const;
 
-  std::vector<char> ToByteArray() override;
-  void FromByteArray(const std::vector<char>& src) override;
+  void FromPacket(Packet packet);
 
- private:
   units::second_t latency;
   bool hasTargets;
   std::vector<SimpleTrackedTarget> targets;

@@ -35,38 +35,11 @@ bool SimpleTrackedTarget::operator!=(const SimpleTrackedTarget& other) const {
   return !operator==(other);
 }
 
-std::vector<char> SimpleTrackedTarget::ToByteArray() {
-  // Reset the buffer position to zero.
-  ResetBufferPosition();
-
-  // Create the byte array.
-  std::vector<char> bytes(kPackSizeBytes);
-
-  // Encode information.
-  BufferData<double>(yaw, &bytes);
-  BufferData<double>(pitch, &bytes);
-  BufferData<double>(area, &bytes);
-  BufferData<double>(skew, &bytes);
-  BufferData<double>(robotRelativePose.Translation().X().to<double>(), &bytes);
-  BufferData<double>(robotRelativePose.Translation().Y().to<double>(), &bytes);
-  BufferData<double>(robotRelativePose.Rotation().Degrees().to<double>(),
-                     &bytes);
-
-  return bytes;
-}
-
-void SimpleTrackedTarget::FromByteArray(const std::vector<char>& src) {
-  // Reset the buffer position to zero.
-  ResetBufferPosition();
-
-  yaw = UnbufferData<double>(src);
-  pitch = UnbufferData<double>(src);
-  area = UnbufferData<double>(src);
-  skew = UnbufferData<double>(src);
-
-  auto poseX = units::meter_t(UnbufferData<double>(src));
-  auto poseY = units::meter_t(UnbufferData<double>(src));
-  auto poseR = units::degree_t(UnbufferData<double>(src));
-
-  robotRelativePose = frc::Pose2d(poseX, poseY, frc::Rotation2d(poseR));
+void SimpleTrackedTarget::FromPacket(Packet packet) {
+  double x = 0;
+  double y = 0;
+  double rot = 0;
+  packet >> yaw >> pitch >> area >> skew >> x >> y >> rot;
+  robotRelativePose =
+      frc::Pose2d(units::meter_t(x), units::meter_t(y), units::degree_t(rot));
 }

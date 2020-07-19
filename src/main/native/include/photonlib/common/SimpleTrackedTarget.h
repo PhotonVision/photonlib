@@ -23,10 +23,11 @@
 #include <string>
 #include <vector>
 
-#include "photonlib/common/BytePackable.h"
+#include "photonlib/common/Packet.h"
 
 namespace photonlib {
-class SimpleTrackedTarget : public BytePackable {
+
+class SimpleTrackedTarget {
  public:
   constexpr static int kPackSizeBytes = sizeof(double) * 7;
 
@@ -46,10 +47,8 @@ class SimpleTrackedTarget : public BytePackable {
   bool operator==(const SimpleTrackedTarget& other) const;
   bool operator!=(const SimpleTrackedTarget& other) const;
 
-  std::vector<char> ToByteArray() override;
-  void FromByteArray(const std::vector<char>& src) override;
+  void FromPacket(Packet packet);
 
- private:
   double yaw = 0;
   double pitch = 0;
   double area = 0;

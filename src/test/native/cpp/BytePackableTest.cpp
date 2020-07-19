@@ -18,46 +18,8 @@
 #include <units/angle.h>
 
 #include "gtest/gtest.h"
-#include "photonlib/common/BytePackable.h"
 #include "photonlib/common/SimplePipelineResult.h"
 #include "photonlib/common/SimpleTrackedTarget.h"
-
-TEST(BytePackableTest, SimpleTrackedTarget) {
-  photonlib::SimpleTrackedTarget target{3.0, 4.0, 9.0, -5.0,
-                                        frc::Pose2d(1_m, 2_m, 1.5_rad)};
-  std::vector<char> packed = target.ToByteArray();
-
-  for (auto& a : packed) std::cout << static_cast<int>(a) << ", ";
-
-  photonlib::SimpleTrackedTarget b;
-  b.FromByteArray(packed);
-
-  EXPECT_EQ(target, b);
-}
-
-TEST(BytePackableTest, SimplePipelineResult) {
-  photonlib::SimplePipelineResult result{1_s, false, {}};
-  std::vector<char> packed = result.ToByteArray();
-
-  photonlib::SimplePipelineResult b;
-  b.FromByteArray(packed);
-
-  EXPECT_EQ(result, b);
-
-  photonlib::SimplePipelineResult result2{
-      2_s,
-      true,
-      {photonlib::SimpleTrackedTarget{3.0, -4.0, 9.0, 4.0,
-                                      frc::Pose2d(1_m, 2_m, 1.5_rad)},
-       photonlib::SimpleTrackedTarget{3.0, -4.0, 9.1, 6.7,
-                                      frc::Pose2d(1_m, 5_m, 1.5_rad)}}};
-  std::vector<char> packed2 = result2.ToByteArray();
-
-  photonlib::SimplePipelineResult b2;
-  b2.FromByteArray(packed2);
-
-  EXPECT_EQ(result2, b2);
-}
 
 TEST(BytePackableTest, BytePackFromJava) {
   std::vector<signed char> bytePack{
@@ -69,8 +31,10 @@ TEST(BytePackableTest, BytePackFromJava) {
   std::vector<char> bytes;
   for (auto a : bytePack) bytes.emplace_back(static_cast<char>(a));
 
+  photonlib::Packet packet{bytes};
+
   photonlib::SimpleTrackedTarget res;
-  res.FromByteArray(bytes);
+  res.FromPacket(packet);
 
   photonlib::SimpleTrackedTarget target{3.0, 4.0, 9.0, -5.0,
                                         frc::Pose2d(1_m, 2_m, 1.5_rad)};

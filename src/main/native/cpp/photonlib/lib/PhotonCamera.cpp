@@ -19,6 +19,8 @@
 
 #include <networktables/NetworkTableInstance.h>
 
+#include "photonlib/common/Packet.h"
+
 using namespace photonlib;
 
 PhotonCamera::PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable)
@@ -36,8 +38,9 @@ PhotonCamera::PhotonCamera(const std::string& cameraName)
 
 SimplePipelineResult PhotonCamera::GetLastResult() {
   SimplePipelineResult result;
-  std::string raw = rawBytesEntry.GetRaw(std::string());
-  result.FromByteArray(std::vector<char>(raw.begin(), raw.end()));
+  Packet packet;
+  packet << rawBytesEntry.GetRaw(std::string());
+  result.FromPacket(packet);
   return result;
 }
 

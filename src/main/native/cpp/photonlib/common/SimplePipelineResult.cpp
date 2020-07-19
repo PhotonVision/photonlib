@@ -31,62 +31,27 @@ bool SimplePipelineResult::operator==(const SimplePipelineResult& other) const {
          targets == other.targets;
 }
 
-bool SimplePipelineResult::operator!=(const SimplePipelineResult& other) const {
-  return !operator==(other);
-}
+void SimplePipelineResult::FromPacket(Packet packet) {
+  // Decode latency, existence of targets, and number of targets.
+  double latencyMillis = 0;
+  char size = 0;
+  packet >> latencyMillis >> hasTargets >> size;
 
-std::vector<char> SimplePipelineResult::ToByteArray() {
-  // Reset the buffer position to zero.
-  ResetBufferPosition();
-
-  // Calculate the buffer size based on the number of targets.
-  int bufferSize = 10 + targets.size() * 48;
-
-  // Create the byte array.
-  std::vector<char> bytes(bufferSize);
-
-  // Encoded latency, existence of targets, and the number of targets.
-  BufferData<double>(latency.to<double>() * 1000, &bytes);
-  BufferData<bool>(hasTargets, &bytes);
-  BufferData<char>(static_cast<char>(targets.size()), &bytes);
+  latency = units::second_t(latencyMillis / 1000);
 
   // Encode the information of each target.
-  for (auto& target : targets) {
-    // Get the bytes representing the target.
-    auto targetBytes = target.ToByteArray();
+  for (int i = 0; i < static_cast<int>(size); ++i) {
+    double yaw = 0;
+    double area = 0;
+    double pitch = 0;
+    double skew = 0;
+    double x = 0;
+    double y = 0;
+    double rot = 0;
 
-    // Copy the target bytes into the byte array of this object.
-    bytes.insert(bytes.begin() + bufferPosition, targetBytes.begin(),
-                 targetBytes.end());
-    bufferPosition += targetBytes.size();
-  }
-  return bytes;
-}
-
-void SimplePipelineResult::FromByteArray(const std::vector<char>& src) {
-  // Reset the buffer position to zero.
-  ResetBufferPosition();
-
-  // Get latency, existence of targets, and the number of targets.
-  latency = units::second_t(UnbufferData<double>(src) / 1000.0);
-  hasTargets = UnbufferData<bool>(src);
-  char targetCount = UnbufferData<char>(src);
-
-  // Clear the targets vector.
-  targets.clear();
-
-  // Populate the targets vector.
-  for (int i = 0; i < static_cast<int>(targetCount); i++) {
-    // Create a simple tracked target.
-    SimpleTrackedTarget target;
-
-    // Populate the target with data.
-    target.FromByteArray(std::vector<char>(
-        src.begin() + bufferPosition,
-        src.begin() + bufferPosition + SimpleTrackedTarget::kPackSizeBytes));
-    bufferPosition += SimpleTrackedTarget::kPackSizeBytes;
-
-    // Add the target to the list.
-    targets.emplace_back(target);
+    packet >> yaw >> pitch >> area >> skew >> x >> y >> rot;
+    targets.emplace_back(yaw, pitch, area, skew,
+                         frc::Pose2d(units::meter_t(x), units::meter_t(y),
+                                     units::degree_t(rot)));
   }
 }
