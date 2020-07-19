@@ -37,21 +37,17 @@ class Packet {
   void clear() {
     m_packetData.clear();
     m_readPos = 0;
-    m_isValid = true;
   }
 
-  const std::vector<char> getData() {
-    return m_packetData;
-  }
+  const std::vector<char> getData() { return m_packetData; }
 
   /* Get the size of the data contained in the packet in bytes
    *
    * This function returns the number of bytes pointed to by what getData
    * returns.
    */
-  size_t getDataSize() const;
+  size_t getDataSize() const { return m_packetData.size(); }
 
- public:
   template <typename T>
   Packet& operator<<(T src) {
     m_packetData.resize(m_packetData.size() + sizeof(T));
@@ -88,10 +84,6 @@ class Packet {
   // Data stored in the packet
   std::vector<char> m_packetData;
 
-  // Reading state of the packet
-  bool m_isValid = true;
-
-  // Current reading position in the packet
   size_t m_readPos = 0;
   size_t m_writePos = 0;
 
