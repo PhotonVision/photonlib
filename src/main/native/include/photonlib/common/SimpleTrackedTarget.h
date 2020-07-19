@@ -17,11 +17,11 @@
 
 #pragma once
 
-#include <frc/geometry/Pose2d.h>
-
 #include <cstddef>
 #include <string>
 #include <vector>
+
+#include <frc/geometry/Pose2d.h>
 
 #include "photonlib/common/Packet.h"
 

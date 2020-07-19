@@ -17,11 +17,11 @@
 
 #pragma once
 
+#include <string>
+
 #include <units/time.h>
 #include <wpi/ArrayRef.h>
 #include <wpi/SmallVector.h>
-
-#include <string>
 
 #include "photonlib/common/Packet.h"
 #include "photonlib/common/SimpleTrackedTarget.h"

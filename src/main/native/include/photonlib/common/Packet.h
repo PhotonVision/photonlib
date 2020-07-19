@@ -17,11 +17,11 @@
 
 #pragma once
 
-#include <wpi/Endian.h>
-
 #include <algorithm>
 #include <string>
 #include <vector>
+
+#include <wpi/Endian.h>
 
 namespace photonlib {
 
