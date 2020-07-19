@@ -29,13 +29,9 @@ namespace photonlib {
 
 class SimpleTrackedTarget {
  public:
-  constexpr static int kPackSizeBytes = sizeof(double) * 7;
-
-  SimpleTrackedTarget();
+  SimpleTrackedTarget() = default;
   SimpleTrackedTarget(double yaw, double pitch, double area, double skew,
                       const frc::Pose2d& pose);
-
-  virtual ~SimpleTrackedTarget() = default;
 
   double GetYaw() const { return yaw; }
   double GetPitch() const { return pitch; }
@@ -50,6 +46,7 @@ class SimpleTrackedTarget {
   friend Packet& operator<<(Packet& packet, const SimpleTrackedTarget& target);
   friend Packet& operator>>(Packet& packet, SimpleTrackedTarget& target);
 
+ private:
   double yaw = 0;
   double pitch = 0;
   double area = 0;

@@ -21,7 +21,6 @@
 
 using namespace photonlib;
 
-SimpleTrackedTarget::SimpleTrackedTarget() {}
 SimpleTrackedTarget::SimpleTrackedTarget(double yaw, double pitch, double area,
                                          double skew, const frc::Pose2d& pose)
     : yaw(yaw), pitch(pitch), area(area), skew(skew), robotRelativePose(pose) {}
@@ -35,7 +34,8 @@ bool SimpleTrackedTarget::operator!=(const SimpleTrackedTarget& other) const {
   return !operator==(other);
 }
 
-Packet& photonlib::operator<<(Packet& packet, const SimpleTrackedTarget& target) {
+Packet& photonlib::operator<<(Packet& packet,
+                              const SimpleTrackedTarget& target) {
   return packet << target.yaw << target.pitch << target.area << target.skew
                 << target.robotRelativePose.Translation().X().to<double>()
                 << target.robotRelativePose.Translation().Y().to<double>()
@@ -53,4 +53,3 @@ Packet& photonlib::operator>>(Packet& packet, SimpleTrackedTarget& target) {
       frc::Pose2d(units::meter_t(x), units::meter_t(y), units::degree_t(rot));
   return packet;
 }
-

@@ -19,19 +19,19 @@
 
 using namespace photonlib;
 
-SimplePipelineResult::SimplePipelineResult() {}
-
 SimplePipelineResult::SimplePipelineResult(
-    units::second_t latency, bool hasTargets,
-    std::vector<SimpleTrackedTarget> targets)
-    : latency(latency), hasTargets(hasTargets), targets(targets) {}
+    units::second_t latency, wpi::ArrayRef<SimpleTrackedTarget> targets)
+    : latency(latency), targets(targets) {
+  hasTargets = targets.size() != 0;
+}
 
 bool SimplePipelineResult::operator==(const SimplePipelineResult& other) const {
   return latency == other.latency && hasTargets == other.hasTargets &&
          targets == other.targets;
 }
 
-Packet& photonlib::operator<<(Packet& packet, const SimplePipelineResult& result) {
+Packet& photonlib::operator<<(Packet& packet,
+                              const SimplePipelineResult& result) {
   // Encode latency, existence of targets, and number of targets.
   packet << result.latency.to<double>() * 1000 << result.hasTargets
          << static_cast<char>(result.targets.size());
@@ -50,11 +50,14 @@ Packet& photonlib::operator>>(Packet& packet, SimplePipelineResult& result) {
   packet >> latencyMillis >> result.hasTargets >> targetCount;
   result.latency = units::second_t(latencyMillis / 1000.0);
 
+  wpi::SmallVector<SimpleTrackedTarget, 10> targets;
+
   // Decode the information of each target.
   for (int i = 0; i < static_cast<int>(targetCount); ++i) {
     SimpleTrackedTarget target;
     packet >> target;
-    result.targets.push_back(target);
+    targets.push_back(target);
   }
+  result.targets = targets;
   return packet;
 }

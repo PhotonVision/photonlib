@@ -21,7 +21,6 @@
 #include <wpi/ArrayRef.h>
 
 #include <string>
-#include <vector>
 
 #include "photonlib/common/Packet.h"
 #include "photonlib/common/SimpleTrackedTarget.h"
@@ -30,15 +29,13 @@ namespace photonlib {
 
 class SimplePipelineResult {
  public:
-  SimplePipelineResult();
-  SimplePipelineResult(units::second_t latency, bool hasTargets,
-                       std::vector<SimpleTrackedTarget> targets);
-
-  virtual ~SimplePipelineResult() = default;
+  SimplePipelineResult() = default;
+  SimplePipelineResult(units::second_t latency,
+                       wpi::ArrayRef<SimpleTrackedTarget> targets);
 
   units::second_t GetLatency() const { return latency; }
   bool HasTargets() const { return hasTargets; }
-  const std::vector<SimpleTrackedTarget>& GetTargets() { return targets; }
+  wpi::ArrayRef<SimpleTrackedTarget> GetTargets() { return targets; }
 
   bool operator==(const SimplePipelineResult& other) const;
   bool operator!=(const SimplePipelineResult& other) const;
@@ -46,9 +43,10 @@ class SimplePipelineResult {
   friend Packet& operator<<(Packet& packet, const SimplePipelineResult& result);
   friend Packet& operator>>(Packet& packet, SimplePipelineResult& result);
 
+ private:
   units::second_t latency;
   bool hasTargets;
-  std::vector<SimpleTrackedTarget> targets;
+  wpi::ArrayRef<SimpleTrackedTarget> targets;
 };
 
 }  // namespace photonlib
