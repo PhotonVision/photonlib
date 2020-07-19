@@ -12,3 +12,9 @@ cppSrcFileInclude {
 includeProject {
   ^photonLib/
 }
+
+includeOtherLibs {
+  ^frc/
+  ^units/
+  ^wpi/
+}

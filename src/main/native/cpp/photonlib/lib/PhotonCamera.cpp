@@ -19,8 +19,9 @@
 
 #include <networktables/NetworkTableInstance.h>
 
-using namespace photonlib;
+#include "photonlib/common/Packet.h"
 
+namespace photonlib {
 PhotonCamera::PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable)
     : rawBytesEntry(rootTable->GetEntry("rawBytes")),
       driverModeEntry(rootTable->GetEntry("driverMode")),
@@ -34,10 +35,18 @@ PhotonCamera::PhotonCamera(const std::string& cameraName)
                        .GetTable("photonvision")
                        ->GetSubTable(cameraName)) {}
 
-SimplePipelineResult PhotonCamera::GetLastResult() {
+SimplePipelineResult PhotonCamera::GetLatestResult() const {
+  // Clear the current packet.
+  packet.Clear();
+
+  // Create the new result;
   SimplePipelineResult result;
-  std::string raw = rawBytesEntry.GetRaw(std::string());
-  result.FromByteArray(std::vector<char>(raw.begin(), raw.end()));
+
+  // Fill the packet with latest data and populate result.
+  packet << rawBytesEntry.GetRaw(std::string());
+  packet >> result;
+
+  // Return result
   return result;
 }
 
@@ -54,3 +63,4 @@ void PhotonCamera::SetPipelineIndex(int index) {
 }
 
 int PhotonCamera::GetPipelineIndex() const { return pipelineIndex; }
+}  // namespace photonlib
