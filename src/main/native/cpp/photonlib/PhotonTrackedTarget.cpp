@@ -15,33 +15,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "photonlib/common/SimpleTrackedTarget.h"
+#include "photonlib/PhotonTrackedTarget.h"
 
 #include <iostream>
 
 namespace photonlib {
 
-SimpleTrackedTarget::SimpleTrackedTarget(double yaw, double pitch, double area,
+PhotonTrackedTarget::PhotonTrackedTarget(double yaw, double pitch, double area,
                                          double skew, const frc::Pose2d& pose)
     : yaw(yaw), pitch(pitch), area(area), skew(skew), robotRelativePose(pose) {}
 
-bool SimpleTrackedTarget::operator==(const SimpleTrackedTarget& other) const {
+bool PhotonTrackedTarget::operator==(const PhotonTrackedTarget& other) const {
   return other.yaw == yaw && other.pitch == pitch && other.area == area &&
          other.skew == skew && other.robotRelativePose == robotRelativePose;
 }
 
-bool SimpleTrackedTarget::operator!=(const SimpleTrackedTarget& other) const {
+bool PhotonTrackedTarget::operator!=(const PhotonTrackedTarget& other) const {
   return !operator==(other);
 }
 
-Packet& operator<<(Packet& packet, const SimpleTrackedTarget& target) {
+Packet& operator<<(Packet& packet, const PhotonTrackedTarget& target) {
   return packet << target.yaw << target.pitch << target.area << target.skew
                 << target.robotRelativePose.Translation().X().to<double>()
                 << target.robotRelativePose.Translation().Y().to<double>()
                 << target.robotRelativePose.Rotation().Degrees().to<double>();
 }
 
-Packet& operator>>(Packet& packet, SimpleTrackedTarget& target) {
+Packet& operator>>(Packet& packet, PhotonTrackedTarget& target) {
   packet >> target.yaw >> target.pitch >> target.area >> target.skew;
   double x = 0;
   double y = 0;

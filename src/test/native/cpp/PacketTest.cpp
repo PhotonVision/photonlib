@@ -20,16 +20,16 @@
 #include <units/angle.h>
 
 #include "gtest/gtest.h"
-#include "photonlib/common/SimplePipelineResult.h"
-#include "photonlib/common/SimpleTrackedTarget.h"
+#include "photonlib/PhotonPipelineResult.h"
+#include "photonlib/PhotonTrackedTarget.h"
 
-TEST(PacketTest, SimpleTrackedTarget) {
-  photonlib::SimpleTrackedTarget target{3.0, 4.0, 9.0, -5.0,
+TEST(PacketTest, PhotonTrackedTarget) {
+  photonlib::PhotonTrackedTarget target{3.0, 4.0, 9.0, -5.0,
                                         frc::Pose2d(1_m, 2_m, 1.5_rad)};
   photonlib::Packet p;
   p << target;
 
-  photonlib::SimpleTrackedTarget b;
+  photonlib::PhotonTrackedTarget b;
   p >> b;
 
   for (auto& c : p.GetData()) {
@@ -39,27 +39,27 @@ TEST(PacketTest, SimpleTrackedTarget) {
   EXPECT_EQ(target, b);
 }
 
-TEST(PacketTest, SimplePipelineResult) {
-  photonlib::SimplePipelineResult result{1_s, {}};
+TEST(PacketTest, PhotonPipelineResult) {
+  photonlib::PhotonPipelineResult result{1_s, {}};
   photonlib::Packet p;
   p << result;
 
-  photonlib::SimplePipelineResult b;
+  photonlib::PhotonPipelineResult b;
   p >> b;
 
   EXPECT_EQ(result, b);
 
-  wpi::SmallVector<photonlib::SimpleTrackedTarget, 2> targets{
-      photonlib::SimpleTrackedTarget{3.0, -4.0, 9.0, 4.0,
+  wpi::SmallVector<photonlib::PhotonTrackedTarget, 2> targets{
+      photonlib::PhotonTrackedTarget{3.0, -4.0, 9.0, 4.0,
                                      frc::Pose2d(1_m, 2_m, 1.5_rad)},
-      photonlib::SimpleTrackedTarget{3.0, -4.0, 9.1, 6.7,
+      photonlib::PhotonTrackedTarget{3.0, -4.0, 9.1, 6.7,
                                      frc::Pose2d(1_m, 5_m, 1.5_rad)}};
 
-  photonlib::SimplePipelineResult result2{2_s, targets};
+  photonlib::PhotonPipelineResult result2{2_s, targets};
   photonlib::Packet p2;
   p2 << result2;
 
-  photonlib::SimplePipelineResult b2;
+  photonlib::PhotonPipelineResult b2;
   p2 >> b2;
 
   EXPECT_EQ(result2, b2);
@@ -77,10 +77,10 @@ TEST(PacketTest, BytePackFromJava) {
 
   photonlib::Packet packet{bytes};
 
-  photonlib::SimpleTrackedTarget res;
+  photonlib::PhotonTrackedTarget res;
   packet >> res;
 
-  photonlib::SimpleTrackedTarget target{3.0, 4.0, 9.0, -5.0,
+  photonlib::PhotonTrackedTarget target{3.0, 4.0, 9.0, -5.0,
                                         frc::Pose2d(1_m, 2_m, 1.5_rad)};
 
   EXPECT_EQ(res, target);
