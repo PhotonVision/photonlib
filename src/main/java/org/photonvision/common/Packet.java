@@ -5,7 +5,7 @@ package org.photonvision.common;
  */
 public class Packet {
   // Size of the packet.
-  final int size;
+  int size;
   // Data stored in the packet.
   byte[] packetData;
   // Read and write positions.
@@ -54,6 +54,7 @@ public class Packet {
    */
   public void setData(byte[] data) {
     packetData = data;
+    size = data.length;
   }
 
   /**
