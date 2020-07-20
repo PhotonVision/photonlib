@@ -20,8 +20,12 @@ package org.photonvision.lib;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import org.photonvision.common.Packet;
 import org.photonvision.common.SimplePipelineResult;
 
+/**
+ * Represents a camera that is connected to PhotonVision.
+ */
 public class PhotonCamera {
   private final NetworkTableEntry rawBytesEntry;
   private final NetworkTableEntry driverModeEntry;
@@ -30,6 +34,14 @@ public class PhotonCamera {
   private boolean driverMode;
   private int pipelineIndex;
 
+  private Packet packet;
+
+  /**
+   * Constructs a PhotonCamera from a root table.
+   *
+   * @param rootTable The root table that the camera is broadcasting information
+   *                  over.
+   */
   public PhotonCamera(NetworkTable rootTable) {
     rawBytesEntry = rootTable.getEntry("rawBytes");
     driverModeEntry = rootTable.getEntry("driverMode");
@@ -39,23 +51,47 @@ public class PhotonCamera {
     pipelineIndex = (int) pipelineIndexEntry.getNumber(0);
   }
 
+  /**
+   * Constructs a PhotonCamera from the name of the camera.
+   *
+   * @param cameraName The nickname of the camera (found in the PhotonVision
+   *                   UI).
+   */
   public PhotonCamera(String cameraName) {
     this(NetworkTableInstance.getDefault().getTable("photonvision").getSubTable(cameraName));
   }
 
   /**
-   * Get all the data sent by PhotonVision atomically. All the data is guaranteed to be from the same
-   * loop of the vision software.
+   * Returns the latest pipeline result.
+   *
+   * @return The latest pipeline result.
    */
-  public SimplePipelineResult getLastResult() {
+  public SimplePipelineResult getLatestResult() {
+    // Clear the packet.
+    packet.clear();
+
+    // Create latest result.
     var ret = new SimplePipelineResult();
-    ret.fromByteArray(rawBytesEntry.getRaw(new byte[]{}));
+
+    // Populate packet and create result.
+    packet.setData(rawBytesEntry.getRaw(new byte[]{}));
+    ret.createFromPacket(packet);
+
+    // Return result.
     return ret;
   }
 
   /**
-   * Sets whether the camera is in driver mode.
-   * @param driverMode Whether the camera should be in driver mode.
+   * Returns whether the camera is in driver mode.
+   * @return Whether the camera is in driver mode.
+   */
+  public boolean getDriverMode() {
+    return driverMode;
+  }
+
+  /**
+   * Toggles driver mode.
+   * @param driverMode Whether to set driver mode.
    */
   public void setDriverMode(boolean driverMode) {
     this.driverMode = driverMode;
@@ -63,16 +99,17 @@ public class PhotonCamera {
   }
 
   /**
-   * Returns whether driver mode is enabled.
-   * @return Whether driver mode is enabled.
+   * Returns the active pipeline index.
+   *
+   * @return The active pipeline index.
    */
-  public boolean getDriverMode() {
-    return driverMode;
+  public int getPipelineIndex() {
+    return pipelineIndex;
   }
 
   /**
-   * Sets the pipeline index number.
-   * @param index The pipeline index number.
+   * Allows the user to select the active pipeline index.
+   * @param index The active pipeline index.
    */
   public void setPipelineIndex(int index) {
     pipelineIndex = index;
@@ -80,26 +117,51 @@ public class PhotonCamera {
   }
 
   /**
-   * Returns the pipeline index number.
-   * @return The pipeline index number.
+   * Returns whether the latest target result has targets.
+   *
+   * @return Whether the latest target result has targets.
    */
-  public int getPipelineIndex() {
-    return pipelineIndex;
-  }
-
   public boolean hasTargets() {
-    return getLastResult().hasTargets();
+    return getLatestResult().hasTargets();
   }
 
-  public double getFirstTargetPitch() {
-    return getLastResult().targets.get(0).getPitch();
+  /**
+   * Returns the pitch of the best target. The best target is defined in the
+   * PhotonVision UI.
+   *
+   * @return The pitch of the best target.
+   */
+  public double getBestTargetPitch() {
+    return getLatestResult().targets.get(0).getPitch();
   }
 
-  public double getFirstTargetYaw() {
-    return getLastResult().targets.get(0).getYaw();
+  /**
+   * Returns the yaw of the best target. The best target is defined in the
+   * PhotonVision UI.
+   *
+   * @return The yaw of the best target.
+   */
+  public double getBestTargetYaw() {
+    return getLatestResult().targets.get(0).getYaw();
   }
 
+  /**
+   * Returns the area of the best target (0-100). The best target is defined in
+   * the PhotonVision UI.
+   *
+   * @return The area of the best target.
+   */
   public double getBestTargetArea() {
-    return getLastResult().targets.get(0).getArea();
+    return getLatestResult().targets.get(0).getArea();
+  }
+
+  /**
+   * Returns the skew of the best target (counter-clockwise positive). The best
+   * target is defined in the PhotonVision UI.
+   *
+   * @return The skew of the best target.
+   */
+  public double getBestTargetSkew() {
+    return getLatestResult().targets.get(0).getSkew();
   }
 }
