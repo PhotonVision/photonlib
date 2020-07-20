@@ -23,27 +23,27 @@
 #include <wpi/ArrayRef.h>
 #include <wpi/SmallVector.h>
 
-#include "photonlib/common/Packet.h"
-#include "photonlib/common/SimpleTrackedTarget.h"
+#include "photonlib/Packet.h"
+#include "photonlib/PhotonTrackedTarget.h"
 
 namespace photonlib {
 /**
  * Represents a pipeline result from a PhotonCamera.
  */
-class SimplePipelineResult {
+class PhotonPipelineResult {
  public:
   /**
    * Constructs an empty pipeline result.
    */
-  SimplePipelineResult() = default;
+  PhotonPipelineResult() = default;
 
   /**
    * Constructs a pipeline result.
    * @param latency The latency in the pipeline.
    * @param targets The list of targets identified by the pipeline.
    */
-  SimplePipelineResult(units::second_t latency,
-                       wpi::ArrayRef<SimpleTrackedTarget> targets);
+  PhotonPipelineResult(units::second_t latency,
+                       wpi::ArrayRef<PhotonTrackedTarget> targets);
 
   /**
    * Returns the latency in the pipeline.
@@ -61,19 +61,19 @@ class SimplePipelineResult {
    * Returns a reference to the vector of targets.
    * @return A reference to the vector of targets.
    */
-  const wpi::ArrayRef<SimpleTrackedTarget> GetTargets() const {
+  const wpi::ArrayRef<PhotonTrackedTarget> GetTargets() const {
     return targets;
   }
 
-  bool operator==(const SimplePipelineResult& other) const;
-  bool operator!=(const SimplePipelineResult& other) const;
+  bool operator==(const PhotonPipelineResult& other) const;
+  bool operator!=(const PhotonPipelineResult& other) const;
 
-  friend Packet& operator<<(Packet& packet, const SimplePipelineResult& result);
-  friend Packet& operator>>(Packet& packet, SimplePipelineResult& result);
+  friend Packet& operator<<(Packet& packet, const PhotonPipelineResult& result);
+  friend Packet& operator>>(Packet& packet, PhotonPipelineResult& result);
 
  private:
   units::second_t latency;
   bool hasTargets;
-  wpi::SmallVector<SimpleTrackedTarget, 10> targets;
+  wpi::SmallVector<PhotonTrackedTarget, 10> targets;
 };
 }  // namespace photonlib

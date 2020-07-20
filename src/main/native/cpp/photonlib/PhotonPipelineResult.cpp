@@ -15,26 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "photonlib/common/SimplePipelineResult.h"
+#include "photonlib/PhotonPipelineResult.h"
 
 namespace photonlib {
-SimplePipelineResult::SimplePipelineResult(
-    units::second_t latency, wpi::ArrayRef<SimpleTrackedTarget> targets)
+PhotonPipelineResult::PhotonPipelineResult(
+    units::second_t latency, wpi::ArrayRef<PhotonTrackedTarget> targets)
     : latency(latency),
       targets(targets.data(), targets.data() + targets.size()) {
   hasTargets = targets.size() != 0;
 }
 
-bool SimplePipelineResult::operator==(const SimplePipelineResult& other) const {
+bool PhotonPipelineResult::operator==(const PhotonPipelineResult& other) const {
   return latency == other.latency && hasTargets == other.hasTargets &&
          targets == other.targets;
 }
 
-bool SimplePipelineResult::operator!=(const SimplePipelineResult& other) const {
+bool PhotonPipelineResult::operator!=(const PhotonPipelineResult& other) const {
   return !operator==(other);
 }
 
-Packet& operator<<(Packet& packet, const SimplePipelineResult& result) {
+Packet& operator<<(Packet& packet, const PhotonPipelineResult& result) {
   // Encode latency, existence of targets, and number of targets.
   packet << result.latency.to<double>() * 1000 << result.hasTargets
          << static_cast<int8_t>(result.targets.size());
@@ -46,7 +46,7 @@ Packet& operator<<(Packet& packet, const SimplePipelineResult& result) {
   return packet;
 }
 
-Packet& operator>>(Packet& packet, SimplePipelineResult& result) {
+Packet& operator>>(Packet& packet, PhotonPipelineResult& result) {
   // Decode latency, existence of targets, and number of targets.
   int8_t targetCount = 0;
   double latencyMillis = 0;
@@ -57,7 +57,7 @@ Packet& operator>>(Packet& packet, SimplePipelineResult& result) {
 
   // Decode the information of each target.
   for (int i = 0; i < targetCount; ++i) {
-    SimpleTrackedTarget target;
+    PhotonTrackedTarget target;
     packet >> target;
     result.targets.push_back(target);
   }

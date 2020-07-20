@@ -15,13 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.photonvision.lib;
+package org.photonvision;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import org.photonvision.common.Packet;
-import org.photonvision.common.SimplePipelineResult;
 
 /**
  * Represents a camera that is connected to PhotonVision.
@@ -66,12 +64,12 @@ public class PhotonCamera {
    *
    * @return The latest pipeline result.
    */
-  public SimplePipelineResult getLatestResult() {
+  public PhotonPipelineResult getLatestResult() {
     // Clear the packet.
     packet.clear();
 
     // Create latest result.
-    var ret = new SimplePipelineResult();
+    var ret = new PhotonPipelineResult();
 
     // Populate packet and create result.
     packet.setData(rawBytesEntry.getRaw(new byte[]{}));

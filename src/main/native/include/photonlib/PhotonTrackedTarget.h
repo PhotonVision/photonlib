@@ -23,18 +23,18 @@
 
 #include <frc/geometry/Pose2d.h>
 
-#include "photonlib/common/Packet.h"
+#include "photonlib/Packet.h"
 
 namespace photonlib {
 /**
  * Represents a tracked target within a pipeline.
  */
-class SimpleTrackedTarget {
+class PhotonTrackedTarget {
  public:
   /**
    * Constructs an empty target.
    */
-  SimpleTrackedTarget() = default;
+  PhotonTrackedTarget() = default;
 
   /**
    * Constructs a target.
@@ -44,7 +44,7 @@ class SimpleTrackedTarget {
    * @param skew The skew of the target.
    * @param pose The robot-relative pose of the target.
    */
-  SimpleTrackedTarget(double yaw, double pitch, double area, double skew,
+  PhotonTrackedTarget(double yaw, double pitch, double area, double skew,
                       const frc::Pose2d& pose);
 
   /**
@@ -77,11 +77,11 @@ class SimpleTrackedTarget {
    */
   frc::Pose2d GetRobotRelativePose() const { return robotRelativePose; }
 
-  bool operator==(const SimpleTrackedTarget& other) const;
-  bool operator!=(const SimpleTrackedTarget& other) const;
+  bool operator==(const PhotonTrackedTarget& other) const;
+  bool operator!=(const PhotonTrackedTarget& other) const;
 
-  friend Packet& operator<<(Packet& packet, const SimpleTrackedTarget& target);
-  friend Packet& operator>>(Packet& packet, SimpleTrackedTarget& target);
+  friend Packet& operator<<(Packet& packet, const PhotonTrackedTarget& target);
+  friend Packet& operator>>(Packet& packet, PhotonTrackedTarget& target);
 
  private:
   double yaw = 0;

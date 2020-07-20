@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.photonvision.common;
+package org.photonvision;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,9 +25,9 @@ import java.util.Objects;
 /**
  * Represents a pipeline result from a PhotonCamera.
  */
-public class SimplePipelineResult {
+public class PhotonPipelineResult {
   // Targets to store.
-  public final List<SimpleTrackedTarget> targets = new ArrayList<>();
+  public final List<PhotonTrackedTarget> targets = new ArrayList<>();
 
   // Latency in milliseconds.
   private double latencyMillis;
@@ -38,7 +38,7 @@ public class SimplePipelineResult {
   /**
    * Constructs an empty pipeline result.
    */
-  public SimplePipelineResult() {
+  public PhotonPipelineResult() {
   }
 
   /**
@@ -47,8 +47,8 @@ public class SimplePipelineResult {
    * @param latencyMillis The latency in the pipeline.
    * @param targets       The list of targets identified by the pipeline.
    */
-  public SimplePipelineResult(double latencyMillis,
-                              List<SimpleTrackedTarget> targets) {
+  public PhotonPipelineResult(double latencyMillis,
+                              List<PhotonTrackedTarget> targets) {
     this.latencyMillis = latencyMillis;
     this.hasTargets = targets.size() != 0;
     this.targets.addAll(targets);
@@ -59,7 +59,7 @@ public class SimplePipelineResult {
    * @return The size of the packet needed to store this pipeline result.
    */
   int getPacketSize() {
-    return targets.size() * SimpleTrackedTarget.PACK_SIZE_BYTES + 8 + 2;
+    return targets.size() * PhotonTrackedTarget.PACK_SIZE_BYTES + 8 + 2;
   }
 
   /**
@@ -85,8 +85,8 @@ public class SimplePipelineResult {
    *
    * @return A copy of the vector of targets.
    */
-  public List<SimpleTrackedTarget> getTargets() {
-    List<SimpleTrackedTarget> r = new ArrayList<>(targets.size());
+  public List<PhotonTrackedTarget> getTargets() {
+    List<PhotonTrackedTarget> r = new ArrayList<>(targets.size());
     Collections.copy(r, targets);
     return r;
   }
@@ -95,7 +95,7 @@ public class SimplePipelineResult {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    SimplePipelineResult that = (SimplePipelineResult) o;
+    PhotonPipelineResult that = (PhotonPipelineResult) o;
     boolean latencyMatch = Double.compare(that.latencyMillis, latencyMillis) == 0;
     boolean hasTargetsMatch = that.hasTargets == hasTargets;
     boolean targetsMatch = that.targets.equals(targets);
@@ -123,7 +123,7 @@ public class SimplePipelineResult {
 
     // Decode the information of each target.
     for (int i = 0; i < (int) targetCount; ++i) {
-      var target = new SimpleTrackedTarget();
+      var target = new PhotonTrackedTarget();
       target.createFromPacket(packet);
       targets.add(target);
     }

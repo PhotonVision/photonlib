@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.photonvision.common;
+package org.photonvision;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -25,7 +25,7 @@ import java.util.Objects;
 /**
  * Represents a tracked target within a pipeline.
  */
-public class SimpleTrackedTarget {
+public class PhotonTrackedTarget {
   public static final int PACK_SIZE_BYTES = Double.BYTES * 7;
 
   private double yaw;
@@ -37,7 +37,7 @@ public class SimpleTrackedTarget {
   /**
    * Constructs an empty target.
    */
-  public SimpleTrackedTarget() {}
+  public PhotonTrackedTarget() {}
 
   /**
    * Constructs a target.
@@ -47,7 +47,7 @@ public class SimpleTrackedTarget {
    * @param skew The skew of the target.
    * @param pose The robot-relative pose of the target.
    */
-  public SimpleTrackedTarget(double yaw, double pitch, double area, double skew, Pose2d pose) {
+  public PhotonTrackedTarget(double yaw, double pitch, double area, double skew, Pose2d pose) {
     this.yaw = yaw;
     this.pitch = pitch;
     this.area = area;
@@ -99,7 +99,7 @@ public class SimpleTrackedTarget {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    SimpleTrackedTarget that = (SimpleTrackedTarget) o;
+    PhotonTrackedTarget that = (PhotonTrackedTarget) o;
     return Double.compare(that.yaw, yaw) == 0
         && Double.compare(that.pitch, pitch) == 0
         && Double.compare(that.area, area) == 0
