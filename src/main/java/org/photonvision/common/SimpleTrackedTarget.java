@@ -22,7 +22,10 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
 import java.util.Objects;
 
-public class SimpleTrackedTarget extends BytePackable {
+/**
+ * Represents a tracked target within a pipeline.
+ */
+public class SimpleTrackedTarget {
   public static final int PACK_SIZE_BYTES = Double.BYTES * 7;
 
   private double yaw;
@@ -31,8 +34,19 @@ public class SimpleTrackedTarget extends BytePackable {
   private double skew;
   private Pose2d robotRelativePose = new Pose2d();
 
+  /**
+   * Constructs an empty target.
+   */
   public SimpleTrackedTarget() {}
 
+  /**
+   * Constructs a target.
+   * @param yaw The yaw of the target.
+   * @param pitch The pitch of the target.
+   * @param area The area of the target.
+   * @param skew The skew of the target.
+   * @param pose The robot-relative pose of the target.
+   */
   public SimpleTrackedTarget(double yaw, double pitch, double area, double skew, Pose2d pose) {
     this.yaw = yaw;
     this.pitch = pitch;
@@ -41,22 +55,42 @@ public class SimpleTrackedTarget extends BytePackable {
     robotRelativePose = pose;
   }
 
+  /**
+   * Returns the target yaw (positive-left).
+   * @return The target yaw.
+   */
   public double getYaw() {
     return yaw;
   }
 
+  /**
+   * Returns the target pitch (positive-up)
+   * @return The target pitch.
+   */
   public double getPitch() {
     return pitch;
   }
 
+  /**
+   * Returns the target area (0-100).
+   * @return The target area.
+   */
   public double getArea() {
     return area;
   }
 
+  /**
+   * Returns the target skew (counter-clockwise positive).
+   * @return The target skew.
+   */
   public double getSkew() {
     return skew;
   }
 
+  /**
+   * Returns the pose of the target relative to the robot.
+   * @return The pose of the target relative to the robot.
+   */
   public Pose2d getRobotRelativePose() {
     return robotRelativePose;
   }
@@ -78,38 +112,40 @@ public class SimpleTrackedTarget extends BytePackable {
     return Objects.hash(yaw, pitch, area, robotRelativePose);
   }
 
-  @Override
-  public byte[] toByteArray() {
-    resetBufferPosition();
-    byte[] data = new byte[PACK_SIZE_BYTES];
+  /**
+   * Populates the fields of this class with information from the incoming packet.
+   * @param packet The incoming packet.
+   * @return The incoming packet.
+   */
+  public Packet createFromPacket(Packet packet) {
+    yaw = packet.decodeDouble();
+    pitch = packet.decodeDouble();
+    area = packet.decodeDouble();
+    skew = packet.decodeDouble();
 
-    bufferData(yaw, data);
-    bufferData(pitch, data);
-    bufferData(area, data);
-    bufferData(skew, data);
-    bufferData(robotRelativePose.getTranslation().getX(), data);
-    bufferData(robotRelativePose.getTranslation().getY(), data);
-    bufferData(robotRelativePose.getRotation().getDegrees(), data);
+    double x = packet.decodeDouble();
+    double y = packet.decodeDouble();
+    double r = packet.decodeDouble();
 
-    return data;
+    robotRelativePose = new Pose2d(x, y, Rotation2d.fromDegrees(r));
+
+    return packet;
   }
 
-  @Override
-  public void fromByteArray(byte[] src) {
-    resetBufferPosition();
-    if (src.length < PACK_SIZE_BYTES) {
-      // TODO: log error?
-      return;
-    }
+  /**
+   * Populates the outgoing packet with information from the current target.
+   * @param packet The outgoing packet.
+   * @return The outgoing packet.
+   */
+  public Packet populatePacket(Packet packet) {
+    packet.encode(yaw);
+    packet.encode(pitch);
+    packet.encode(area);
+    packet.encode(skew);
+    packet.encode(robotRelativePose.getX());
+    packet.encode(robotRelativePose.getY());
+    packet.encode(robotRelativePose.getRotation().getDegrees());
 
-    yaw = unbufferDouble(src);
-    pitch = unbufferDouble(src);
-    area = unbufferDouble(src);
-    skew = unbufferDouble(src);
-
-    var poseX = unbufferDouble(src);
-    var poseY = unbufferDouble(src);
-    var poseR = unbufferDouble(src);
-    robotRelativePose = new Pose2d(poseX, poseY, Rotation2d.fromDegrees(poseR));
+    return packet;
   }
 }

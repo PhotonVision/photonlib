@@ -40,49 +40,44 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-class BytePackableTest {
+class PacketTest {
   @Test
   void testSimpleTrackedTarget() {
     var target = new SimpleTrackedTarget(3.0, 4.0, 9.0, -5.0,
         new Pose2d(1, 2, new Rotation2d(1.5)));
-    byte[] packed = target.toByteArray();
-
-    System.out.println(Arrays.toString(packed));
+    var p = new Packet(SimpleTrackedTarget.PACK_SIZE_BYTES);
+    target.populatePacket(p);
 
     var b = new SimpleTrackedTarget();
-    b.fromByteArray(packed);
-
-    byte[] bytes = new byte[Double.BYTES];
-    target.resetBufferPosition();
-    target.bufferData(4.0, bytes);
+    b.createFromPacket(p);
 
     Assertions.assertEquals(target, b);
   }
 
   @Test
   void testSimplePipelineResult() {
-    var result = new SimplePipelineResult(1, false,
-        new ArrayList<>());
-    byte[] packed = result.toByteArray();
+    var result = new SimplePipelineResult(1, new ArrayList<>());
+    var p = new Packet(result.getPacketSize());
+    result.populatePacket(p);
 
     var b = new SimplePipelineResult();
-    b.fromByteArray(packed);
+    b.createFromPacket(p);
 
     Assertions.assertEquals(result, b);
 
-    var result2 = new SimplePipelineResult(2, true,
+    var result2 = new SimplePipelineResult(2,
         List.of(
             new SimpleTrackedTarget(3.0, -4.0, 9.0, 4.0,
                 new Pose2d(1, 2, new Rotation2d(1.5))),
             new SimpleTrackedTarget(3.0, -4.0, 9.1, 6.7,
                 new Pose2d(1, 5, new Rotation2d(1.5)))));
-    byte[] packed2 = result2.toByteArray();
+    var p2 = new Packet(result2.getPacketSize());
+    result2.populatePacket(p2);
 
     var b2 = new SimplePipelineResult();
-    b2.fromByteArray(packed2);
+    b2.createFromPacket(p2);
 
     Assertions.assertEquals(result2, b2);
   }
@@ -93,7 +88,7 @@ class BytePackableTest {
         -64, 20, 0, 0, 0, 0, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 85, 124,
         101, 19, -54, -47, 122};
     var t = new SimpleTrackedTarget();
-    t.fromByteArray(bytePack);
+    t.createFromPacket(new Packet(bytePack));
 
     var target = new SimpleTrackedTarget(3.0, 4.0, 9.0, -5.0,
         new Pose2d(1, 2, new Rotation2d(1.5)));
