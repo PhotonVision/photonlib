@@ -15,11 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "photonlib/lib/PhotonCamera.h"
+#include "photonlib/PhotonCamera.h"
 
 #include <networktables/NetworkTableInstance.h>
 
-#include "photonlib/common/Packet.h"
+#include "photonlib/Packet.h"
 
 namespace photonlib {
 PhotonCamera::PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable)
@@ -35,12 +35,12 @@ PhotonCamera::PhotonCamera(const std::string& cameraName)
                        .GetTable("photonvision")
                        ->GetSubTable(cameraName)) {}
 
-SimplePipelineResult PhotonCamera::GetLatestResult() const {
+PhotonPipelineResult PhotonCamera::GetLatestResult() const {
   // Clear the current packet.
   packet.Clear();
 
   // Create the new result;
-  SimplePipelineResult result;
+  PhotonPipelineResult result;
 
   // Fill the packet with latest data and populate result.
   packet << rawBytesEntry.GetRaw(std::string());

@@ -32,7 +32,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.photonvision.common;
+package org.photonvision;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -45,12 +45,12 @@ import java.util.List;
 class PacketTest {
   @Test
   void testSimpleTrackedTarget() {
-    var target = new SimpleTrackedTarget(3.0, 4.0, 9.0, -5.0,
+    var target = new PhotonTrackedTarget(3.0, 4.0, 9.0, -5.0,
         new Pose2d(1, 2, new Rotation2d(1.5)));
-    var p = new Packet(SimpleTrackedTarget.PACK_SIZE_BYTES);
+    var p = new Packet(PhotonTrackedTarget.PACK_SIZE_BYTES);
     target.populatePacket(p);
 
-    var b = new SimpleTrackedTarget();
+    var b = new PhotonTrackedTarget();
     b.createFromPacket(p);
 
     Assertions.assertEquals(target, b);
@@ -58,25 +58,25 @@ class PacketTest {
 
   @Test
   void testSimplePipelineResult() {
-    var result = new SimplePipelineResult(1, new ArrayList<>());
+    var result = new PhotonPipelineResult(1, new ArrayList<>());
     var p = new Packet(result.getPacketSize());
     result.populatePacket(p);
 
-    var b = new SimplePipelineResult();
+    var b = new PhotonPipelineResult();
     b.createFromPacket(p);
 
     Assertions.assertEquals(result, b);
 
-    var result2 = new SimplePipelineResult(2,
+    var result2 = new PhotonPipelineResult(2,
         List.of(
-            new SimpleTrackedTarget(3.0, -4.0, 9.0, 4.0,
+            new PhotonTrackedTarget(3.0, -4.0, 9.0, 4.0,
                 new Pose2d(1, 2, new Rotation2d(1.5))),
-            new SimpleTrackedTarget(3.0, -4.0, 9.1, 6.7,
+            new PhotonTrackedTarget(3.0, -4.0, 9.1, 6.7,
                 new Pose2d(1, 5, new Rotation2d(1.5)))));
     var p2 = new Packet(result2.getPacketSize());
     result2.populatePacket(p2);
 
-    var b2 = new SimplePipelineResult();
+    var b2 = new PhotonPipelineResult();
     b2.createFromPacket(p2);
 
     Assertions.assertEquals(result2, b2);
@@ -87,10 +87,10 @@ class PacketTest {
     byte[] bytePack = {64, 8, 0, 0, 0, 0, 0, 0, 64, 16, 0, 0, 0, 0, 0, 0, 64, 34, 0, 0, 0, 0, 0, 0,
         -64, 20, 0, 0, 0, 0, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 64, 85, 124,
         101, 19, -54, -47, 122};
-    var t = new SimpleTrackedTarget();
+    var t = new PhotonTrackedTarget();
     t.createFromPacket(new Packet(bytePack));
 
-    var target = new SimpleTrackedTarget(3.0, 4.0, 9.0, -5.0,
+    var target = new PhotonTrackedTarget(3.0, 4.0, 9.0, -5.0,
         new Pose2d(1, 2, new Rotation2d(1.5)));
 
     Assertions.assertEquals(t, target);

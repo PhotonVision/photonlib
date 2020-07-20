@@ -23,7 +23,7 @@
 #include <memory>
 #include <string>
 
-#include "photonlib/common/SimplePipelineResult.h"
+#include "photonlib/PhotonPipelineResult.h"
 
 namespace photonlib {
 /**
@@ -49,7 +49,7 @@ class PhotonCamera {
    * Returns the latest pipeline result.
    * @return The latest pipeline result.
    */
-  SimplePipelineResult GetLatestResult() const;
+  PhotonPipelineResult GetLatestResult() const;
 
   /**
    * Toggles driver mode.
