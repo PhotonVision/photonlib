@@ -87,7 +87,7 @@ class PhotonCamera {
    * @return The pitch of the best target.
    */
   double GetBestTargetPitch() const {
-    return GetLatestResult().GetTargets()[0].GetPitch();
+    return GetLatestResult().GetBestTarget().GetPitch();
   }
 
   /**
@@ -96,7 +96,7 @@ class PhotonCamera {
    * @return The yaw of the best target.
    */
   double GetBestTargetYaw() const {
-    return GetLatestResult().GetTargets()[0].GetYaw();
+    return GetLatestResult().GetBestTarget().GetYaw();
   }
 
   /**
@@ -105,7 +105,7 @@ class PhotonCamera {
    * @return The area of the best target.
    */
   double GetBestTargetArea() const {
-    return GetLatestResult().GetTargets()[0].GetArea();
+    return GetLatestResult().GetBestTarget().GetArea();
   }
 
   /**
@@ -114,7 +114,7 @@ class PhotonCamera {
    * @return The skew of the best target.
    */
   double GetBestTargetSkew() const {
-    return GetLatestResult().GetTargets()[0].GetSkew();
+    return GetLatestResult().GetBestTarget().GetSkew();
   }
 
  private:
