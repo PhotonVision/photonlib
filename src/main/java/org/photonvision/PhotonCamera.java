@@ -130,7 +130,7 @@ public class PhotonCamera {
    * @return The pitch of the best target.
    */
   public double getBestTargetPitch() {
-    return getLatestResult().targets.get(0).getPitch();
+    return getLatestResult().getBestTarget().getPitch();
   }
 
   /**
@@ -140,7 +140,7 @@ public class PhotonCamera {
    * @return The yaw of the best target.
    */
   public double getBestTargetYaw() {
-    return getLatestResult().targets.get(0).getYaw();
+    return getLatestResult().getBestTarget().getYaw();
   }
 
   /**
@@ -150,7 +150,7 @@ public class PhotonCamera {
    * @return The area of the best target.
    */
   public double getBestTargetArea() {
-    return getLatestResult().targets.get(0).getArea();
+    return getLatestResult().getBestTarget().getArea();
   }
 
   /**
@@ -160,6 +160,6 @@ public class PhotonCamera {
    * @return The skew of the best target.
    */
   public double getBestTargetSkew() {
-    return getLatestResult().targets.get(0).getSkew();
+    return getLatestResult().getBestTarget().getSkew();
   }
 }
