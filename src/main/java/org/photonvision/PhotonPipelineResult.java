@@ -63,6 +63,17 @@ public class PhotonPipelineResult {
   }
 
   /**
+   * Returns the best target in this pipeline result. If there are no targets,
+   * this method will return null. The best target is determined by the target sort
+   * mode in the PhotonVision UI.
+   *
+   * @return The best target of the pipeline result.
+   */
+  public PhotonTrackedTarget getBestTarget() {
+    return targets.get(0);
+  }
+
+  /**
    * Returns the latency in the pipeline.
    *
    * @return The latency in the pipeline.

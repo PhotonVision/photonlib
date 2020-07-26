@@ -46,6 +46,17 @@ class PhotonPipelineResult {
                        wpi::ArrayRef<PhotonTrackedTarget> targets);
 
   /**
+   * Returns the best target in this pipeline result. If there are no targets,
+   * this method will return an empty target with all values set to zero. The
+   * best target is determined by the target sort mode in the PhotonVision UI.
+   *
+   * @return The best target of the pipeline result.
+   */
+  PhotonTrackedTarget GetBestTarget() const {
+    return hasTargets ? targets[0] : PhotonTrackedTarget();
+  }
+
+  /**
    * Returns the latency in the pipeline.
    * @return The latency in the pipeline.
    */
