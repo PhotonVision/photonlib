@@ -64,12 +64,12 @@ public class PhotonPipelineResult {
 
   /**
    * Returns the best target in this pipeline result. If there are no targets,
-   * this method will return null. The best target is determined by the target sort
-   * mode in the PhotonVision UI.
+   * this method will throw an exception. The best target is determined by the
+   * target sort mode in the PhotonVision UI.
    *
    * @return The best target of the pipeline result.
    */
-  public PhotonTrackedTarget getBestTarget() {
+  public PhotonTrackedTarget getBestTarget() throws IndexOutOfBoundsException {
     return targets.get(0);
   }
 
