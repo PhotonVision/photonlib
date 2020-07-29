@@ -46,7 +46,7 @@ public class PhotonCamera {
     pipelineIndexEntry = rootTable.getEntry("pipelineIndex");
 
     driverMode = driverModeEntry.getBoolean(false);
-    pipelineIndex = (int) pipelineIndexEntry.getNumber(0);
+    pipelineIndex = pipelineIndexEntry.getNumber(0).intValue();
   }
 
   /**
