@@ -32,7 +32,7 @@ public class PhotonCamera {
   private boolean driverMode;
   private int pipelineIndex;
 
-  private Packet packet;
+  private Packet packet = new Packet(1);
 
   /**
    * Constructs a PhotonCamera from a root table.
