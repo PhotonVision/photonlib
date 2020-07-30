@@ -73,6 +73,7 @@ public class PhotonCamera {
 
     // Populate packet and create result.
     packet.setData(rawBytesEntry.getRaw(new byte[]{}));
+    if(packet.size < 1) return ret;
     ret.createFromPacket(packet);
 
     // Return result.
