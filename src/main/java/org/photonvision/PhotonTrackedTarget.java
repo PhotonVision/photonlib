@@ -19,6 +19,8 @@ package org.photonvision;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Transform2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 import java.util.Objects;
 
@@ -32,7 +34,7 @@ public class PhotonTrackedTarget {
   private double pitch;
   private double area;
   private double skew;
-  private Pose2d robotRelativePose = new Pose2d();
+  private Transform2d cameraToTarget = new Transform2d();
 
   /**
    * Constructs an empty target.
@@ -45,14 +47,14 @@ public class PhotonTrackedTarget {
    * @param pitch The pitch of the target.
    * @param area The area of the target.
    * @param skew The skew of the target.
-   * @param pose The robot-relative pose of the target.
+   * @param pose The camera-relative pose of the target.
    */
-  public PhotonTrackedTarget(double yaw, double pitch, double area, double skew, Pose2d pose) {
+  public PhotonTrackedTarget(double yaw, double pitch, double area, double skew, Transform2d pose) {
     this.yaw = yaw;
     this.pitch = pitch;
     this.area = area;
     this.skew = skew;
-    robotRelativePose = pose;
+    cameraToTarget = pose;
   }
 
   /**
@@ -91,8 +93,8 @@ public class PhotonTrackedTarget {
    * Returns the pose of the target relative to the robot.
    * @return The pose of the target relative to the robot.
    */
-  public Pose2d getRobotRelativePose() {
-    return robotRelativePose;
+  public Transform2d getCameraToTarget() {
+    return cameraToTarget;
   }
 
   @Override
@@ -104,12 +106,12 @@ public class PhotonTrackedTarget {
         && Double.compare(that.pitch, pitch) == 0
         && Double.compare(that.area, area) == 0
         && Double.compare(that.skew, skew) == 0
-        && Objects.equals(robotRelativePose, that.robotRelativePose);
+        && Objects.equals(cameraToTarget, that.cameraToTarget);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(yaw, pitch, area, robotRelativePose);
+    return Objects.hash(yaw, pitch, area, cameraToTarget);
   }
 
   /**
@@ -127,7 +129,7 @@ public class PhotonTrackedTarget {
     double y = packet.decodeDouble();
     double r = packet.decodeDouble();
 
-    robotRelativePose = new Pose2d(x, y, Rotation2d.fromDegrees(r));
+    cameraToTarget = new Transform2d(new Translation2d(x, y), Rotation2d.fromDegrees(r));
 
     return packet;
   }
@@ -142,9 +144,9 @@ public class PhotonTrackedTarget {
     packet.encode(pitch);
     packet.encode(area);
     packet.encode(skew);
-    packet.encode(robotRelativePose.getX());
-    packet.encode(robotRelativePose.getY());
-    packet.encode(robotRelativePose.getRotation().getDegrees());
+    packet.encode(cameraToTarget.getX());
+    packet.encode(cameraToTarget.getY());
+    packet.encode(cameraToTarget.getRotation().getDegrees());
 
     return packet;
   }

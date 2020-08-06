@@ -25,7 +25,7 @@
 
 TEST(PacketTest, PhotonTrackedTarget) {
   photonlib::PhotonTrackedTarget target{3.0, 4.0, 9.0, -5.0,
-                                        frc::Pose2d(1_m, 2_m, 1.5_rad)};
+                                        frc::Transform2d(frc::Translation2d(1_m, 2_m), 1.5_rad)};
   photonlib::Packet p;
   p << target;
 
@@ -51,9 +51,9 @@ TEST(PacketTest, PhotonPipelineResult) {
 
   wpi::SmallVector<photonlib::PhotonTrackedTarget, 2> targets{
       photonlib::PhotonTrackedTarget{3.0, -4.0, 9.0, 4.0,
-                                     frc::Pose2d(1_m, 2_m, 1.5_rad)},
+                                     frc::Transform2d(frc::Translation2d(1_m, 2_m), 1.5_rad)},
       photonlib::PhotonTrackedTarget{3.0, -4.0, 9.1, 6.7,
-                                     frc::Pose2d(1_m, 5_m, 1.5_rad)}};
+                                     frc::Transform2d(frc::Translation2d(1_m, 5_m), 1.5_rad)}};
 
   photonlib::PhotonPipelineResult result2{2_s, targets};
   photonlib::Packet p2;
@@ -81,7 +81,7 @@ TEST(PacketTest, BytePackFromJava) {
   packet >> res;
 
   photonlib::PhotonTrackedTarget target{3.0, 4.0, 9.0, -5.0,
-                                        frc::Pose2d(1_m, 2_m, 1.5_rad)};
+                                        frc::Transform2d(frc::Translation2d(1_m, 2_m), 1.5_rad)};
 
   EXPECT_EQ(res, target);
 }

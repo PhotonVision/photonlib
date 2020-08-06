@@ -49,12 +49,12 @@ class PhotonUtils {
   }
 
   /**
-   * Estimate the Translation2d of the target relative to the robot.
+   * Estimate the Translation2d of the target relative to the camera.
    *
    * @param targetDistance The distance to the target.
    * @param yaw            The observed yaw of the target.
    *
-   * @return The target's robot-relative translation.
+   * @return The target's camera-relative translation.
    */
   static frc::Translation2d EstimateTargetTranslation(
       units::meter_t targetDistance, frc::Rotation2d yaw) {

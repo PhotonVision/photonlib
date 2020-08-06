@@ -36,6 +36,8 @@ package org.photonvision;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Transform2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +48,7 @@ class PacketTest {
   @Test
   void testSimpleTrackedTarget() {
     var target = new PhotonTrackedTarget(3.0, 4.0, 9.0, -5.0,
-        new Pose2d(1, 2, new Rotation2d(1.5)));
+        new Transform2d(new Translation2d(1, 2), new Rotation2d(1.5)));
     var p = new Packet(PhotonTrackedTarget.PACK_SIZE_BYTES);
     target.populatePacket(p);
 
@@ -70,9 +72,9 @@ class PacketTest {
     var result2 = new PhotonPipelineResult(2,
         List.of(
             new PhotonTrackedTarget(3.0, -4.0, 9.0, 4.0,
-                new Pose2d(1, 2, new Rotation2d(1.5))),
+                new Transform2d(new Translation2d(1, 2), new Rotation2d(1.5))),
             new PhotonTrackedTarget(3.0, -4.0, 9.1, 6.7,
-                new Pose2d(1, 5, new Rotation2d(1.5)))));
+                new Transform2d(new Translation2d(1, 5), new Rotation2d(1.5)))));
     var p2 = new Packet(result2.getPacketSize());
     result2.populatePacket(p2);
 
@@ -91,7 +93,7 @@ class PacketTest {
     t.createFromPacket(new Packet(bytePack));
 
     var target = new PhotonTrackedTarget(3.0, 4.0, 9.0, -5.0,
-        new Pose2d(1, 2, new Rotation2d(1.5)));
+        new Transform2d(new Translation2d(1, 2), new Rotation2d(1.5)));
 
     Assertions.assertEquals(t, target);
   }
