@@ -42,7 +42,7 @@ class PhotonTrackedTarget {
    * @param pitch The pitch of the target.
    * @param area The area of the target.
    * @param skew The skew of the target.
-   * @param pose The robot-relative pose of the target.
+   * @param pose The camera-relative pose of the target.
    */
   PhotonTrackedTarget(double yaw, double pitch, double area, double skew,
                       const frc::Pose2d& pose);
@@ -75,7 +75,7 @@ class PhotonTrackedTarget {
    * Returns the pose of the target relative to the robot.
    * @return The pose of the target relative to the robot.
    */
-  frc::Pose2d GetRobotRelativePose() const { return robotRelativePose; }
+  frc::Pose2d GetCameraRelativePose() const { return cameraRelativePose; }
 
   bool operator==(const PhotonTrackedTarget& other) const;
   bool operator!=(const PhotonTrackedTarget& other) const;
@@ -88,6 +88,6 @@ class PhotonTrackedTarget {
   double pitch = 0;
   double area = 0;
   double skew = 0;
-  frc::Pose2d robotRelativePose;
+  frc::Pose2d cameraRelativePose;
 };
 }  // namespace photonlib

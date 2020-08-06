@@ -23,11 +23,11 @@ namespace photonlib {
 
 PhotonTrackedTarget::PhotonTrackedTarget(double yaw, double pitch, double area,
                                          double skew, const frc::Pose2d& pose)
-    : yaw(yaw), pitch(pitch), area(area), skew(skew), robotRelativePose(pose) {}
+    : yaw(yaw), pitch(pitch), area(area), skew(skew), cameraRelativePose(pose) {}
 
 bool PhotonTrackedTarget::operator==(const PhotonTrackedTarget& other) const {
   return other.yaw == yaw && other.pitch == pitch && other.area == area &&
-         other.skew == skew && other.robotRelativePose == robotRelativePose;
+         other.skew == skew && other.cameraRelativePose == cameraRelativePose;
 }
 
 bool PhotonTrackedTarget::operator!=(const PhotonTrackedTarget& other) const {
@@ -36,9 +36,9 @@ bool PhotonTrackedTarget::operator!=(const PhotonTrackedTarget& other) const {
 
 Packet& operator<<(Packet& packet, const PhotonTrackedTarget& target) {
   return packet << target.yaw << target.pitch << target.area << target.skew
-                << target.robotRelativePose.Translation().X().to<double>()
-                << target.robotRelativePose.Translation().Y().to<double>()
-                << target.robotRelativePose.Rotation().Degrees().to<double>();
+                << target.cameraRelativePose.Translation().X().to<double>()
+                << target.cameraRelativePose.Translation().Y().to<double>()
+                << target.cameraRelativePose.Rotation().Degrees().to<double>();
 }
 
 Packet& operator>>(Packet& packet, PhotonTrackedTarget& target) {
@@ -48,7 +48,7 @@ Packet& operator>>(Packet& packet, PhotonTrackedTarget& target) {
   double rot = 0;
   packet >> x >> y >> rot;
 
-  target.robotRelativePose =
+  target.cameraRelativePose =
       frc::Pose2d(units::meter_t(x), units::meter_t(y), units::degree_t(rot));
   return packet;
 }
