@@ -1,8 +1,8 @@
 {
-  "fileName": "wpilibStateSpace.json",
-  "name": "wpilibStateSpace",
-  "version": "2020.0.4",
-  "uuid": "515fe07e-bfc6-11ea-b3de-0242ac130004 ",
+  "fileName": "photonlib.json",
+  "name": "photonlib",
+  "version": "2020.0.5",
+  "uuid": "515fe07e-bfc6-11fa-b3de-0242ac130004 ",
   "mavenUrls": [
     "https://maven.photonvision.org/artifactory/libs-release/"
   ],
@@ -12,7 +12,7 @@
     {
       "groupId": "org.photonvision.lib",
       "artifactId": "PhotonLib-cpp",
-      "version": "2020.0.4",
+      "version": "2020.0.5",
       "libName": "PhotonLib",
       "headerClassifier": "headers",
       "sharedLibrary": true,
@@ -29,7 +29,7 @@
     {
       "groupId": "org.photonvision.lib",
       "artifactId": "PhotonLib-java",
-      "version": "2020.0.4"
+      "version": "2020.0.5"
     }
   ]
 }

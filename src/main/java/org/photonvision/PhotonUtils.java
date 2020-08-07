@@ -51,11 +51,11 @@ public final class PhotonUtils {
   }
 
   /**
-   * Estimate the {@link Translation2d} of the target relative to the robot.
+   * Estimate the {@link Translation2d} of the target relative to the camera.
    *
    * @param targetDistanceMeters The distance to the target in meters.
    * @param yaw                  The observed yaw of the target.
-   * @return The target's robot-relative translation.
+   * @return The target's camera-relative translation.
    */
   public static Translation2d estimateTargetTranslation2d(double targetDistanceMeters, Rotation2d yaw) {
     return new Translation2d(yaw.getCos() * targetDistanceMeters, yaw.getSin() * targetDistanceMeters);
