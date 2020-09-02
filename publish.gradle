@@ -106,9 +106,7 @@ task outputJavadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-def vendorJson = artifacts.add('archives', file("$photonlibFileOutput")) {
-
-}
+def vendorJson = artifacts.add('archives', file("$photonlibFileOutput"))
 
 artifacts {
     archives sourcesJar
@@ -181,7 +179,7 @@ model {
 
                 artifactId = "${baseArtifactId}-json"
                 groupId = artifactGroupId
-                version pubVersion
+                version "1.0"
             }
         }
     }
