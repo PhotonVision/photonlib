@@ -4,13 +4,14 @@ plugins {
   id 'java'
   id 'edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin' version '2020.2'
   id 'google-test-test-suite'
-  id 'edu.wpi.first.NativeUtils' version  '2020.7.2'
+  id 'edu.wpi.first.NativeUtils' version  '2020.10.1'
   id 'edu.wpi.first.GradleJni' version '0.10.1'
   id 'edu.wpi.first.GradleVsCode' version '0.12.0'
 }
 
 repositories {
   mavenCentral()
+  maven { url "https://frcmaven.wpi.edu/artifactory/development" }
 }
 
 if (project.hasProperty('releaseMode')) {
@@ -18,6 +19,8 @@ if (project.hasProperty('releaseMode')) {
 } else {
   wpilibRepositories.addAllDevelopmentRepositories(project)
 }
+
+ext.pubVersion = '2020.0.5'
 
 // Apply C++ configuration
 apply from: 'config.gradle'
@@ -33,6 +36,7 @@ dependencies {
     implementation 'edu.wpi.first.ntcore:ntcore-java:2020.+'
     implementation 'edu.wpi.first.wpilibj:wpilibj-java:2020.+'
     implementation 'edu.wpi.first.wpiutil:wpiutil-java:2020.+'
+    implementation 'edu.wpi.first.wpimath:wpimath-java:2020.+'
     implementation 'edu.wpi.first.hal:hal-java:2020.+'
     implementation 'edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:3.4.7-2'
 
@@ -82,6 +86,29 @@ model {
     }
   }
 }
+
+def photonlibFileInput = file("src/generate/photonlib.json.in")
+ext.photonlibFileOutput = file("$buildDir/generated/vendordeps/photonlib.json")
+
+task generateVendorJson() {
+  description = 'Generates the vendor JSON file'
+  group = 'PhotonVision'
+
+  outputs.file photonlibFileOutput
+  inputs.file photonlibFileInput
+
+  doLast {
+    println "Writing version ${pubVersion} to $photonlibFileOutput"
+
+    if (photonlibFileOutput.exists()) {
+      photonlibFileOutput.delete()
+    }
+    def read = photonlibFileInput.text.replace('${photon_version}', pubVersion)
+    photonlibFileOutput.write(read)
+  }
+}
+
+build.dependsOn generateVendorJson
 
 apply from: 'publish.gradle'
 
