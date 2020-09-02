@@ -19,6 +19,8 @@ if (project.hasProperty('releaseMode')) {
   wpilibRepositories.addAllDevelopmentRepositories(project)
 }
 
+ext.pubVersion = '2020.0.6'
+
 // Apply C++ configuration
 apply from: 'config.gradle'
 
@@ -82,6 +84,29 @@ model {
     }
   }
 }
+
+def photonlibFileInput = file("src/generate/photonlib.json.in")
+ext.photonlibFileOutput = file("$buildDir/generated/vendordeps/photonlib.json")
+
+task generateVendorJson() {
+  description = 'Generates the vendor JSON file'
+  group = 'PhotonVision'
+
+  outputs.file photonlibFileOutput
+  inputs.file photonlibFileInput
+
+  doLast {
+    println "Writing version ${pubVersion} to $photonlibFileOutput"
+
+    if (photonlibFileOutput.exists()) {
+      photonlibFileOutput.delete()
+    }
+    def read = photonlibFileInput.text.replace('${photon_version}', pubVersion)
+    photonlibFileOutput.write(read)
+  }
+}
+
+build.dependsOn generateVendorJson
 
 apply from: 'publish.gradle'
 
