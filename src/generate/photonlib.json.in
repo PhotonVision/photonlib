@@ -6,7 +6,7 @@
   "mavenUrls": [
     "https://maven.photonvision.org/artifactory/libs-release/"
   ],
-  "jsonUrl": "https://maven.photonvision.org/artifactory/libs-release/org/photonvision/lib/PhotonLib-json/1.0/PhotonLib-json-1.0.json",
+  "jsonUrl": "https://maven.photonvision.org/lib/PhotonLib-json-1.0.json",
   "jniDependencies": [],
   "cppDependencies": [
     {
