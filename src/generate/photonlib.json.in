@@ -4,9 +4,9 @@
   "version": "${photon_version}",
   "uuid": "515fe07e-bfc6-11fa-b3de-0242ac130004 ",
   "mavenUrls": [
-    "https://maven.photonvision.org/artifactory/libs-release/"
+    "https://maven.photonvision.org/repository/internal"
   ],
-  "jsonUrl": "https://maven.photonvision.org/lib/PhotonLib-json-1.0.json",
+  "jsonUrl": "https://maven.photonvision.org/repository/internal/org/photonvision/lib/PhotonLib-json/1.0/PhotonLib-json-1.0.json",
   "jniDependencies": [],
   "cppDependencies": [
     {
