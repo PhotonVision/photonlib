@@ -28,9 +28,11 @@ public class PhotonCamera {
   private final NetworkTableEntry rawBytesEntry;
   private final NetworkTableEntry driverModeEntry;
   private final NetworkTableEntry pipelineIndexEntry;
+  private final NetworkTableEntry ledModeEntry;
 
   private boolean driverMode;
   private int pipelineIndex;
+  private LEDMode mode;
 
   private Packet packet = new Packet(1);
 
@@ -44,9 +46,11 @@ public class PhotonCamera {
     rawBytesEntry = rootTable.getEntry("rawBytes");
     driverModeEntry = rootTable.getEntry("driverMode");
     pipelineIndexEntry = rootTable.getEntry("pipelineIndex");
+    ledModeEntry = rootTable.getEntry("ledMode");
 
     driverMode = driverModeEntry.getBoolean(false);
     pipelineIndex = pipelineIndexEntry.getNumber(0).intValue();
+    getLEDMode();
   }
 
   /**
@@ -93,8 +97,10 @@ public class PhotonCamera {
    * @param driverMode Whether to set driver mode.
    */
   public void setDriverMode(boolean driverMode) {
-    this.driverMode = driverMode;
-    driverModeEntry.setBoolean(this.driverMode);
+    if (this.driverMode != driverMode) {
+      this.driverMode = driverMode;
+      driverModeEntry.setBoolean(this.driverMode);
+    }
   }
 
   /**
@@ -108,11 +114,50 @@ public class PhotonCamera {
 
   /**
    * Allows the user to select the active pipeline index.
+   *
    * @param index The active pipeline index.
    */
   public void setPipelineIndex(int index) {
-    pipelineIndex = index;
-    pipelineIndexEntry.setNumber(pipelineIndex);
+    if (pipelineIndex != index) {
+      pipelineIndex = index;
+      pipelineIndexEntry.setNumber(pipelineIndex);
+    }
+  }
+
+  /**
+   * Returns the current LED mode.
+   *
+   * @return The current LED mode.
+   */
+  public LEDMode getLEDMode() {
+    int value = ledModeEntry.getNumber(-1).intValue();
+    switch (value) {
+      case 0:
+        mode = LEDMode.kOff;
+        break;
+      case 1:
+        mode = LEDMode.kOn;
+        break;
+      case 2:
+        mode = LEDMode.kBlink;
+        break;
+      case -1:
+      default:
+        mode = LEDMode.kDefault;
+        break;
+    }
+    return mode;
+  }
+
+  /**
+   * Sets the LED mode.
+   *
+   * @param led The mode to set to.
+   */
+  public void setLED(LEDMode led) {
+    if (led != mode) {
+      ledModeEntry.setNumber(led.value);
+    }
   }
 
   /**

@@ -17,14 +17,15 @@
 
 #include "photonlib/PhotonTrackedTarget.h"
 
-#include <frc/geometry/Translation2d.h>
-
 #include <iostream>
+
+#include <frc/geometry/Translation2d.h>
 
 namespace photonlib {
 
 PhotonTrackedTarget::PhotonTrackedTarget(double yaw, double pitch, double area,
-                                         double skew, const frc::Transform2d& pose)
+                                         double skew,
+                                         const frc::Transform2d& pose)
     : yaw(yaw), pitch(pitch), area(area), skew(skew), cameraToTarget(pose) {}
 
 bool PhotonTrackedTarget::operator==(const PhotonTrackedTarget& other) const {
@@ -51,7 +52,8 @@ Packet& operator>>(Packet& packet, PhotonTrackedTarget& target) {
   packet >> x >> y >> rot;
 
   target.cameraToTarget =
-      frc::Transform2d(frc::Translation2d(units::meter_t(x), units::meter_t(y)), units::degree_t(rot));
+      frc::Transform2d(frc::Translation2d(units::meter_t(x), units::meter_t(y)),
+                       units::degree_t(rot));
   return packet;
 }
 
