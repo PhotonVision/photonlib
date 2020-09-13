@@ -17,8 +17,6 @@
 
 #include "photonlib/PhotonCamera.h"
 
-#include <networktables/NetworkTableInstance.h>
-
 #include "photonlib/Packet.h"
 
 namespace photonlib {
@@ -26,7 +24,7 @@ PhotonCamera::PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable)
     : rawBytesEntry(rootTable->GetEntry("rawBytes")),
       driverModeEntry(rootTable->GetEntry("driverMode")),
       pipelineIndexEntry(rootTable->GetEntry("pipelineIndex")),
-      ledModeEntry(rootTable->GetEntry("ledMode")) {
+      ledModeEntry(mainTable->GetEntry("ledMode")) {
   driverMode = driverModeEntry.GetBoolean(false);
   pipelineIndex = static_cast<int>(pipelineIndexEntry.GetDouble(0.0));
   mode = GetLEDMode();

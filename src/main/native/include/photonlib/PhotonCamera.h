@@ -19,6 +19,7 @@
 
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
+#include <networktables/NetworkTableInstance.h>
 
 #include <memory>
 #include <string>
@@ -137,6 +138,9 @@ class PhotonCamera {
   nt::NetworkTableEntry driverModeEntry;
   nt::NetworkTableEntry pipelineIndexEntry;
   nt::NetworkTableEntry ledModeEntry;
+
+  std::shared_ptr<nt::NetworkTable> mainTable =
+      nt::NetworkTableInstance::GetDefault().GetTable("photonvision");
 
   mutable Packet packet;
 

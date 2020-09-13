@@ -30,6 +30,8 @@ public class PhotonCamera {
   private final NetworkTableEntry pipelineIndexEntry;
   private final NetworkTableEntry ledModeEntry;
 
+  private final NetworkTable mainTable = NetworkTableInstance.getDefault().getTable("photonvision");
+
   private boolean driverMode;
   private int pipelineIndex;
   private LEDMode mode;
@@ -46,7 +48,7 @@ public class PhotonCamera {
     rawBytesEntry = rootTable.getEntry("rawBytes");
     driverModeEntry = rootTable.getEntry("driverMode");
     pipelineIndexEntry = rootTable.getEntry("pipelineIndex");
-    ledModeEntry = rootTable.getEntry("ledMode");
+    ledModeEntry = mainTable.getEntry("ledMode");
 
     driverMode = driverModeEntry.getBoolean(false);
     pipelineIndex = pipelineIndexEntry.getNumber(0).intValue();
