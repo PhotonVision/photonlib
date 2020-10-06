@@ -27,6 +27,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class PhotonCamera {
   private final NetworkTableEntry rawBytesEntry;
   private final NetworkTableEntry driverModeEntry;
+  private final NetworkTableEntry inputSaveImgEntry;
+  private final NetworkTableEntry outputSaveImgEntry;
   private final NetworkTableEntry pipelineIndexEntry;
   private final NetworkTableEntry ledModeEntry;
 
@@ -47,6 +49,8 @@ public class PhotonCamera {
   public PhotonCamera(NetworkTable rootTable) {
     rawBytesEntry = rootTable.getEntry("rawBytes");
     driverModeEntry = rootTable.getEntry("driverMode");
+    inputSaveImgEntry = rootTable.getEntry("inputSaveImgCmd");
+    outputSaveImgEntry = rootTable.getEntry("outputSaveImgCmd");
     pipelineIndexEntry = rootTable.getEntry("pipelineIndex");
     ledModeEntry = mainTable.getEntry("ledMode");
 
@@ -103,6 +107,30 @@ public class PhotonCamera {
       this.driverMode = driverMode;
       driverModeEntry.setBoolean(this.driverMode);
     }
+  }
+
+  /**
+   * Changes commands to store single-frame captures to memory.
+   * Commands should be set to true if capturing an image is desired.
+   * When the camera sees a command transition from false to true, it will save the next camera frame to disk.
+   * Commands are automatically reset to false after 500ms.
+   * Images take up space in the filesystem of the PhotonCamera - calling it frequently will fill up
+   * disk space and eventually cause the system to stop working. 
+   * Clear out images in /opt/photonvision/photonvision_config/imgSaves frequently to prevent issues.
+   * @param inputImgCaptureCmd Triggers capture of the input image stream
+   * @param outputImgCaptureCmd Triggers capture of the output image stream
+   */
+  public void setImageCaptureCmds(boolean inputImgCaptureCmd, boolean outputImgCaptureCmd) {
+    inputSaveImgEntry.setBoolean(inputImgCaptureCmd);
+    outputSaveImgEntry.setBoolean(outputImgCaptureCmd);
+  }
+
+  /**
+    * Commands the camera to save the next image from the camera to disk.
+    * See documentation for setImageCaptureCmds() for more info.
+    */
+  public void captureImages() {
+    this.setImageCaptureCmds(true, true);
   }
 
   /**

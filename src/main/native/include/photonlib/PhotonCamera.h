@@ -68,6 +68,25 @@ class PhotonCamera {
   bool GetDriverMode() const;
 
   /**
+   * Changes commands to store single-frame captures to memory.
+   * Commands should be set to true if capturing an image is desired.
+   * When the camera sees a command transition from false to true, it will save the next camera frame to disk.
+   * Commands are automatically reset to false after 500ms.
+   * Images take up space in the filesystem of the PhotonCamera - calling it frequently will fill up
+   * disk space and eventually cause the system to stop working. 
+   * Clear out images in /opt/photonvision/photonvision_config/imgSaves frequently to prevent issues.
+   * @param inputImgCaptureCmd Triggers capture of the input image stream
+   * @param outputImgCaptureCmd Triggers capture of the output image stream
+   */
+  void SetImageCaptureCmds(bool inputImgCaptureCmd, bool outputImgCaptureCmd);
+
+  /**
+    * Commands the camera to save the next image from the camera to disk.
+    * See documentation for SetImageCaptureCmds() for more info.
+    */
+  void CaptureImages(void);
+
+  /**
    * Allows the user to select the active pipeline index.
    * @param index The active pipeline index.
    */
@@ -136,6 +155,8 @@ class PhotonCamera {
  private:
   nt::NetworkTableEntry rawBytesEntry;
   nt::NetworkTableEntry driverModeEntry;
+  nt::NetworkTableEntry inputSaveImgEntry;
+  nt::NetworkTableEntry outputSaveImgEntry;
   nt::NetworkTableEntry pipelineIndexEntry;
   nt::NetworkTableEntry ledModeEntry;
 
