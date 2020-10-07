@@ -70,13 +70,13 @@ class PhotonCamera {
   /**
    * Changes commands to store single-frame captures to memory.
    * Commands should be set to true if capturing an image is desired.
-   * When the camera sees a command transition from false to true, 
+   * When the camera sees a command transition from false to true,
    * it will save the next camera frame to disk.
    * Commands are automatically reset to false after 500ms.
    * Images take up space in the filesystem of the PhotonCamera.
-   * Calling it frequently will fill up disk space and eventually 
-   * cause the system to stop working. 
-   * Clear out images in /opt/photonvision/photonvision_config/imgSaves 
+   * Calling it frequently will fill up disk space and eventually
+   * cause the system to stop working.
+   * Clear out images in /opt/photonvision/photonvision_config/imgSaves
    * frequently to prevent issues.
    * @param inputImgCaptureCmd Triggers capture of the input image stream
    * @param outputImgCaptureCmd Triggers capture of the output image stream
