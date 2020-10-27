@@ -7,115 +7,57 @@ on:
     branches: [ master ]
 
 jobs:
-  # Windows Server
-  build-windows:
-    runs-on: windows-latest
+  build-host:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact-name: Win64
+          - os: macos-latest
+            artifact-name: macOS
+          - os: ubuntu-latest
+            artifact-name: Linux
+
+    runs-on: ${{ matrix.os }}
+    name: "Build - ${{ matrix.artifact-name }}"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Build
-        run: ./gradlew build
-      - name: Publish
-        run: ./gradlew publish
+      - run: ./gradlew build
+        name: Build with Gradle
+      - run: ./gradlew publish
+        name: Publish
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         if: github.event_name == 'push'
 
+  build-docker:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - container: wpilib/roborio-cross-ubuntu:2020-18.04
+            artifact-name: Athena
+          - container: wpilib/raspbian-cross-ubuntu:10-18.04
+            artifact-name: Raspbian
+          - container: wpilib/aarch64-cross-ubuntu:bionic-18.04
+            artifact-name: Aarch64
 
-  # macOS Catalina
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Build
-        run: |
-          chmod +x gradlew
-          ./gradlew build
-      - name: Publish
-        run: ./gradlew publish
-        env:
-          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
-        if: github.event_name == 'push'
-
-  # Ubuntu 18.04 LTS
-  build-linux:
     runs-on: ubuntu-latest
+    container: ${{ matrix.container }}
+    name: "Build - ${{ matrix.artifact-name }}"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Build
-        run: |
-          chmod +x gradlew
-          ./gradlew build
-      - name: Publish
-        run: ./gradlew publish
-        env:
-          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
-        if: github.event_name == 'push'
-
-
-  # roboRIO
-  build-roborio:
-    runs-on: ubuntu-latest
-    container: wpilib/roborio-cross-ubuntu:2020-18.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Build
-        run: |
-          chmod +x gradlew
-          ./gradlew build -Ponlylinuxathena
-      - name: Publish
-        run: ./gradlew publish -Ponlylinuxathena
-        env:
-          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
-        if: github.event_name == 'push'
-
-
-  # Raspbian
-  build-raspbian:
-    runs-on: ubuntu-latest
-    container: wpilib/raspbian-cross-ubuntu:10-18.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Build
-        run: |
-          chmod +x gradlew
-          ./gradlew build -Ponlylinuxraspbian
-      - name: Publish
-        run: ./gradlew publish -Ponlylinuxraspbian
-        env:
-          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
-        if: github.event_name == 'push'
-
-
-  # Linux Aarch64
-  build-linux-aarch64:
-    runs-on: ubuntu-latest
-    container: wpilib/aarch64-cross-ubuntu:bionic-18.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Build
-        run: |
-          chmod +x gradlew
-          ./gradlew build -Ponlylinuxaarch64bionic
-      - name: Publish
-        run: ./gradlew publish -Ponlylinuxaarch64bionic
+      - run: ./gradlew build
+        name: Build with Gradle
+      - run: ./gradlew publish
+        name: Publish
         env:
           ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         if: github.event_name == 'push'
