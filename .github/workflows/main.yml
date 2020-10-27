@@ -45,7 +45,7 @@ jobs:
             artifact-name: Raspbian
           - container: wpilib/aarch64-cross-ubuntu:bionic-18.04
             artifact-name: Aarch64
-      
+
     runs-on: ubuntu-latest
     container: ${{ matrix.container }}
     name: "Build - ${{ matrix.artifact-name }}"
