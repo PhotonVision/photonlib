@@ -19,6 +19,7 @@
 
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
+#include <networktables/NetworkTableInstance.h>
 
 #include <memory>
 #include <string>
@@ -26,6 +27,9 @@
 #include "photonlib/PhotonPipelineResult.h"
 
 namespace photonlib {
+
+enum LEDMode : int { kDefault = -1, kOff = 0, kOn = 1, kBlink = 2 };
+
 /**
  * Represents a camera that is connected to PhotonVision.ß
  */
@@ -76,6 +80,18 @@ class PhotonCamera {
   int GetPipelineIndex() const;
 
   /**
+   * Returns the current LED mode.
+   * @return The current LED mode.
+   */
+  LEDMode GetLEDMode() const;
+
+  /**
+   * Sets the LED mode.
+   * @param led The mode to set to.
+   */
+  void SetLEDMode(LEDMode led);
+
+  /**
    * Returns whether the latest target result has targets.
    * @return Whether the latest target result has targets.
    */
@@ -85,11 +101,16 @@ class PhotonCamera {
   nt::NetworkTableEntry rawBytesEntry;
   nt::NetworkTableEntry driverModeEntry;
   nt::NetworkTableEntry pipelineIndexEntry;
+  nt::NetworkTableEntry ledModeEntry;
+
+  std::shared_ptr<nt::NetworkTable> mainTable =
+      nt::NetworkTableInstance::GetDefault().GetTable("photonvision");
 
   mutable Packet packet;
 
   bool driverMode;
   double pipelineIndex;
+  mutable LEDMode mode;
 };
 
 }  // namespace photonlib

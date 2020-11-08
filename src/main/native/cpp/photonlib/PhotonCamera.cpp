@@ -17,17 +17,17 @@
 
 #include "photonlib/PhotonCamera.h"
 
-#include <networktables/NetworkTableInstance.h>
-
 #include "photonlib/Packet.h"
 
 namespace photonlib {
 PhotonCamera::PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable)
     : rawBytesEntry(rootTable->GetEntry("rawBytes")),
       driverModeEntry(rootTable->GetEntry("driverMode")),
-      pipelineIndexEntry(rootTable->GetEntry("pipelineIndex")) {
+      pipelineIndexEntry(rootTable->GetEntry("pipelineIndex")),
+      ledModeEntry(mainTable->GetEntry("ledMode")) {
   driverMode = driverModeEntry.GetBoolean(false);
   pipelineIndex = static_cast<int>(pipelineIndexEntry.GetDouble(0.0));
+  mode = GetLEDMode();
 }
 
 PhotonCamera::PhotonCamera(const std::string& cameraName)
@@ -51,16 +51,32 @@ PhotonPipelineResult PhotonCamera::GetLatestResult() const {
 }
 
 void PhotonCamera::SetDriverMode(bool driverMode) {
-  this->driverMode = driverMode;
-  driverModeEntry.SetBoolean(this->driverMode);
+  if (this->driverMode != driverMode) {
+    this->driverMode = driverMode;
+    driverModeEntry.SetBoolean(this->driverMode);
+  }
 }
 
 bool PhotonCamera::GetDriverMode() const { return driverMode; }
 
 void PhotonCamera::SetPipelineIndex(int index) {
-  pipelineIndex = index;
-  pipelineIndexEntry.SetDouble(static_cast<double>(pipelineIndex));
+  if (index != pipelineIndex) {
+    pipelineIndex = index;
+    pipelineIndexEntry.SetDouble(static_cast<double>(pipelineIndex));
+  }
 }
 
 int PhotonCamera::GetPipelineIndex() const { return pipelineIndex; }
+
+LEDMode PhotonCamera::GetLEDMode() const {
+  mode = static_cast<LEDMode>(static_cast<int>(ledModeEntry.GetDouble(-1.0)));
+  return mode;
+}
+
+void PhotonCamera::SetLEDMode(LEDMode led) {
+  if (led != mode) {
+    mode = led;
+    ledModeEntry.SetDouble(static_cast<double>(static_cast<int>(mode)));
+  }
+}
 }  // namespace photonlib
