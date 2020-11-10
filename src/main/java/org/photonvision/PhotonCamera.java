@@ -110,7 +110,7 @@ public class PhotonCamera {
   }
 
   /**
-   * Request the camera to save a new image file from the input 
+   * Request the camera to save a new image file from the input
    * camera stream with overlays.
    * Images take up space in the filesystem of the PhotonCamera.
    * Calling it frequently will fill up disk space and eventually
@@ -123,7 +123,7 @@ public class PhotonCamera {
   }
 
     /**
-   * Request the camera to save a new image file from the output 
+   * Request the camera to save a new image file from the output
    * stream with overlays.
    * Images take up space in the filesystem of the PhotonCamera.
    * Calling it frequently will fill up disk space and eventually

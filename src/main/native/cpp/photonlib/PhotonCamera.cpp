@@ -59,13 +59,9 @@ void PhotonCamera::SetDriverMode(bool driverMode) {
   }
 }
 
-void PhotonCamera::TakeInputSnapshot() {
-  inputSaveImgEntry.SetBoolean(true);
-}
+void PhotonCamera::TakeInputSnapshot() { inputSaveImgEntry.SetBoolean(true); }
 
-void PhotonCamera::TakeOutputSnapshot() {
-  outputSaveImgEntry.SetBoolean(true);
-}
+void PhotonCamera::TakeOutputSnapshot() { outputSaveImgEntry.SetBoolean(true); }
 
 bool PhotonCamera::GetDriverMode() const { return driverMode; }
 
