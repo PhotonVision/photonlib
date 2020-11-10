@@ -110,30 +110,29 @@ public class PhotonCamera {
   }
 
   /**
-   * Changes commands to store single-frame captures to memory.
-   * Commands should be set to true if capturing an image is desired.
-   * When the camera sees a command transition from false to true,
-   * it will save the next camera frame to disk.
-   * Commands are automatically reset to false after 500ms.
+   * Request the camera to save a new image file from the input 
+   * camera stream with overlays.
    * Images take up space in the filesystem of the PhotonCamera.
    * Calling it frequently will fill up disk space and eventually
    * cause the system to stop working.
    * Clear out images in /opt/photonvision/photonvision_config/imgSaves
    * frequently to prevent issues.
-   * @param inputImgCaptureCmd Triggers capture of the input image stream
-   * @param outputImgCaptureCmd Triggers capture of the output image stream
    */
-  public void setImageCaptureCmds(boolean inputImgCaptureCmd, boolean outputImgCaptureCmd) {
-    inputSaveImgEntry.setBoolean(inputImgCaptureCmd);
-    outputSaveImgEntry.setBoolean(outputImgCaptureCmd);
+  public void takeInputSnapshot() {
+    inputSaveImgEntry.setBoolean(true);
   }
 
-  /**
-    * Commands the camera to save the next image from the camera to disk.
-    * See documentation for setImageCaptureCmds() for more info.
-    */
-  public void captureImages() {
-    this.setImageCaptureCmds(true, true);
+    /**
+   * Request the camera to save a new image file from the output 
+   * stream with overlays.
+   * Images take up space in the filesystem of the PhotonCamera.
+   * Calling it frequently will fill up disk space and eventually
+   * cause the system to stop working.
+   * Clear out images in /opt/photonvision/photonvision_config/imgSaves
+   * frequently to prevent issues.
+   */
+  public void takeOutputSnapshot() {
+    outputSaveImgEntry.setBoolean(true);
   }
 
   /**
