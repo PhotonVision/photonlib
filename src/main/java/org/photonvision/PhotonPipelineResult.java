@@ -17,6 +17,8 @@
 
 package org.photonvision;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +28,8 @@ import java.util.Objects;
  * Represents a pipeline result from a PhotonCamera.
  */
 public class PhotonPipelineResult {
+  private static boolean HAS_WARNED = false;
+
   // Targets to store.
   public final List<PhotonTrackedTarget> targets = new ArrayList<>();
 
@@ -70,6 +74,13 @@ public class PhotonPipelineResult {
    * @return The best target of the pipeline result.
    */
   public PhotonTrackedTarget getBestTarget() {
+    if(!hasTargets && !HAS_WARNED) {
+      String errStr = "This PhotonPipelineResult object has no targets associated with it! Please check hasTargets() " +
+          "before calling this method. For more information, please review the PhotonLib " +
+          "documentation at http://docs.photonvision.org";
+      DriverStation.reportError(errStr, true);
+      HAS_WARNED = true;
+    }
     return hasTargets ? targets.get(0) : null;
   }
 

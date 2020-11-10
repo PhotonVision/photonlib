@@ -19,6 +19,7 @@
 
 #include <string>
 
+#include <frc/DriverStation.h>
 #include <units/time.h>
 #include <wpi/ArrayRef.h>
 #include <wpi/SmallVector.h>
@@ -53,6 +54,14 @@ class PhotonPipelineResult {
    * @return The best target of the pipeline result.
    */
   PhotonTrackedTarget GetBestTarget() const {
+    if (!HasTargets() && !HAS_WARNED) {
+      ::frc::DriverStation::ReportError(
+          "This PhotonPipelineResult object has no targets associated with it! "
+          "Please check hasTargets() before calling this method. For more "
+          "information, please review the PhotonLib documentation at "
+          "http://docs.photonvision.org");
+      HAS_WARNED = true;
+    }
     return hasTargets ? targets[0] : PhotonTrackedTarget();
   }
 
@@ -86,5 +95,6 @@ class PhotonPipelineResult {
   units::second_t latency;
   bool hasTargets;
   wpi::SmallVector<PhotonTrackedTarget, 10> targets;
+  inline static bool HAS_WARNED = false;
 };
 }  // namespace photonlib

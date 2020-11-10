@@ -200,44 +200,4 @@ public class PhotonCamera {
   public boolean hasTargets() {
     return getLatestResult().hasTargets();
   }
-
-  /**
-   * Returns the pitch of the best target. The best target is defined in the
-   * PhotonVision UI.
-   *
-   * @return The pitch of the best target.
-   */
-  public double getBestTargetPitch() {
-    return getLatestResult().getBestTarget().getPitch();
-  }
-
-  /**
-   * Returns the yaw of the best target. The best target is defined in the
-   * PhotonVision UI.
-   *
-   * @return The yaw of the best target.
-   */
-  public double getBestTargetYaw() {
-    return getLatestResult().getBestTarget().getYaw();
-  }
-
-  /**
-   * Returns the area of the best target (0-100). The best target is defined in
-   * the PhotonVision UI.
-   *
-   * @return The area of the best target.
-   */
-  public double getBestTargetArea() {
-    return getLatestResult().getBestTarget().getArea();
-  }
-
-  /**
-   * Returns the skew of the best target (counter-clockwise positive). The best
-   * target is defined in the PhotonVision UI.
-   *
-   * @return The skew of the best target.
-   */
-  public double getBestTargetSkew() {
-    return getLatestResult().getBestTarget().getSkew();
-  }
 }
