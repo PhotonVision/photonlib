@@ -68,6 +68,28 @@ class PhotonCamera {
   bool GetDriverMode() const;
 
   /**
+   * Request the camera to save a new image file from the input
+   * camera stream with overlays.
+   * Images take up space in the filesystem of the PhotonCamera.
+   * Calling it frequently will fill up disk space and eventually
+   * cause the system to stop working.
+   * Clear out images in /opt/photonvision/photonvision_config/imgSaves
+   * frequently to prevent issues.
+   */
+  void TakeInputSnapshot(void);
+
+  /**
+   * Request the camera to save a new image file from the output
+   * stream with overlays.
+   * Images take up space in the filesystem of the PhotonCamera.
+   * Calling it frequently will fill up disk space and eventually
+   * cause the system to stop working.
+   * Clear out images in /opt/photonvision/photonvision_config/imgSaves
+   * frequently to prevent issues.
+   */
+  void TakeOutputSnapshot(void);
+
+  /**
    * Allows the user to select the active pipeline index.
    * @param index The active pipeline index.
    */
@@ -100,6 +122,8 @@ class PhotonCamera {
  private:
   nt::NetworkTableEntry rawBytesEntry;
   nt::NetworkTableEntry driverModeEntry;
+  nt::NetworkTableEntry inputSaveImgEntry;
+  nt::NetworkTableEntry outputSaveImgEntry;
   nt::NetworkTableEntry pipelineIndexEntry;
   nt::NetworkTableEntry ledModeEntry;
 

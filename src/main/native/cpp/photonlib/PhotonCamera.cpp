@@ -23,6 +23,8 @@ namespace photonlib {
 PhotonCamera::PhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable)
     : rawBytesEntry(rootTable->GetEntry("rawBytes")),
       driverModeEntry(rootTable->GetEntry("driverMode")),
+      inputSaveImgEntry(rootTable->GetEntry("inputSaveImgCmd")),
+      outputSaveImgEntry(rootTable->GetEntry("outputSaveImgCmd")),
       pipelineIndexEntry(rootTable->GetEntry("pipelineIndex")),
       ledModeEntry(mainTable->GetEntry("ledMode")) {
   driverMode = driverModeEntry.GetBoolean(false);
@@ -56,6 +58,10 @@ void PhotonCamera::SetDriverMode(bool driverMode) {
     driverModeEntry.SetBoolean(this->driverMode);
   }
 }
+
+void PhotonCamera::TakeInputSnapshot() { inputSaveImgEntry.SetBoolean(true); }
+
+void PhotonCamera::TakeOutputSnapshot() { outputSaveImgEntry.SetBoolean(true); }
 
 bool PhotonCamera::GetDriverMode() const { return driverMode; }
 

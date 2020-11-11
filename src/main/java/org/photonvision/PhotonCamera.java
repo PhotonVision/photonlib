@@ -27,6 +27,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class PhotonCamera {
   private final NetworkTableEntry rawBytesEntry;
   private final NetworkTableEntry driverModeEntry;
+  private final NetworkTableEntry inputSaveImgEntry;
+  private final NetworkTableEntry outputSaveImgEntry;
   private final NetworkTableEntry pipelineIndexEntry;
   private final NetworkTableEntry ledModeEntry;
 
@@ -47,6 +49,8 @@ public class PhotonCamera {
   public PhotonCamera(NetworkTable rootTable) {
     rawBytesEntry = rootTable.getEntry("rawBytes");
     driverModeEntry = rootTable.getEntry("driverMode");
+    inputSaveImgEntry = rootTable.getEntry("inputSaveImgCmd");
+    outputSaveImgEntry = rootTable.getEntry("outputSaveImgCmd");
     pipelineIndexEntry = rootTable.getEntry("pipelineIndex");
     ledModeEntry = mainTable.getEntry("ledMode");
 
@@ -103,6 +107,32 @@ public class PhotonCamera {
       this.driverMode = driverMode;
       driverModeEntry.setBoolean(this.driverMode);
     }
+  }
+
+  /**
+   * Request the camera to save a new image file from the input
+   * camera stream with overlays.
+   * Images take up space in the filesystem of the PhotonCamera.
+   * Calling it frequently will fill up disk space and eventually
+   * cause the system to stop working.
+   * Clear out images in /opt/photonvision/photonvision_config/imgSaves
+   * frequently to prevent issues.
+   */
+  public void takeInputSnapshot() {
+    inputSaveImgEntry.setBoolean(true);
+  }
+
+    /**
+   * Request the camera to save a new image file from the output
+   * stream with overlays.
+   * Images take up space in the filesystem of the PhotonCamera.
+   * Calling it frequently will fill up disk space and eventually
+   * cause the system to stop working.
+   * Clear out images in /opt/photonvision/photonvision_config/imgSaves
+   * frequently to prevent issues.
+   */
+  public void takeOutputSnapshot() {
+    outputSaveImgEntry.setBoolean(true);
   }
 
   /**
