@@ -120,15 +120,15 @@ class PhotonCamera {
   bool HasTargets() const { return GetLatestResult().HasTargets(); }
 
  private:
+  std::shared_ptr<nt::NetworkTable> mainTable =
+      nt::NetworkTableInstance::GetDefault().GetTable("photonvision");
+
   nt::NetworkTableEntry rawBytesEntry;
   nt::NetworkTableEntry driverModeEntry;
   nt::NetworkTableEntry inputSaveImgEntry;
   nt::NetworkTableEntry outputSaveImgEntry;
   nt::NetworkTableEntry pipelineIndexEntry;
   nt::NetworkTableEntry ledModeEntry;
-
-  std::shared_ptr<nt::NetworkTable> mainTable =
-      nt::NetworkTableInstance::GetDefault().GetTable("photonvision");
 
   mutable Packet packet;
 
