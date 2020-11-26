@@ -59,8 +59,7 @@ class PhotonUtils {
    */
   static frc::Translation2d EstimateTargetTranslation(
       units::meter_t targetDistance, frc::Rotation2d yaw) {
-    return {targetDistance * yaw.Cos(),
-            targetDistance * yaw.Sin()};
+    return {targetDistance * yaw.Cos(), targetDistance * yaw.Sin()};
   }
 };
 }  // namespace photonlib
