@@ -20,7 +20,7 @@ if (project.hasProperty('releaseMode')) {
   wpilibRepositories.addAllDevelopmentRepositories(project)
 }
 
-ext.pubVersion = '2020.0.10'
+ext.pubVersion = '2020.0.11'
 
 // Apply C++ configuration
 apply from: 'config.gradle'
