@@ -21,6 +21,7 @@
 #include <frc/geometry/Translation2d.h>
 #include <units/angle.h>
 #include <units/length.h>
+#include <units/math.h>
 
 namespace photonlib {
 class PhotonUtils {
@@ -58,8 +59,8 @@ class PhotonUtils {
    */
   static frc::Translation2d EstimateTargetTranslation(
       units::meter_t targetDistance, frc::Rotation2d yaw) {
-    return {targetDistance * yaw.Cos().to<double>(),
-            targetDistance * yaw.Sin().to<double>()};
+    return {targetDistance * yaw.Cos(),
+            targetDistance * yaw.Sin()};
   }
-}
+};
 }  // namespace photonlib
