@@ -2,9 +2,10 @@ apply plugin: 'maven-publish'
 
 ext.licenseFile = files("$rootDir/LICENSE.txt")
 
-def outputsFolder = file("$buildDir/allOutputs")
+def outputsFolder = file("$buildDir/outputs")
+def allOutputsFolder = file("$buildDir/allOutputs")
 
-def versionFile = file("$outputsFolder/version.txt")
+def versionFile = file("$allOutputsFolder/version.txt")
 
 task outputVersions() {
     description = 'Prints the versions of wpilib to a file for use by the downstream packaging project'
@@ -14,6 +15,7 @@ task outputVersions() {
     doFirst {
         buildDir.mkdir()
         outputsFolder.mkdir()
+        allOutputsFolder.mkdir()
     }
 
     doLast {
@@ -26,7 +28,7 @@ task libraryBuild() {}
 build.dependsOn outputVersions
 
 task copyAllOutputs(type: Copy) {
-    destinationDir outputsFolder
+    destinationDir allOutputsFolder
 }
 
 build.dependsOn copyAllOutputs
@@ -52,7 +54,7 @@ task cppHeadersZip(type: Zip) {
         into '/'
     }
 
-    from('src/main/native/include') {
+    from('src/main/native/include/') {
         into '/'
     }
 }
