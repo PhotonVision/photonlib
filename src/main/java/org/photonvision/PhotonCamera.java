@@ -25,20 +25,20 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  * Represents a camera that is connected to PhotonVision.
  */
 public class PhotonCamera {
-  private final NetworkTableEntry rawBytesEntry;
-  private final NetworkTableEntry driverModeEntry;
-  private final NetworkTableEntry inputSaveImgEntry;
-  private final NetworkTableEntry outputSaveImgEntry;
-  private final NetworkTableEntry pipelineIndexEntry;
-  private final NetworkTableEntry ledModeEntry;
+  final NetworkTableEntry rawBytesEntry;
+  final NetworkTableEntry driverModeEntry;
+  final NetworkTableEntry inputSaveImgEntry;
+  final NetworkTableEntry outputSaveImgEntry;
+  final NetworkTableEntry pipelineIndexEntry;
+  final NetworkTableEntry ledModeEntry;
 
-  private final NetworkTable mainTable = NetworkTableInstance.getDefault().getTable("photonvision");
+  final NetworkTable mainTable = NetworkTableInstance.getDefault().getTable("photonvision");
 
-  private boolean driverMode;
-  private int pipelineIndex;
-  private LEDMode mode;
+  boolean driverMode;
+  int pipelineIndex;
+  LEDMode mode;
 
-  private Packet packet = new Packet(1);
+  Packet packet = new Packet(1);
 
   /**
    * Constructs a PhotonCamera from a root table.
