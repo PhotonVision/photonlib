@@ -74,10 +74,12 @@ public class SimPhotonCamera extends PhotonCamera {
      * Simulate one processed frame of vision data, putting one result to NT.
      */
     public void update(){
-      PhotonPipelineResult newResult = new PhotonPipelineResult(0,trackedTargetList);
-      var newPacket = new org.photonvision.Packet(newResult.getPacketSize());
-      newResult.populatePacket(newPacket);
-      rawBytesEntry.setRaw(newPacket.getData());
+      if(!getDriverMode()){
+        PhotonPipelineResult newResult = new PhotonPipelineResult(0,trackedTargetList);
+        var newPacket = new org.photonvision.Packet(newResult.getPacketSize());
+        newResult.populatePacket(newPacket);
+        rawBytesEntry.setRaw(newPacket.getData());
+      }
       trackedTargetList.clear();
     }
 
