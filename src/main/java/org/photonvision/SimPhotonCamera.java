@@ -1,17 +1,9 @@
 package org.photonvision;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Queue;
-
-import org.photonvision.PhotonTrackedTarget;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-
 import edu.wpi.first.wpilibj.geometry.Transform2d;
-import frc.UnitUtils;
 
 public class SimPhotonCamera extends PhotonCamera {
     
