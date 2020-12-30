@@ -60,4 +60,17 @@ public final class PhotonUtils {
   public static Translation2d estimateTargetTranslation2d(double targetDistanceMeters, Rotation2d yaw) {
     return new Translation2d(yaw.getCos() * targetDistanceMeters, yaw.getSin() * targetDistanceMeters);
   }
+
+
+  /**
+   * Wraps an arbitrary angle (in degrees) to the (-180, 180] range.
+   * @param angle
+   * @return Wrapped-to-range angle
+   */
+  static double wrapAngleDeg(double angle){
+    angle %=360;
+    angle = angle > 180.0 ? angle-360 : angle;
+    angle = angle <= -180.0 ? angle+360 : angle;
+    return angle;
+  }
 }
