@@ -17,13 +17,9 @@
 
 package org.photonvision;
 
-import edu.wpi.first.networktables.NetworkTablesJNI;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
-;
 
-import java.io.IOException;
 
 class PhotonCameraTest {
     @Test
