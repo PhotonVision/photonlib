@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2020 Photon Vision.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.photonvision;
 
 import java.util.LinkedList;
@@ -7,7 +24,6 @@ import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpiutil.math.Pair;
 
 public class SimVisionSystem {
-
     SimPhotonCamera cam;
 
     double camDiagFOV_deg;
@@ -47,7 +63,7 @@ public class SimVisionSystem {
         double hypotPixels = Math.hypot(cameraRes_px.getFirst(), cameraRes_px.getSecond());
         this.camHorizFOV_deg = camDiagFOV_deg * cameraRes_px.getFirst()/hypotPixels;
         this.camVertFOV_deg  = camDiagFOV_deg * cameraRes_px.getSecond()/hypotPixels;
-        
+
         cam = new SimPhotonCamera(camName);
         tgtList = new LinkedList<SimVisionTarget>();
     }
@@ -56,7 +72,7 @@ public class SimVisionSystem {
      * Add a target on the field which your vision system is designed to detect.
      * The photoncamera from this system will report the location of the robot rellative
      * to the subste of these targets which are visible from the given robot position.
-     * @param tgt 
+     * @param tgt
      */
     public void addSimVisionTarget(SimVisionTarget tgt){
         tgtList.add(tgt);
@@ -91,7 +107,7 @@ public class SimVisionSystem {
             double dist_m = Math.hypot(dist_along_ground_m, dist_vertical_m);
 
             double area_px = tgt.tgtArea_m2 / getM2PerPx(dist_along_ground_m);
-            
+
             double yaw_deg = PhotonUtils.wrapAngleDeg(camToTargetTrans.getRotation().getDegrees());
             double pitch_deg = Math.atan2(dist_vertical_m, dist_along_ground_m) - this.camPitch_deg;
 
@@ -111,7 +127,7 @@ public class SimVisionSystem {
     }
 
 
-    boolean camCanSeeTarget(double dist_m, double yaw, double pitch, double area){ 
+    boolean camCanSeeTarget(double dist_m, double yaw, double pitch, double area){
         boolean inRange = (dist_m < this.maxLEDRange_m);
         boolean inHorizAngle = Math.abs(yaw) < (this.camHorizFOV_deg/2);
         boolean inVertAngle = Math.abs(pitch) <  (this.camVertFOV_deg/2);
@@ -119,5 +135,5 @@ public class SimVisionSystem {
         return (inRange & inHorizAngle & inVertAngle & targetBigEnough);
     }
 
-    
+
 }
