@@ -119,42 +119,6 @@ class PhotonCamera {
    */
   bool HasTargets() const { return GetLatestResult().HasTargets(); }
 
-  /**
-   * Returns the pitch of the best target. The best target is defined in the
-   * PhotonVision UI.
-   * @return The pitch of the best target.
-   */
-  double GetBestTargetPitch() const {
-    return GetLatestResult().GetBestTarget().GetPitch();
-  }
-
-  /**
-   * Returns the yaw of the best target. The best target is defined in the
-   * PhotonVision UI.
-   * @return The yaw of the best target.
-   */
-  double GetBestTargetYaw() const {
-    return GetLatestResult().GetBestTarget().GetYaw();
-  }
-
-  /**
-   * Returns the area of the best target (0-100). The best target is defined in
-   * the PhotonVision UI.
-   * @return The area of the best target.
-   */
-  double GetBestTargetArea() const {
-    return GetLatestResult().GetBestTarget().GetArea();
-  }
-
-  /**
-   * Returns the skew of the best target (counter-clockwise positive). The best
-   * target is defined in the PhotonVision UI.
-   * @return The skew of the best target.
-   */
-  double GetBestTargetSkew() const {
-    return GetLatestResult().GetBestTarget().GetSkew();
-  }
-
  private:
   nt::NetworkTableEntry rawBytesEntry;
   nt::NetworkTableEntry driverModeEntry;
