@@ -86,10 +86,12 @@ public class SimVisionSystem {
      * Use this if your camera is on a gimbal or turret or some other mobile platform.
      * @param newRobotToCamera New Tranform from the robot to the camera
      * @param newCamHeightMeters New height of the camera off the floor
+     * @param newCamPitchDegrees New pitch of the camera axis back from horizontal
      */
-    public void moveCamera(Transform2d newRobotToCamera, double newCamHeightMeters){
+    public void moveCamera(Transform2d newRobotToCamera, double newCamHeightMeters, double newCamPitchDegrees){
         this.robotToCamera  = newRobotToCamera;
         this.cameraHeightOffGroundMeters  = newCamHeightMeters;
+        this.camPitchDegrees = newCamPitchDegrees;
     }
 
     /**
