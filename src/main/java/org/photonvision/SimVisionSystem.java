@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Transform2d;
+import edu.wpi.first.wpilibj.util.Units;
 
 public class SimVisionSystem {
     SimPhotonCamera cam;
@@ -110,8 +111,11 @@ public class SimVisionSystem {
 
             double area = tgt.tgtAreaMeters2 / getM2PerPx(distAlongGroundMeters);
 
-            double yawDegrees = PhotonUtils.wrapAngleDeg(camToTargetTrans.getRotation().getDegrees());
-            double pitchDegrees = Math.atan2(distVerticalMeters, distAlongGroundMeters) - this.camPitchDegrees;
+            //2D yaw mode considers the target as a point, and should ignore target rotation.
+            // Photon reports it in the correct robot reference frame.
+            // IE: targets to the left of the image should report negative yaw.
+            double yawDegrees = -1.0 * Units.radiansToDegrees(Math.atan2(camToTargetTrans.getTranslation().getY(),camToTargetTrans.getTranslation().getX()));
+            double pitchDegrees = Units.radiansToDegrees(Math.atan2(distVerticalMeters, distAlongGroundMeters)) - this.camPitchDegrees;
 
             if(camCanSeeTarget(distMeters, yawDegrees, pitchDegrees, area)){
                 visibleTgtList.add(new PhotonTrackedTarget(yawDegrees, pitchDegrees, area, 0.0, camToTargetTrans));
@@ -123,8 +127,8 @@ public class SimVisionSystem {
     }
 
     double getM2PerPx(double dist){
-        double widthMPerPx  = 2 * dist * Math.tan(this.camHorizFOVDegrees/2) / cameraResWidth;
-        double heightMPerPx = 2 * dist * Math.tan(this.camVertFOVDegrees/2)  / cameraResHeight;
+        double widthMPerPx  = 2 * dist * Math.tan(Units.degreesToRadians(this.camHorizFOVDegrees)/2) / cameraResWidth;
+        double heightMPerPx = 2 * dist * Math.tan(Units.degreesToRadians(this.camVertFOVDegrees)/2)  / cameraResHeight;
         return widthMPerPx * heightMPerPx;
     }
 
