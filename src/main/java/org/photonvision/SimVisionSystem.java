@@ -73,7 +73,7 @@ public class SimVisionSystem {
 
     /**
      * Add a target on the field which your vision system is designed to detect.
-     * The photoncamera from this system will report the location of the robot rellative
+     * The photoncamera from this system will report the location of the robot relative
      * to the subste of these targets which are visible from the given robot position.
      * @param tgt
      */

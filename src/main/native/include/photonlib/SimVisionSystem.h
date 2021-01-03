@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2020 Photon Vision.
+ * Copyright (C) 2020-2021 Photon Vision.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,45 +17,58 @@
 
 #pragma once
 
-#include "photonlib/SimPhotonCamera.h"
-#include "photonlib/SimVisionTarget.h"
+#include <vector>
+
 #include <frc/geometry/Translation2d.h>
+#include <units/angle.h>
+#include <units/area.h>
+#include <units/length.h>
+#include <units/time.h>
 #include <wpi/ArrayRef.h>
 #include <wpi/SmallVector.h>
-#include <list>
+
+#include "photonlib/SimPhotonCamera.h"
+#include "photonlib/SimVisionTarget.h"
 
 namespace photonlib {
 
 /**
- * Represents a camera that is connected to PhotonVision.ß
+ * Represents a camera that is connected to PhotonVision.
  */
 class SimVisionSystem {
  public:
 
-  explicit SimVisionSystem(const std::string&  name, 
-           double camDiagFOVDegrees, 
-           double camPitchDegrees, 
-           const frc::Transform2d& robotToCamera,
-           double cameraHeightOffGroundMeters, 
-           double maxLEDRangeMeters, 
-           int cameraResWidth, 
-           int cameraResHeight, 
+  explicit SimVisionSystem(const std::string&  name,
+           units::angle::degree_t camDiagFOVDegrees,
+           units::angle::degree_t camPitchDegrees,
+           frc::Transform2d& robotToCamera,
+           units::length::meter_t cameraHeightOffGroundMeters,
+           units::length::meter_t maxLEDRangeMeters,
+           int cameraResWidth,
+           int cameraResHeight,
            double minTargetArea);
+
+  void AddSimVisionTarget(SimVisionTarget tgt);
+  void MoveCamera(frc::Transform2d& newRobotToCamera, units::length::meter_t newCamHeightMeters, units::angle::degree_t newCamPitchDegrees);
+  void ProcessFrame(frc::Pose2d& robotPoseMeters);
 
 
   private:
   SimPhotonCamera * cam;
-  double camDiagFOVDegrees;
-  double camPitchDegrees;
-  frc::Transform2d robotToCamera;
-  double cameraHeightOffGroundMeters;
-  double maxLEDRangeMeters;
+  units::angle::degree_t camDiagFOVDegrees;
+  units::angle::degree_t camPitchDegrees;
+  frc::Transform2d& robotToCamera;
+  units::length::meter_t cameraHeightOffGroundMeters;
+  units::length::meter_t maxLEDRangeMeters;
   int cameraResWidth;
   int cameraResHeight;
   double minTargetArea;
-  double camHorizFOVDegrees;
-  double camVertFOVDegrees;
-   std::list<SimVisionTarget> tgtList = {};
+  units::angle::degree_t camHorizFOVDegrees;
+  units::angle::degree_t camVertFOVDegrees;
+  std::vector<SimVisionTarget> tgtList = {};
+
+  double getM2PerPx(units::length::meter_t dist);
+  bool camCanSeeTarget(units::length::meter_t distMeters, units::angle::degree_t yaw, units::angle::degree_t pitch, double area);
 };
 
 }  // namespace photonlib

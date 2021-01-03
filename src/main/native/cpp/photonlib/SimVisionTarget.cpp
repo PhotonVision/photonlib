@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2020 Photon Vision.
+ * Copyright (C) 2020-2021 Photon Vision.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,12 +19,12 @@
 
 namespace photonlib {
 
-    SimVisionTarget::SimVisionTarget(frc::Pose2d& targetPos, double targetHeightAboveGroundMeters, double targetWidthMeters, double targetHeightMeters): 
-                                    targetPos(targetPos), 
-                                    targetHeightAboveGroundMeters(targetHeightAboveGroundMeters), 
-                                    targetWidthMeters(targetWidthMeters), 
+    SimVisionTarget::SimVisionTarget(frc::Pose2d& targetPos, units::length::meter_t targetHeightAboveGroundMeters, units::length::meter_t targetWidthMeters, units::length::meter_t targetHeightMeters):
+                                    targetPos(targetPos),
+                                    targetHeightAboveGroundMeters(targetHeightAboveGroundMeters),
+                                    targetWidthMeters(targetWidthMeters),
                                     targetHeightMeters(targetHeightMeters) {
-
+        tgtAreaMeters2 = targetWidthMeters * targetHeightMeters;
     }
 
 

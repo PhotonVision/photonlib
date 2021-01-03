@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2020 Photon Vision.
+ * Copyright (C) 2020-2021 Photon Vision.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,12 @@
 
 #pragma once
 
-#include "photonlib/PhotonCamera.h"
+#include <units/time.h>
 #include <wpi/ArrayRef.h>
 #include <wpi/SmallVector.h>
 
 #include "photonlib/Packet.h"
-
+#include "photonlib/PhotonCamera.h"
 
 namespace photonlib {
 

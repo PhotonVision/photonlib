@@ -41,7 +41,6 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.util.Units;
 
 class SimVisionSystemTest {
-
     @BeforeEach
     public void initialize() {
 
@@ -187,7 +186,7 @@ class SimVisionSystemTest {
     }
 
     @ParameterizedTest
-    @ValueSource(doubles = {-10,-5,-0,-1,-2,5,7,10.23})    
+    @ValueSource(doubles = {-10,-5,-0,-1,-2,5,7,10.23})
     public void testYawAngles(double testYaw) {
         final var targetPose = new Pose2d(new Translation2d(35,0), new Rotation2d(Math.PI/4));
         var sysUnderTest = new SimVisionSystem("Test", 80.0, 0.0, new Transform2d(), 1, 99999, 640, 480, 0);
@@ -202,7 +201,7 @@ class SimVisionSystemTest {
     }
 
     @ParameterizedTest
-    @ValueSource(doubles = {-10,-5,-0,-1,-2,5,7,10.23,20.21,-19.999})    
+    @ValueSource(doubles = {-10,-5,-0,-1,-2,5,7,10.23,20.21,-19.999})
     public void testCameraPitch(double testPitch) {
         final var targetPose = new Pose2d(new Translation2d(35,0), new Rotation2d(Math.PI/4));
         final var robotPose  = new Pose2d(new Translation2d(30,0), new Rotation2d(0));
@@ -216,14 +215,14 @@ class SimVisionSystemTest {
         var tgt = res.getBestTarget();
         //If the camera is pitched down by 10 degrees, the target should appear
         // in the upper part of the image (ie, pitch positive). Therefor,
-        // pass/fail involves -1.0. 
+        // pass/fail involves -1.0.
         assertEquals(tgt.getPitch(), -1.0 * testPitch, 0.0001);
     }
 
 
     private static Stream<Arguments> distCalCParamProvider() {
         //Arbitrary and fairly random assortment of distances, camera pitches, and heights
-        return Stream.of( 
+        return Stream.of(
                 Arguments.of(5,35,0),
                 Arguments.of(6,35,1),
                 Arguments.of(10,35,0),
@@ -247,13 +246,13 @@ class SimVisionSystemTest {
     }
 
     @ParameterizedTest
-    @MethodSource("distCalCParamProvider")   
+    @MethodSource("distCalCParamProvider")
     public void testDistanceCalc(double testDist, double testPitch, double testHeight) {
         //Assume dist along ground and tgt height the same. Iterate over other parameters.
 
         final var targetPose = new Pose2d(new Translation2d(35,0), new Rotation2d(Math.PI/42));
         final var robotPose  = new Pose2d(new Translation2d(35 - testDist,0), new Rotation2d(0));
-        var sysUnderTest = new SimVisionSystem("absurdlylongnamewhichshouldneveractuallyhappenbuteehwelltestitanywaysohowsyourdaygoingihopegoodhaveagreatrestofyourlife!", 
+        var sysUnderTest = new SimVisionSystem("absurdlylongnamewhichshouldneveractuallyhappenbuteehwelltestitanywaysohowsyourdaygoingihopegoodhaveagreatrestofyourlife!",
                                             160.0, testPitch, new Transform2d(), testHeight, 99999, 640, 480, 0);
         sysUnderTest.addSimVisionTarget(new SimVisionTarget(targetPose, testDist, 0.5,0.5));
 

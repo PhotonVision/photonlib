@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2020 Photon Vision.
+ * Copyright (C) 2020-2021 Photon Vision.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,26 +18,25 @@
 #pragma once
 
 #include <frc/geometry/Pose2d.h>
-
+#include <units/area.h>
+#include <units/length.h>
 
 namespace photonlib {
 
 /**
- * Represents a camera that is connected to PhotonVision.ß
+ * Represents a target on the field which the vision processing system could detect.
  */
 class SimVisionTarget {
  public:
 
-  explicit SimVisionTarget(frc::Pose2d& targetPos, double targetHeightAboveGroundMeters, double targetWidthMeters, double targetHeightMeters);
+  explicit SimVisionTarget(frc::Pose2d& targetPos, units::length::meter_t targetHeightAboveGroundMeters, units::length::meter_t targetWidthMeters, units::length::meter_t targetHeightMeters);
 
-
-  private:
-    frc::Pose2d targetPos;
-    double targetHeightAboveGroundMeters;
-    double targetWidthMeters;
-    double targetHeightMeters;
-    double targetInfill_pct;
-    double tgtAreaMeters2;
+  frc::Pose2d targetPos;
+  units::length::meter_t targetHeightAboveGroundMeters;
+  units::length::meter_t targetWidthMeters;
+  units::length::meter_t targetHeightMeters;
+  double targetInfill_pct;
+  units::area::square_meter_t tgtAreaMeters2;
 
 };
 
