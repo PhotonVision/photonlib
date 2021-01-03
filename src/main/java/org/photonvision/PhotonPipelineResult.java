@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2020 Photon Vision.
+ * Copyright (C) 2020-2021 Photon Vision.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ package org.photonvision;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -108,9 +107,7 @@ public class PhotonPipelineResult {
    * @return A copy of the vector of targets.
    */
   public List<PhotonTrackedTarget> getTargets() {
-    List<PhotonTrackedTarget> r = new ArrayList<>(targets.size());
-    Collections.copy(r, targets);
-    return r;
+    return new ArrayList<PhotonTrackedTarget>(targets);
   }
 
   @Override
