@@ -18,13 +18,18 @@
 #pragma once
 
 #include "photonlib/PhotonCamera.h"
+#include <wpi/ArrayRef.h>
+#include <wpi/SmallVector.h>
+
+#include "photonlib/Packet.h"
+
 
 namespace photonlib {
 
 /**
  * Represents a camera that is connected to PhotonVision.ß
  */
-class SimPhotonCamera {
+class SimPhotonCamera: public PhotonCamera {
  public:
   /**
    * Constructs a Simulated PhotonCamera from a root table.
@@ -44,14 +49,14 @@ class SimPhotonCamera {
 
   /**
    * Simulate one processed frame of vision data, putting one result to NT.
-   * @param latencyMillis
-   * @param tgtList List of targets detected
+   * @param latency Latency of frame processing
+   * @param tgtList Set of targets detected
    */
-  void submitProcessedFrame(double latencyMillis, std::initializer_list<PhotonTrackedTarget *> tgtList);
+  void submitProcessedFrame(units::second_t latency, wpi::ArrayRef<PhotonTrackedTarget> tgtList);
 
   private:
-  PhotonCamera * cam;
 
+  mutable Packet simPacket;
 
 };
 

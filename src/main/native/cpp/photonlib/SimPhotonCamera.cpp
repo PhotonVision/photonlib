@@ -17,21 +17,26 @@
 
 #include "photonlib/SimPhotonCamera.h"
 
-#include "photonlib/Packet.h"
 
 namespace photonlib {
 
-SimPhotonCamera::SimPhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable) {
-    cam = new PhotonCamera(rootTable);
+    SimPhotonCamera::SimPhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable) : PhotonCamera(rootTable) {}
 
-}
+    SimPhotonCamera::SimPhotonCamera(const std::string& cameraName) : PhotonCamera(cameraName) {}
 
-SimPhotonCamera::SimPhotonCamera(const std::string& cameraName) {
-    cam = new PhotonCamera(cameraName);
-}
 
-void SimPhotonCamera::submitProcessedFrame(double latencyMillis, std::initializer_list<PhotonTrackedTarget *> tgtList){
+    void SimPhotonCamera::submitProcessedFrame(units::second_t latency, wpi::ArrayRef<PhotonTrackedTarget> tgtList){
+      if(!GetDriverMode()){
 
-}
+        // Clear the current packet.
+        simPacket.Clear();
+
+        // Create the new result and pump it into the packet
+        simPacket << new PhotonPipelineResult(latency, tgtList);
+
+        rawBytesEntry.SetRaw(wpi::StringRef(simPacket.GetData().data(), simPacket.GetData().size()));
+
+      }
+    }
 
 }  // namespace photonlib

@@ -61,7 +61,7 @@ public class SimPhotonCamera extends PhotonCamera {
     public void submitProcessedFrame(double latencyMillis, List<PhotonTrackedTarget> tgtList){
       if(!getDriverMode()){
         PhotonPipelineResult newResult = new PhotonPipelineResult(latencyMillis, tgtList);
-        var newPacket = new org.photonvision.Packet(newResult.getPacketSize());
+        var newPacket = new Packet(newResult.getPacketSize());
         newResult.populatePacket(newPacket);
         rawBytesEntry.setRaw(newPacket.getData());
       }
