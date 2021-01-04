@@ -41,7 +41,7 @@ class SimVisionSystem {
   explicit SimVisionSystem(const std::string&  name,
            units::angle::degree_t camDiagFOVDegrees,
            units::angle::degree_t camPitchDegrees,
-           frc::Transform2d& robotToCamera,
+           frc::Transform2d robotToCamera,
            units::length::meter_t cameraHeightOffGroundMeters,
            units::length::meter_t maxLEDRangeMeters,
            int cameraResWidth,
@@ -49,15 +49,15 @@ class SimVisionSystem {
            double minTargetArea);
 
   void AddSimVisionTarget(SimVisionTarget tgt);
-  void MoveCamera(frc::Transform2d& newRobotToCamera, units::length::meter_t newCamHeightMeters, units::angle::degree_t newCamPitchDegrees);
-  void ProcessFrame(frc::Pose2d& robotPoseMeters);
+  void MoveCamera(frc::Transform2d newRobotToCamera, units::length::meter_t newCamHeightMeters, units::angle::degree_t newCamPitchDegrees);
+  void ProcessFrame(frc::Pose2d robotPoseMeters);
 
 
   private:
   SimPhotonCamera * cam;
   units::angle::degree_t camDiagFOVDegrees;
   units::angle::degree_t camPitchDegrees;
-  frc::Transform2d& robotToCamera;
+  frc::Transform2d robotToCamera;
   units::length::meter_t cameraHeightOffGroundMeters;
   units::length::meter_t maxLEDRangeMeters;
   int cameraResWidth;

@@ -41,11 +41,6 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.util.Units;
 
 class SimVisionSystemTest {
-    @BeforeEach
-    public void initialize() {
-
-    }
-
 
     @Test
     public void testEmpty() {
