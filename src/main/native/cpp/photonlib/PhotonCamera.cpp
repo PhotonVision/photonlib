@@ -45,7 +45,7 @@ PhotonPipelineResult PhotonCamera::GetLatestResult() const {
   PhotonPipelineResult result;
 
   // Fill the packet with latest data and populate result.
-  packet << rawBytesEntry.GetRaw(std::string());
+  packet << rawBytesEntry.GetValue()->GetRaw(); //Workaround for Raw value while allwpilib PR3051 is worked
   packet >> result;
 
   // Return result
