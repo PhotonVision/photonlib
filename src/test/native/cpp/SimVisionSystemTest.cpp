@@ -17,8 +17,16 @@
 
 #include "gtest/gtest.h"
 #include "photonlib/SimVisionSystem.h"
+#include "photonlib/PhotonCamera.h"
+
+
+
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableEntry.h>
+#include <networktables/NetworkTableInstance.h>
 
 TEST(SimVisionSystemTest, testEmpty) {
+
 
     photonlib::SimVisionSystem sysUnderTest ("Test",
            units::angle::degree_t(80.0),
@@ -33,5 +41,12 @@ TEST(SimVisionSystemTest, testEmpty) {
     for(int loopIdx = 0; loopIdx < 100; loopIdx++){
         sysUnderTest.ProcessFrame(frc::Pose2d());
     }
+
+}
+
+TEST(PhotonCamBaseTest, testInstantiate) {
+
+
+    photonlib::PhotonCamera testCam ("Test");
 
 }
