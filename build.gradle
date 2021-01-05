@@ -22,6 +22,7 @@ if (project.hasProperty('releaseMode')) {
 
 ext {
     pubVersion = '2021.1.1'
+    wpilibVersion = '2020.3.2-99-g9f4de91'
 }
 
 // Apply C++ configuration
@@ -35,12 +36,18 @@ test {
 dependencies {
     implementation 'edu.wpi.first.cscore:cscore-java:2020.+'
     implementation 'edu.wpi.first.cameraserver:cameraserver-java:2020.+'
-    implementation 'edu.wpi.first.ntcore:ntcore-java:2020.+'
     implementation 'edu.wpi.first.wpilibj:wpilibj-java:2020.+'
     implementation 'edu.wpi.first.wpiutil:wpiutil-java:2020.+'
     implementation 'edu.wpi.first.wpimath:wpimath-java:2020.+'
     implementation 'edu.wpi.first.hal:hal-java:2020.+'
     implementation 'edu.wpi.first.thirdparty.frc2020.opencv:opencv-java:3.4.7-2'
+
+    implementation "edu.wpi.first.ntcore:ntcore-java:$wpilibVersion"
+    compile "edu.wpi.first.ntcore:ntcore-jni:$wpilibVersion:linuxaarch64bionic"
+    compile "edu.wpi.first.ntcore:ntcore-jni:$wpilibVersion:linuxraspbian"
+    compile "edu.wpi.first.ntcore:ntcore-jni:$wpilibVersion:linuxx86-64"
+    compile "edu.wpi.first.ntcore:ntcore-jni:$wpilibVersion:osxx86-64"
+    compile "edu.wpi.first.ntcore:ntcore-jni:$wpilibVersion:windowsx86-64"
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.6.2")
