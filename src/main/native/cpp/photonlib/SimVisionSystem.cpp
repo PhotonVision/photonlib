@@ -42,7 +42,7 @@ namespace photonlib {
       camHorizFOVDegrees = camDiagFOVDegrees * cameraResWidth/hypotPixels;
       camVertFOVDegrees  = camDiagFOVDegrees * cameraResHeight/hypotPixels;
 
-      cam = new SimPhotonCamera(name);
+      cam = SimPhotonCamera(name);
       tgtList.clear();
     }
 
@@ -79,13 +79,13 @@ namespace photonlib {
             units::angle::degree_t pitchDegrees = units::math::atan2(distVerticalMeters, distAlongGroundMeters) - camPitchDegrees;
 
             if(camCanSeeTarget(distMeters, yawDegrees, pitchDegrees, area)){
-                PhotonTrackedTarget * newTgt = new PhotonTrackedTarget(yawDegrees.to<double>(), pitchDegrees.to<double>(), area, 0.0, camToTargetTrans);
-                visibleTgtList.push_back(*newTgt);
+                PhotonTrackedTarget newTgt = PhotonTrackedTarget(yawDegrees.to<double>(), pitchDegrees.to<double>(), area, 0.0, camToTargetTrans);
+                visibleTgtList.push_back(newTgt);
             }
         }
 
         units::second_t procDelay (0.0); //Future - tie this to something meaningful
-        cam->submitProcessedFrame(procDelay, wpi::MutableArrayRef<PhotonTrackedTarget>(visibleTgtList));
+        cam.submitProcessedFrame(procDelay, wpi::MutableArrayRef<PhotonTrackedTarget>(visibleTgtList));
 
     }
 

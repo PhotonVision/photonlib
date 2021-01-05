@@ -31,7 +31,7 @@ namespace photonlib {
         simPacket.Clear();
 
         // Create the new result and pump it into the packet
-        simPacket << new PhotonPipelineResult(latency, tgtList);
+        simPacket << PhotonPipelineResult(latency, tgtList);
 
         rawBytesEntry.SetRaw(wpi::StringRef(simPacket.GetData().data(), simPacket.GetData().size()));
 

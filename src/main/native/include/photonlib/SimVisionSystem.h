@@ -52,9 +52,7 @@ class SimVisionSystem {
   void MoveCamera(frc::Transform2d newRobotToCamera, units::length::meter_t newCamHeightMeters, units::angle::degree_t newCamPitchDegrees);
   void ProcessFrame(frc::Pose2d robotPoseMeters);
 
-
   private:
-  SimPhotonCamera * cam;
   units::angle::degree_t camDiagFOVDegrees;
   units::angle::degree_t camPitchDegrees;
   frc::Transform2d robotToCamera;
@@ -69,6 +67,10 @@ class SimVisionSystem {
 
   double getM2PerPx(units::length::meter_t dist);
   bool camCanSeeTarget(units::length::meter_t distMeters, units::angle::degree_t yaw, units::angle::degree_t pitch, double area);
+
+  public:
+  SimPhotonCamera cam = photonlib::SimPhotonCamera("Default");
+
 };
 
 }  // namespace photonlib

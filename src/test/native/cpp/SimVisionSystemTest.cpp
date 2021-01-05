@@ -19,7 +19,8 @@
 #include "photonlib/SimVisionSystem.h"
 #include "photonlib/PhotonCamera.h"
 
-
+#include <units/length.h>
+#include <units/angle.h>
 
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
@@ -31,7 +32,7 @@ TEST(SimVisionSystemTest, testEmpty) {
     photonlib::SimVisionSystem sysUnderTest ("Test",
            units::angle::degree_t(80.0),
            units::angle::degree_t(0.0),
-           frc::Transform2d(frc::Translation2d(units::length::meter_t(35.0),units::length::meter_t(0.0)), frc::Rotation2d()),
+           frc::Transform2d(),
            units::length::meter_t(1.0),
            units::length::meter_t(99999.0),
            320,
@@ -44,9 +45,37 @@ TEST(SimVisionSystemTest, testEmpty) {
 
 }
 
-TEST(PhotonCamBaseTest, testInstantiate) {
 
 
-    photonlib::PhotonCamera testCam ("Test");
+class SimVisionSystemTestDistParam : public testing::TestWithParam<double> {};
+INSTANTIATE_TEST_SUITE_P(SimVisionSystemTestDistParamInst,
+                         SimVisionSystemTestDistParam,
+                         testing::Values(5,10,15,20,25,30));
+
+TEST_P(SimVisionSystemTestDistParam, testDistanceAligned) {
+
+    double dist = GetParam();
+    auto targetPose = frc::Pose2d(frc::Translation2d(units::meter_t(35),units::meter_t(0)), frc::Rotation2d());
+    photonlib::SimVisionSystem sysUnderTest ("Test",
+           units::angle::degree_t(80.0),
+           units::angle::degree_t(0.0),
+           frc::Transform2d(),
+           units::length::meter_t(1.0),
+           units::length::meter_t(99999.0),
+           320,
+           240,
+           0.0);
+    sysUnderTest.AddSimVisionTarget(photonlib::SimVisionTarget(targetPose, 
+                                                               units::meter_t(0.0), 
+                                                               units::meter_t(1.0), 
+                                                               units::meter_t(1.0)));
+
+    auto robotPose = frc::Pose2d(frc::Translation2d(units::meter_t(35.0-dist), units::meter_t(0)), frc::Rotation2d());
+    sysUnderTest.ProcessFrame(robotPose);
+
+    auto result = sysUnderTest.cam.GetLatestResult();
+
+    ASSERT_TRUE(result.HasTargets());
+    ASSERT_EQ(result.GetBestTarget().GetCameraRelativePose().Translation().Norm().to<double>(), dist);
 
 }
