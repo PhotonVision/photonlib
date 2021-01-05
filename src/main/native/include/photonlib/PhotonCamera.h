@@ -119,6 +119,10 @@ class PhotonCamera {
    */
   bool HasTargets() const { return GetLatestResult().HasTargets(); }
 
+ private:
+  std::shared_ptr<nt::NetworkTable> mainTable =
+      nt::NetworkTableInstance::GetDefault().GetTable("photonvision");
+
  protected:
   nt::NetworkTableEntry rawBytesEntry;
   nt::NetworkTableEntry driverModeEntry;
@@ -128,9 +132,7 @@ class PhotonCamera {
   nt::NetworkTableEntry ledModeEntry;
 
 
- private:
-  std::shared_ptr<nt::NetworkTable> mainTable =
-      nt::NetworkTableInstance::GetDefault().GetTable("photonvision");
+
 
   mutable Packet packet;
 
