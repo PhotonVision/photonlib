@@ -44,13 +44,16 @@ INSTANTIATE_TEST_SUITE_P(SimVisionSystemTestDistParamInst,
 
 TEST_P(SimVisionSystemTestDistParam, testDistanceAligned) {
   double dist = GetParam();
+
   auto targetPose =
       frc::Pose2d(frc::Translation2d(units::meter_t(35), units::meter_t(0)),
                   frc::Rotation2d());
+
   photonlib::SimVisionSystem sysUnderTest(
       "Test", units::angle::degree_t(80.0), units::angle::degree_t(0.0),
       frc::Transform2d(), units::length::meter_t(1.0),
       units::length::meter_t(99999.0), 320, 240, 0.0);
+
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPose, units::meter_t(0.0),
                                  units::meter_t(1.0), units::meter_t(1.0)));
@@ -58,10 +61,9 @@ TEST_P(SimVisionSystemTestDistParam, testDistanceAligned) {
   auto robotPose = frc::Pose2d(
       frc::Translation2d(units::meter_t(35.0 - dist), units::meter_t(0)),
       frc::Rotation2d());
+
   sysUnderTest.ProcessFrame(robotPose);
-
   auto result = sysUnderTest.cam.GetLatestResult();
-
   ASSERT_TRUE(result.HasTargets());
   ASSERT_EQ(result.GetBestTarget()
                 .GetCameraRelativePose()
@@ -69,4 +71,84 @@ TEST_P(SimVisionSystemTestDistParam, testDistanceAligned) {
                 .Norm()
                 .to<double>(),
             dist);
+}
+
+TEST(SimVisionSystemTest, testVisibilityCupidShuffle) {
+  auto targetPose =
+      frc::Pose2d(frc::Translation2d(units::meter_t(35), units::meter_t(0)),
+                  frc::Rotation2d());
+
+  photonlib::SimVisionSystem sysUnderTest(
+      "Test", units::angle::degree_t(80.0), units::angle::degree_t(0.0),
+      frc::Transform2d(), units::length::meter_t(1.0),
+      units::length::meter_t(99999.0), 320, 240, 0.0);
+
+  sysUnderTest.AddSimVisionTarget(
+      photonlib::SimVisionTarget(targetPose, units::meter_t(0.0),
+                                 units::meter_t(3.0), units::meter_t(3.0)));
+
+  // To the right, to the right
+  auto robotPose =
+      frc::Pose2d(frc::Translation2d(units::meter_t(5.0), units::meter_t(0.0)),
+                  frc::Rotation2d(units::degree_t(-70.0)));
+  sysUnderTest.ProcessFrame(robotPose);
+  auto result = sysUnderTest.cam.GetLatestResult();
+  ASSERT_FALSE(result.HasTargets());
+
+  // To the right, to the right
+  robotPose =
+      frc::Pose2d(frc::Translation2d(units::meter_t(5.0), units::meter_t(0.0)),
+                  frc::Rotation2d(units::degree_t(-95.0)));
+  sysUnderTest.ProcessFrame(robotPose);
+  result = sysUnderTest.cam.GetLatestResult();
+  ASSERT_FALSE(result.HasTargets());
+
+  // To the left, to the left
+  robotPose =
+      frc::Pose2d(frc::Translation2d(units::meter_t(5.0), units::meter_t(0.0)),
+                  frc::Rotation2d(units::degree_t(90.0)));
+  sysUnderTest.ProcessFrame(robotPose);
+  result = sysUnderTest.cam.GetLatestResult();
+  ASSERT_FALSE(result.HasTargets());
+
+  // To the left, to the left
+  robotPose =
+      frc::Pose2d(frc::Translation2d(units::meter_t(5.0), units::meter_t(0.0)),
+                  frc::Rotation2d(units::degree_t(65.0)));
+  sysUnderTest.ProcessFrame(robotPose);
+  result = sysUnderTest.cam.GetLatestResult();
+  ASSERT_FALSE(result.HasTargets());
+
+  // now kick, now kick
+  robotPose =
+      frc::Pose2d(frc::Translation2d(units::meter_t(2.0), units::meter_t(0.0)),
+                  frc::Rotation2d(units::degree_t(5.0)));
+  sysUnderTest.ProcessFrame(robotPose);
+  result = sysUnderTest.cam.GetLatestResult();
+  ASSERT_TRUE(result.HasTargets());
+
+  // now kick, now kick
+  robotPose =
+      frc::Pose2d(frc::Translation2d(units::meter_t(2.0), units::meter_t(0.0)),
+                  frc::Rotation2d(units::degree_t(-5.0)));
+  sysUnderTest.ProcessFrame(robotPose);
+  result = sysUnderTest.cam.GetLatestResult();
+  ASSERT_TRUE(result.HasTargets());
+
+  // now walk it by yourself
+  robotPose =
+      frc::Pose2d(frc::Translation2d(units::meter_t(2.0), units::meter_t(0.0)),
+                  frc::Rotation2d(units::degree_t(-179.0)));
+  sysUnderTest.ProcessFrame(robotPose);
+  result = sysUnderTest.cam.GetLatestResult();
+  ASSERT_FALSE(result.HasTargets());
+
+  // now walk it by yourself
+  sysUnderTest.MoveCamera(
+      frc::Transform2d(frc::Translation2d(),
+                       frc::Rotation2d(units::degree_t(180))),
+      units::meter_t(0.0), units::degree_t(1.0));
+  sysUnderTest.ProcessFrame(robotPose);
+  result = sysUnderTest.cam.GetLatestResult();
+  ASSERT_TRUE(result.HasTargets());
 }
