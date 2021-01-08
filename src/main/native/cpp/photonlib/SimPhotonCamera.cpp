@@ -19,23 +19,24 @@
 
 namespace photonlib {
 
-    SimPhotonCamera::SimPhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable) : PhotonCamera(rootTable) {}
+SimPhotonCamera::SimPhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable)
+    : PhotonCamera(rootTable) {}
 
-    SimPhotonCamera::SimPhotonCamera(const std::string& cameraName) : PhotonCamera(cameraName) {}
+SimPhotonCamera::SimPhotonCamera(const std::string& cameraName)
+    : PhotonCamera(cameraName) {}
 
+void SimPhotonCamera::submitProcessedFrame(
+    units::second_t latency, wpi::ArrayRef<PhotonTrackedTarget> tgtList) {
+  if (!GetDriverMode()) {
+    // Clear the current packet.
+    simPacket.Clear();
 
-    void SimPhotonCamera::submitProcessedFrame(units::second_t latency, wpi::ArrayRef<PhotonTrackedTarget> tgtList){
-      if(!GetDriverMode()){
+    // Create the new result and pump it into the packet
+    simPacket << PhotonPipelineResult(latency, tgtList);
 
-        // Clear the current packet.
-        simPacket.Clear();
-
-        // Create the new result and pump it into the packet
-        simPacket << PhotonPipelineResult(latency, tgtList);
-
-        rawBytesEntry.SetRaw(wpi::StringRef(simPacket.GetData().data(), simPacket.GetData().size()));
-
-      }
-    }
+    rawBytesEntry.SetRaw(
+        wpi::StringRef(simPacket.GetData().data(), simPacket.GetData().size()));
+  }
+}
 
 }  // namespace photonlib

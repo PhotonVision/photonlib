@@ -131,9 +131,6 @@ class PhotonCamera {
   nt::NetworkTableEntry pipelineIndexEntry;
   nt::NetworkTableEntry ledModeEntry;
 
-
-
-
   mutable Packet packet;
 
   bool driverMode;

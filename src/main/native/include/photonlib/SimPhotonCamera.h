@@ -29,7 +29,7 @@ namespace photonlib {
 /**
  * Represents a camera that is connected to PhotonVision.ß
  */
-class SimPhotonCamera: public PhotonCamera {
+class SimPhotonCamera : public PhotonCamera {
  public:
   /**
    * Constructs a Simulated PhotonCamera from a root table.
@@ -52,12 +52,11 @@ class SimPhotonCamera: public PhotonCamera {
    * @param latency Latency of frame processing
    * @param tgtList Set of targets detected
    */
-  void submitProcessedFrame(units::second_t latency, wpi::ArrayRef<PhotonTrackedTarget> tgtList);
+  void submitProcessedFrame(units::second_t latency,
+                            wpi::ArrayRef<PhotonTrackedTarget> tgtList);
 
-  private:
-
+ private:
   mutable Packet simPacket;
-
 };
 
 }  // namespace photonlib

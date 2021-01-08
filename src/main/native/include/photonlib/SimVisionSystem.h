@@ -37,22 +37,22 @@ namespace photonlib {
  */
 class SimVisionSystem {
  public:
-
-  explicit SimVisionSystem(const std::string&  name,
-           units::angle::degree_t camDiagFOVDegrees,
-           units::angle::degree_t camPitchDegrees,
-           frc::Transform2d robotToCamera,
-           units::length::meter_t cameraHeightOffGroundMeters,
-           units::length::meter_t maxLEDRangeMeters,
-           int cameraResWidth,
-           int cameraResHeight,
-           double minTargetArea);
+  explicit SimVisionSystem(const std::string& name,
+                           units::angle::degree_t camDiagFOVDegrees,
+                           units::angle::degree_t camPitchDegrees,
+                           frc::Transform2d robotToCamera,
+                           units::length::meter_t cameraHeightOffGroundMeters,
+                           units::length::meter_t maxLEDRangeMeters,
+                           int cameraResWidth, int cameraResHeight,
+                           double minTargetArea);
 
   void AddSimVisionTarget(SimVisionTarget tgt);
-  void MoveCamera(frc::Transform2d newRobotToCamera, units::length::meter_t newCamHeightMeters, units::angle::degree_t newCamPitchDegrees);
+  void MoveCamera(frc::Transform2d newRobotToCamera,
+                  units::length::meter_t newCamHeightMeters,
+                  units::angle::degree_t newCamPitchDegrees);
   void ProcessFrame(frc::Pose2d robotPoseMeters);
 
-  private:
+ private:
   units::angle::degree_t camDiagFOVDegrees;
   units::angle::degree_t camPitchDegrees;
   frc::Transform2d robotToCamera;
@@ -66,11 +66,12 @@ class SimVisionSystem {
   std::vector<SimVisionTarget> tgtList = {};
 
   double getM2PerPx(units::length::meter_t dist);
-  bool camCanSeeTarget(units::length::meter_t distMeters, units::angle::degree_t yaw, units::angle::degree_t pitch, double area);
+  bool camCanSeeTarget(units::length::meter_t distMeters,
+                       units::angle::degree_t yaw, units::angle::degree_t pitch,
+                       double area);
 
-  public:
+ public:
   SimPhotonCamera cam = photonlib::SimPhotonCamera("Default");
-
 };
 
 }  // namespace photonlib

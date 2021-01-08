@@ -24,12 +24,15 @@
 namespace photonlib {
 
 /**
- * Represents a target on the field which the vision processing system could detect.
+ * Represents a target on the field which the vision processing system could
+ * detect.
  */
 class SimVisionTarget {
  public:
-
-  explicit SimVisionTarget(frc::Pose2d& targetPos, units::length::meter_t targetHeightAboveGroundMeters, units::length::meter_t targetWidthMeters, units::length::meter_t targetHeightMeters);
+  explicit SimVisionTarget(frc::Pose2d& targetPos,
+                           units::length::meter_t targetHeightAboveGroundMeters,
+                           units::length::meter_t targetWidthMeters,
+                           units::length::meter_t targetHeightMeters);
 
   frc::Pose2d targetPos;
   units::length::meter_t targetHeightAboveGroundMeters;
@@ -37,7 +40,6 @@ class SimVisionTarget {
   units::length::meter_t targetHeightMeters;
   double targetInfill_pct;
   units::area::square_meter_t tgtAreaMeters2;
-
 };
 
 }  // namespace photonlib
