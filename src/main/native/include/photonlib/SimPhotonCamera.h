@@ -17,6 +17,9 @@
 
 #pragma once
 
+#include <memory>
+#include <string>
+
 #include <units/time.h>
 #include <wpi/ArrayRef.h>
 #include <wpi/SmallVector.h>

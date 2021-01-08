@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include <frc/geometry/Translation2d.h>
