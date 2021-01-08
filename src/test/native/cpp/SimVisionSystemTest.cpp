@@ -459,5 +459,5 @@ TEST(SimVisionSystemTest, testMultipleTargets) {
   ASSERT_TRUE(result.HasTargets());
 
   auto tgtList = result.GetTargets();
-  ASSERT_EQ(11, tgtList.size());
+  ASSERT_EQ(11ul, tgtList.size());
 }
