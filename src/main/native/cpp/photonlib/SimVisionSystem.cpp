@@ -19,25 +19,29 @@
 
 #include <cmath>
 
+#include <units/angle.h>
+#include <units/length.h>
+
 namespace photonlib {
 
-SimVisionSystem::SimVisionSystem(
-    const std::string& name, units::angle::degree_t camDiagFOVDegrees,
-    units::angle::degree_t camPitchDegrees, frc::Transform2d robotToCamera,
-    units::length::meter_t cameraHeightOffGroundMeters,
-    units::length::meter_t maxLEDRangeMeters, int cameraResWidth,
-    int cameraResHeight, double minTargetArea)
-    : camDiagFOVDegrees(camDiagFOVDegrees),
-      camPitchDegrees(camPitchDegrees),
+SimVisionSystem::SimVisionSystem(const std::string& name,
+                                 units::degree_t camDiagFOV,
+                                 units::degree_t camPitch,
+                                 frc::Transform2d robotToCamera,
+                                 units::meter_t cameraHeightOffGround,
+                                 units::meter_t maxLEDRange, int cameraResWidth,
+                                 int cameraResHeight, double minTargetArea)
+    : camDiagFOV(camDiagFOV),
+      camPitch(camPitch),
       robotToCamera(robotToCamera),
-      cameraHeightOffGroundMeters(cameraHeightOffGroundMeters),
-      maxLEDRangeMeters(maxLEDRangeMeters),
+      cameraHeightOffGround(cameraHeightOffGround),
+      maxLEDRange(maxLEDRange),
       cameraResWidth(cameraResWidth),
       cameraResHeight(cameraResHeight),
       minTargetArea(minTargetArea) {
   double hypotPixels = std::hypot(cameraResWidth, cameraResHeight);
-  camHorizFOVDegrees = camDiagFOVDegrees * cameraResWidth / hypotPixels;
-  camVertFOVDegrees = camDiagFOVDegrees * cameraResHeight / hypotPixels;
+  camHorizFOV = camDiagFOV * cameraResWidth / hypotPixels;
+  camVertFOV = camDiagFOV * cameraResHeight / hypotPixels;
 
   cam = SimPhotonCamera(name);
   tgtList.clear();
@@ -48,73 +52,66 @@ void SimVisionSystem::AddSimVisionTarget(SimVisionTarget tgt) {
 }
 
 void SimVisionSystem::MoveCamera(frc::Transform2d newRobotToCamera,
-                                 units::length::meter_t newCamHeightMeters,
-                                 units::angle::degree_t newCamPitchDegrees) {
+                                 units::meter_t newCamHeight,
+                                 units::degree_t newCamPitch) {
   robotToCamera = newRobotToCamera;
-  cameraHeightOffGroundMeters = newCamHeightMeters;
-  camPitchDegrees = newCamPitchDegrees;
+  cameraHeightOffGround = newCamHeight;
+  camPitch = newCamPitch;
 }
 
-void SimVisionSystem::ProcessFrame(frc::Pose2d robotPoseMeters) {
-  frc::Pose2d cameraPos = robotPoseMeters.TransformBy(robotToCamera);
+void SimVisionSystem::ProcessFrame(frc::Pose2d robotPose) {
+  frc::Pose2d cameraPos = robotPose.TransformBy(robotToCamera);
   std::vector<PhotonTrackedTarget> visibleTgtList = {};
 
-  std::vector<SimVisionTarget>::iterator tgt;
-  for (tgt = tgtList.begin(); tgt != tgtList.end(); ++tgt) {
+  for (auto&& tgt : tgtList) {
     frc::Transform2d camToTargetTrans =
-        frc::Transform2d(cameraPos, tgt->targetPos);
+        frc::Transform2d(cameraPos, tgt.targetPos);
 
-    units::length::meter_t distAlongGroundMeters =
-        camToTargetTrans.Translation().Norm();
-    units::length::meter_t distVerticalMeters =
-        tgt->targetHeightAboveGroundMeters - cameraHeightOffGroundMeters;
-    units::length::meter_t distMeters =
-        units::math::hypot(distAlongGroundMeters, distVerticalMeters);
+    units::meter_t distAlongGround = camToTargetTrans.Translation().Norm();
+    units::meter_t distVertical =
+        tgt.targetHeightAboveGround - cameraHeightOffGround;
+    units::meter_t distHypot =
+        units::math::hypot(distAlongGround, distVertical);
 
-    double area =
-        tgt->tgtAreaMeters2.to<double>() / getM2PerPx(distAlongGroundMeters);
+    double area = tgt.tgtArea.to<double>() / GetM2PerPx(distAlongGround);
 
     // 2D yaw mode considers the target as a point, and should ignore target
     // rotation.
     // Photon reports it in the correct robot reference frame.
     // IE: targets to the left of the image should report negative yaw.
-    units::angle::degree_t yawDegrees =
+    units::degree_t yawAngle =
         -1.0 * units::math::atan2(camToTargetTrans.Translation().Y(),
                                   camToTargetTrans.Translation().X());
-    units::angle::degree_t pitchDegrees =
-        units::math::atan2(distVerticalMeters, distAlongGroundMeters) -
-        camPitchDegrees;
+    units::degree_t pitchAngle =
+        units::math::atan2(distVertical, distAlongGround) - camPitch;
 
-    if (camCanSeeTarget(distMeters, yawDegrees, pitchDegrees, area)) {
-      PhotonTrackedTarget newTgt = PhotonTrackedTarget(
-          yawDegrees.to<double>(), pitchDegrees.to<double>(), area, 0.0,
-          camToTargetTrans);
+    if (CamCanSeeTarget(distHypot, yawAngle, pitchAngle, area)) {
+      PhotonTrackedTarget newTgt =
+          PhotonTrackedTarget(yawAngle.to<double>(), pitchAngle.to<double>(),
+                              area, 0.0, camToTargetTrans);
       visibleTgtList.push_back(newTgt);
     }
   }
 
   units::second_t procDelay(0.0);  // Future - tie this to something meaningful
-  cam.submitProcessedFrame(
+  cam.SubmitProcessedFrame(
       procDelay, wpi::MutableArrayRef<PhotonTrackedTarget>(visibleTgtList));
 }
 
-double SimVisionSystem::getM2PerPx(units::length::meter_t dist) {
+double SimVisionSystem::GetM2PerPx(units::meter_t dist) {
   double heightMPerPx = 2 * dist.to<double>() *
-                        units::math::tan(camVertFOVDegrees / 2) /
-                        cameraResHeight;
+                        units::math::tan(camVertFOV / 2) / cameraResHeight;
   double widthMPerPx = 2 * dist.to<double>() *
-                       units::math::tan(camHorizFOVDegrees / 2) /
-                       cameraResWidth;
+                       units::math::tan(camHorizFOV / 2) / cameraResWidth;
   return widthMPerPx * heightMPerPx;
 }
 
-bool SimVisionSystem::camCanSeeTarget(units::length::meter_t distMeters,
-                                      units::angle::degree_t yaw,
-                                      units::angle::degree_t pitch,
-                                      double area) {
-  bool inRange = (distMeters < maxLEDRangeMeters);
-  bool inHorizAngle = units::math::abs(yaw) < (camHorizFOVDegrees / 2);
-  bool inVertAngle = units::math::abs(pitch) < (camVertFOVDegrees / 2);
+bool SimVisionSystem::CamCanSeeTarget(units::meter_t distHypot,
+                                      units::degree_t yaw,
+                                      units::degree_t pitch, double area) {
+  bool inRange = (distHypot < maxLEDRange);
+  bool inHorizAngle = units::math::abs(yaw) < (camHorizFOV / 2);
+  bool inVertAngle = units::math::abs(pitch) < (camVertFOV / 2);
   bool targetBigEnough = area > minTargetArea;
   return (inRange && inHorizAngle && inVertAngle && targetBigEnough);
 }

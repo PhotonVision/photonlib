@@ -38,38 +38,34 @@ namespace photonlib {
  */
 class SimVisionSystem {
  public:
-  explicit SimVisionSystem(const std::string& name,
-                           units::angle::degree_t camDiagFOVDegrees,
-                           units::angle::degree_t camPitchDegrees,
+  explicit SimVisionSystem(const std::string& name, units::degree_t camDiagFOV,
+                           units::degree_t camPitch,
                            frc::Transform2d robotToCamera,
-                           units::length::meter_t cameraHeightOffGroundMeters,
-                           units::length::meter_t maxLEDRangeMeters,
-                           int cameraResWidth, int cameraResHeight,
-                           double minTargetArea);
+                           units::meter_t cameraHeightOffGround,
+                           units::meter_t maxLEDRange, int cameraResWidth,
+                           int cameraResHeight, double minTargetArea);
 
   void AddSimVisionTarget(SimVisionTarget tgt);
   void MoveCamera(frc::Transform2d newRobotToCamera,
-                  units::length::meter_t newCamHeightMeters,
-                  units::angle::degree_t newCamPitchDegrees);
-  void ProcessFrame(frc::Pose2d robotPoseMeters);
+                  units::meter_t newCamHeight, units::degree_t newCamPitch);
+  void ProcessFrame(frc::Pose2d robotPose);
 
  private:
-  units::angle::degree_t camDiagFOVDegrees;
-  units::angle::degree_t camPitchDegrees;
+  units::degree_t camDiagFOV;
+  units::degree_t camPitch;
   frc::Transform2d robotToCamera;
-  units::length::meter_t cameraHeightOffGroundMeters;
-  units::length::meter_t maxLEDRangeMeters;
+  units::meter_t cameraHeightOffGround;
+  units::meter_t maxLEDRange;
   int cameraResWidth;
   int cameraResHeight;
   double minTargetArea;
-  units::angle::degree_t camHorizFOVDegrees;
-  units::angle::degree_t camVertFOVDegrees;
+  units::degree_t camHorizFOV;
+  units::degree_t camVertFOV;
   std::vector<SimVisionTarget> tgtList = {};
 
-  double getM2PerPx(units::length::meter_t dist);
-  bool camCanSeeTarget(units::length::meter_t distMeters,
-                       units::angle::degree_t yaw, units::angle::degree_t pitch,
-                       double area);
+  double GetM2PerPx(units::meter_t dist);
+  bool CamCanSeeTarget(units::meter_t distHypot, units::degree_t yaw,
+                       units::degree_t pitch, double area);
 
  public:
   SimPhotonCamera cam = photonlib::SimPhotonCamera("Default");

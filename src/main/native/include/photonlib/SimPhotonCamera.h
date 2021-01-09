@@ -55,7 +55,7 @@ class SimPhotonCamera : public PhotonCamera {
    * @param latency Latency of frame processing
    * @param tgtList Set of targets detected
    */
-  void submitProcessedFrame(units::second_t latency,
+  void SubmitProcessedFrame(units::second_t latency,
                             wpi::ArrayRef<PhotonTrackedTarget> tgtList);
 
  private:

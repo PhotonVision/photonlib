@@ -25,7 +25,7 @@ SimPhotonCamera::SimPhotonCamera(std::shared_ptr<nt::NetworkTable> rootTable)
 SimPhotonCamera::SimPhotonCamera(const std::string& cameraName)
     : PhotonCamera(cameraName) {}
 
-void SimPhotonCamera::submitProcessedFrame(
+void SimPhotonCamera::SubmitProcessedFrame(
     units::second_t latency, wpi::ArrayRef<PhotonTrackedTarget> tgtList) {
   if (!GetDriverMode()) {
     // Clear the current packet.

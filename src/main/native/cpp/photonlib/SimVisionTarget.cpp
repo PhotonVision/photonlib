@@ -19,16 +19,15 @@
 
 namespace photonlib {
 
-SimVisionTarget::SimVisionTarget(
-    frc::Pose2d& targetPos,
-    units::length::meter_t targetHeightAboveGroundMeters,
-    units::length::meter_t targetWidthMeters,
-    units::length::meter_t targetHeightMeters)
+SimVisionTarget::SimVisionTarget(frc::Pose2d& targetPos,
+                                 units::meter_t targetHeightAboveGround,
+                                 units::meter_t targetWidth,
+                                 units::meter_t targetHeight)
     : targetPos(targetPos),
-      targetHeightAboveGroundMeters(targetHeightAboveGroundMeters),
-      targetWidthMeters(targetWidthMeters),
-      targetHeightMeters(targetHeightMeters) {
-  tgtAreaMeters2 = targetWidthMeters * targetHeightMeters;
+      targetHeightAboveGround(targetHeightAboveGround),
+      targetWidth(targetWidth),
+      targetHeight(targetHeight) {
+  tgtArea = targetWidth * targetHeight;
 }
 
 }  // namespace photonlib

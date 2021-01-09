@@ -30,16 +30,16 @@ namespace photonlib {
 class SimVisionTarget {
  public:
   explicit SimVisionTarget(frc::Pose2d& targetPos,
-                           units::length::meter_t targetHeightAboveGroundMeters,
-                           units::length::meter_t targetWidthMeters,
-                           units::length::meter_t targetHeightMeters);
+                           units::meter_t targetHeightAboveGround,
+                           units::meter_t targetWidth,
+                           units::meter_t targetHeight);
 
   frc::Pose2d targetPos;
-  units::length::meter_t targetHeightAboveGroundMeters;
-  units::length::meter_t targetWidthMeters;
-  units::length::meter_t targetHeightMeters;
+  units::meter_t targetHeightAboveGround;
+  units::meter_t targetWidth;
+  units::meter_t targetHeight;
   double targetInfill_pct;
-  units::area::square_meter_t tgtAreaMeters2;
+  units::square_meter_t tgtArea;
 };
 
 }  // namespace photonlib

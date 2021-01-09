@@ -29,9 +29,8 @@
 
 TEST(SimVisionSystemTest, testEmpty) {
   photonlib::SimVisionSystem sysUnderTest(
-      "Test", units::angle::degree_t(80.0), units::angle::degree_t(0.0),
-      frc::Transform2d(), units::length::meter_t(1.0),
-      units::length::meter_t(99999.0), 320, 240, 0.0);
+      "Test", units::degree_t(80.0), units::degree_t(0.0), frc::Transform2d(),
+      units::meter_t(1.0), units::meter_t(99999.0), 320, 240, 0.0);
 
   for (int loopIdx = 0; loopIdx < 100; loopIdx++) {
     sysUnderTest.ProcessFrame(frc::Pose2d());
@@ -51,9 +50,8 @@ TEST_P(SimVisionSystemTestDistParam, testDistanceAligned) {
                   frc::Rotation2d());
 
   photonlib::SimVisionSystem sysUnderTest(
-      "Test", units::angle::degree_t(80.0), units::angle::degree_t(0.0),
-      frc::Transform2d(), units::length::meter_t(1.0),
-      units::length::meter_t(99999.0), 320, 240, 0.0);
+      "Test", units::degree_t(80.0), units::degree_t(0.0), frc::Transform2d(),
+      units::meter_t(1.0), units::meter_t(99999.0), 320, 240, 0.0);
 
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPose, units::meter_t(0.0),
@@ -80,9 +78,8 @@ TEST(SimVisionSystemTest, testVisibilityCupidShuffle) {
                   frc::Rotation2d());
 
   photonlib::SimVisionSystem sysUnderTest(
-      "Test", units::angle::degree_t(80.0), units::angle::degree_t(0.0),
-      frc::Transform2d(), units::length::meter_t(1.0),
-      units::length::meter_t(99999.0), 320, 240, 0.0);
+      "Test", units::degree_t(80.0), units::degree_t(0.0), frc::Transform2d(),
+      units::meter_t(1.0), units::meter_t(99999.0), 320, 240, 0.0);
 
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPose, units::meter_t(0.0),
@@ -160,9 +157,8 @@ TEST(SimVisionSystemTest, testNotVisibleVert1) {
                   frc::Rotation2d());
 
   photonlib::SimVisionSystem sysUnderTest(
-      "Test", units::angle::degree_t(80.0), units::angle::degree_t(0.0),
-      frc::Transform2d(), units::length::meter_t(1.0),
-      units::length::meter_t(99999.0), 640, 480, 0.0);
+      "Test", units::degree_t(80.0), units::degree_t(0.0), frc::Transform2d(),
+      units::meter_t(1.0), units::meter_t(99999.0), 640, 480, 0.0);
 
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPose, units::meter_t(1.0),
@@ -190,9 +186,8 @@ TEST(SimVisionSystemTest, testNotVisibleVert2) {
                   frc::Rotation2d());
 
   photonlib::SimVisionSystem sysUnderTest(
-      "Test", units::angle::degree_t(80.0), units::angle::degree_t(45.0),
-      frc::Transform2d(), units::length::meter_t(1.0),
-      units::length::meter_t(99999.0), 1234, 1234, 0.5);
+      "Test", units::degree_t(80.0), units::degree_t(45.0), frc::Transform2d(),
+      units::meter_t(1.0), units::meter_t(99999.0), 1234, 1234, 0.5);
 
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPose, units::meter_t(3.0),
@@ -220,9 +215,8 @@ TEST(SimVisionSystemTest, testNotVisibleTgtSize) {
                   frc::Rotation2d());
 
   photonlib::SimVisionSystem sysUnderTest(
-      "Test", units::angle::degree_t(80.0), units::angle::degree_t(0.0),
-      frc::Transform2d(), units::length::meter_t(1.0),
-      units::length::meter_t(99999.0), 640, 480, 20.0);
+      "Test", units::degree_t(80.0), units::degree_t(0.0), frc::Transform2d(),
+      units::meter_t(1.0), units::meter_t(99999.0), 640, 480, 20.0);
 
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPose, units::meter_t(1.10),
@@ -249,9 +243,8 @@ TEST(SimVisionSystemTest, testNotVisibleTooFarForLEDs) {
                   frc::Rotation2d());
 
   photonlib::SimVisionSystem sysUnderTest(
-      "Test", units::angle::degree_t(80.0), units::angle::degree_t(0.0),
-      frc::Transform2d(), units::length::meter_t(1.0),
-      units::length::meter_t(10.0), 640, 480, 1.0);
+      "Test", units::degree_t(80.0), units::degree_t(0.0), frc::Transform2d(),
+      units::meter_t(1.0), units::meter_t(10.0), 640, 480, 1.0);
 
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPose, units::meter_t(1.10),
@@ -283,9 +276,8 @@ TEST_P(SimVisionSystemTestYawParam, testYawAngles) {
                   frc::Rotation2d(units::degree_t(45)));
 
   photonlib::SimVisionSystem sysUnderTest(
-      "Test", units::angle::degree_t(80.0), units::angle::degree_t(0.0),
-      frc::Transform2d(), units::length::meter_t(1.0),
-      units::length::meter_t(99999.0), 640, 480, 0.0);
+      "Test", units::degree_t(80.0), units::degree_t(0.0), frc::Transform2d(),
+      units::meter_t(1.0), units::meter_t(99999.0), 640, 480, 0.0);
 
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPose, units::meter_t(0.0),
@@ -319,9 +311,8 @@ TEST_P(SimVisionSystemTestCameraPitchParam, testCameraPitch) {
                   frc::Rotation2d(units::degree_t(0.0)));
 
   photonlib::SimVisionSystem sysUnderTest(
-      "Test", units::angle::degree_t(80.0), units::angle::degree_t(0.0),
-      frc::Transform2d(), units::length::meter_t(1.0),
-      units::length::meter_t(99999.0), 640, 480, 0.0);
+      "Test", units::degree_t(80.0), units::degree_t(0.0), frc::Transform2d(),
+      units::meter_t(1.0), units::meter_t(99999.0), 640, 480, 0.0);
 
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPose, units::meter_t(0.0),
@@ -381,9 +372,8 @@ TEST_P(SimVisionSystemTestDistCalcParam, testDistanceCalc) {
   photonlib::SimVisionSystem sysUnderTest(
       "absurdlylongnamewhichshouldneveractuallyhappenbuteehwelltestitanywaysoho"
       "wsyourdaygoingihopegoodhaveagreatrestofyourlife",
-      units::angle::degree_t(160.0), units::angle::degree_t(testPitch),
-      frc::Transform2d(), units::length::meter_t(testHeight),
-      units::length::meter_t(99999.0), 640, 480, 0.0);
+      units::degree_t(160.0), units::degree_t(testPitch), frc::Transform2d(),
+      units::meter_t(testHeight), units::meter_t(99999.0), 640, 480, 0.0);
 
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPose, units::meter_t(testDist),
@@ -412,9 +402,8 @@ TEST(SimVisionSystemTest, testMultipleTargets) {
                   frc::Rotation2d(units::radian_t()));
 
   photonlib::SimVisionSystem sysUnderTest(
-      "test", units::angle::degree_t(160.0), units::angle::degree_t(0.0),
-      frc::Transform2d(), units::length::meter_t(5.0),
-      units::length::meter_t(99999.0), 640, 480, 20.0);
+      "test", units::degree_t(160.0), units::degree_t(0.0), frc::Transform2d(),
+      units::meter_t(5.0), units::meter_t(99999.0), 640, 480, 20.0);
 
   sysUnderTest.AddSimVisionTarget(
       photonlib::SimVisionTarget(targetPoseL, units::meter_t(0.0),
