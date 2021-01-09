@@ -45,4 +45,34 @@ class PhotonUtilTest {
         Assertions.assertEquals(5.671, dist, 0.01);
     }
 
+    @Test
+    public void testTransform() {
+
+        var camHeight = 1;
+        var tgtHeight = 3;
+        var camPitch = 0;
+        var tgtPitch = Units.degreesToRadians(30);
+        var tgtYaw = new Rotation2d();
+        var gyroAngle = new Rotation2d();
+        var fieldToTarget = new Pose2d();
+        var cameraToRobot = new Transform2d();
+
+        var fieldToRobot = PhotonUtils.estimateFieldToRobot(
+            PhotonUtils.estimateCameraToTarget(
+                PhotonUtils.estimateTargetTranslation(
+                    PhotonUtils.calculateDistanceToTargetMeters(
+                        camHeight, tgtHeight, camPitch, tgtPitch
+                    ), tgtYaw
+                ),
+                fieldToTarget,
+                gyroAngle
+            ),
+            fieldToTarget,
+            cameraToRobot
+        );
+
+        Assertions.assertEquals(-3.464, fieldToRobot.getX(), 0.1);
+        Assertions.assertEquals(0, fieldToRobot.getY(), 0.1);
+        Assertions.assertEquals(0, fieldToRobot.getRotation().getDegrees(), 0.1);
+    }
 }
