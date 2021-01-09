@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2020 Photon Vision.
+ * Copyright (C) 2020-2021 Photon Vision.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,16 +61,4 @@ public final class PhotonUtils {
     return new Translation2d(yaw.getCos() * targetDistanceMeters, yaw.getSin() * targetDistanceMeters);
   }
 
-
-  /**
-   * Wraps an arbitrary angle (in degrees) to the (-180, 180] range.
-   * @param angle
-   * @return Wrapped-to-range angle
-   */
-  static double wrapAngleDeg(double angle){
-    angle %=360;
-    angle = angle > 180.0 ? angle-360 : angle;
-    angle = angle <= -180.0 ? angle+360 : angle;
-    return angle;
-  }
 }
