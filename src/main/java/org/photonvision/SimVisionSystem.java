@@ -35,7 +35,7 @@ public class SimVisionSystem {
     int cameraResWidth;
     int cameraResHeight;
     double minTargetArea;
-    Transform2d robotToCamera;
+    Transform2d cameraToRobot;
 
     ArrayList<SimVisionTarget> tgtList;
 
@@ -45,17 +45,17 @@ public class SimVisionSystem {
      * @param camName Name of the photonvision camera to create. Align it with the settings you use in the PhotonVision GUI.
      * @param camDiagFOVDegrees Diagonal Field of View of the camera used. Align it with the manufacturer specifications, and/or whatever is configured in the PhotonVision Setting page.
      * @param camPitchDegrees pitch of the camera's view axis back from horizontal. Make this the same as whatever is configured in the PhotonVision Setting page.
-     * @param robotToCamera Pose Transform to move from the robot's position to the camera's mount position
+     * @param cameraToRobot Pose Transform to move from the camera's mount position to the robot's position
      * @param cameraHeightOffGroundMeters Height of the camera off the ground in meters
      * @param maxLEDRangeMeters Maximum distance at which your camera can illuminate the target and make it visible. Set to 9000 or more if your vision system does not rely on LED's.
      * @param cameraResWidth Width of your camera's image sensor in pixels
      * @param cameraResHeight Height of your camera's image sensor in pixels
      * @param minTargetArea Minimum area that that the target should be before it's recognized as a target by the camera. Match this with your contour filtering settings in the PhotonVision GUI.
      */
-    public SimVisionSystem(String camName, double camDiagFOVDegrees, double camPitchDegrees, Transform2d robotToCamera, double cameraHeightOffGroundMeters, double maxLEDRangeMeters, int cameraResWidth, int cameraResHeight, double minTargetArea){
+    public SimVisionSystem(String camName, double camDiagFOVDegrees, double camPitchDegrees, Transform2d cameraToRobot, double cameraHeightOffGroundMeters, double maxLEDRangeMeters, int cameraResWidth, int cameraResHeight, double minTargetArea){
         this.camDiagFOVDegrees = camDiagFOVDegrees;
         this.camPitchDegrees = camPitchDegrees;
-        this.robotToCamera  = robotToCamera;
+        this.cameraToRobot  = cameraToRobot;
         this.cameraHeightOffGroundMeters  = cameraHeightOffGroundMeters;
         this.maxLEDRangeMeters = maxLEDRangeMeters;
         this.cameraResWidth = cameraResWidth;
@@ -84,12 +84,12 @@ public class SimVisionSystem {
     /**
      * Adjust the camera position relative to the robot.
      * Use this if your camera is on a gimbal or turret or some other mobile platform.
-     * @param newRobotToCamera New Tranform from the robot to the camera
+     * @param newCameraToRobot New Tranform from the robot to the camera
      * @param newCamHeightMeters New height of the camera off the floor
      * @param newCamPitchDegrees New pitch of the camera axis back from horizontal
      */
-    public void moveCamera(Transform2d newRobotToCamera, double newCamHeightMeters, double newCamPitchDegrees){
-        this.robotToCamera  = newRobotToCamera;
+    public void moveCamera(Transform2d newCameraToRobot, double newCamHeightMeters, double newCamPitchDegrees){
+        this.cameraToRobot  = newCameraToRobot;
         this.cameraHeightOffGroundMeters  = newCamHeightMeters;
         this.camPitchDegrees = newCamPitchDegrees;
     }
@@ -100,7 +100,7 @@ public class SimVisionSystem {
      */
     public void processFrame(Pose2d robotPoseMeters){
 
-        Pose2d cameraPos = robotPoseMeters.transformBy(robotToCamera);
+        Pose2d cameraPos = robotPoseMeters.transformBy(cameraToRobot.inverse());
 
         ArrayList<PhotonTrackedTarget> visibleTgtList = new ArrayList<PhotonTrackedTarget>(tgtList.size());
 

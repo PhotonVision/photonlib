@@ -27,13 +27,13 @@ namespace photonlib {
 SimVisionSystem::SimVisionSystem(const std::string& name,
                                  units::degree_t camDiagFOV,
                                  units::degree_t camPitch,
-                                 frc::Transform2d robotToCamera,
+                                 frc::Transform2d cameraToRobot,
                                  units::meter_t cameraHeightOffGround,
                                  units::meter_t maxLEDRange, int cameraResWidth,
                                  int cameraResHeight, double minTargetArea)
     : camDiagFOV(camDiagFOV),
       camPitch(camPitch),
-      robotToCamera(robotToCamera),
+      cameraToRobot(cameraToRobot),
       cameraHeightOffGround(cameraHeightOffGround),
       maxLEDRange(maxLEDRange),
       cameraResWidth(cameraResWidth),
@@ -51,16 +51,16 @@ void SimVisionSystem::AddSimVisionTarget(SimVisionTarget tgt) {
   tgtList.push_back(tgt);
 }
 
-void SimVisionSystem::MoveCamera(frc::Transform2d newRobotToCamera,
+void SimVisionSystem::MoveCamera(frc::Transform2d newCameraToRobot,
                                  units::meter_t newCamHeight,
                                  units::degree_t newCamPitch) {
-  robotToCamera = newRobotToCamera;
+  cameraToRobot = newCameraToRobot;
   cameraHeightOffGround = newCamHeight;
   camPitch = newCamPitch;
 }
 
 void SimVisionSystem::ProcessFrame(frc::Pose2d robotPose) {
-  frc::Pose2d cameraPos = robotPose.TransformBy(robotToCamera);
+  frc::Pose2d cameraPos = robotPose.TransformBy(cameraToRobot.Inverse());
   std::vector<PhotonTrackedTarget> visibleTgtList = {};
 
   for (auto&& tgt : tgtList) {
