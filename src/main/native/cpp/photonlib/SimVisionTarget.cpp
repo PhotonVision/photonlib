@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2020 Photon Vision.
+ * Copyright (C) 2020-2021 Photon Vision.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,23 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.photonvision;
+#include "photonlib/SimVisionTarget.h"
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+namespace photonlib {
 
-
-class PhotonCameraTest {
-    @Test
-    public void testEmpty() {
-        Assertions.assertDoesNotThrow(() -> {
-            var packet = new Packet(1);
-            var ret = new PhotonPipelineResult();
-            packet.setData(new byte[0]);
-            if(packet.size < 1) {
-                return;
-            }
-            ret.createFromPacket(packet);
-        });
-    }
+SimVisionTarget::SimVisionTarget(frc::Pose2d& targetPos,
+                                 units::meter_t targetHeightAboveGround,
+                                 units::meter_t targetWidth,
+                                 units::meter_t targetHeight)
+    : targetPos(targetPos),
+      targetHeightAboveGround(targetHeightAboveGround),
+      targetWidth(targetWidth),
+      targetHeight(targetHeight) {
+  tgtArea = targetWidth * targetHeight;
 }
+
+}  // namespace photonlib
