@@ -21,7 +21,7 @@ if (project.hasProperty('releaseMode')) {
 }
 
 ext {
-    pubVersion = '2021.1.1'
+    pubVersion = '2021.1.2'
     wpilibVersion = '2020.3.2-99-g9f4de91'
 }
 
