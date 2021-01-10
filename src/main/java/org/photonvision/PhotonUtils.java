@@ -69,7 +69,7 @@ public final class PhotonUtils {
   public static Translation2d estimateCameraToTargetTranslation(double targetDistanceMeters, Rotation2d yaw) {
     return new Translation2d(yaw.getCos() * targetDistanceMeters, yaw.getSin() * targetDistanceMeters);
   }
-  
+
   /**
    * Estimate the position of the robot in the field.
    *
