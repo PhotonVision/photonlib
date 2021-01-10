@@ -66,7 +66,7 @@ public final class PhotonUtils {
    * @param yaw                  The observed yaw of the target.
    * @return The target's camera-relative translation.
    */
-  public static Translation2d estimateTargetTranslation(double targetDistanceMeters, Rotation2d yaw) {
+  public static Translation2d estimateCameraToTargetTranslation2d(double targetDistanceMeters, Rotation2d yaw) {
     return new Translation2d(yaw.getCos() * targetDistanceMeters, yaw.getSin() * targetDistanceMeters);
   }
 
@@ -101,8 +101,8 @@ public final class PhotonUtils {
       double cameraPitchRadians, double targetPitchRadians, Rotation2d targetYaw, Rotation2d gyroAngle,
       Pose2d fieldToTarget, Transform2d cameraToRobot) {
     return PhotonUtils.estimateFieldToRobot(
-        PhotonUtils.estimateCameraToTarget(
-            PhotonUtils.estimateTargetTranslation(PhotonUtils.calculateDistanceToTargetMeters(cameraHeightMeters,
+        PhotonUtils.estimateCameraToTargetTranslation2d(
+            PhotonUtils.estimateCameraToTargetTranslation2d(PhotonUtils.calculateDistanceToTargetMeters(cameraHeightMeters,
                 targetHeightMeters, cameraPitchRadians, targetPitchRadians), targetYaw),
             fieldToTarget, gyroAngle),
         fieldToTarget, cameraToRobot);
@@ -124,8 +124,8 @@ public final class PhotonUtils {
    *                                  odometry.
    * @return A Transform2d that takes us from the camera to the target.
    */
-  public static Transform2d estimateCameraToTarget(Translation2d cameraToTargetTranslation, Pose2d fieldToTarget,
-      Rotation2d gyroAngle) {
+  public static Transform2d estimateCameraToTargetTranslation2d(Translation2d cameraToTargetTranslation, Pose2d fieldToTarget,
+                                                                Rotation2d gyroAngle) {
     // This pose maps our camera at the origin out to our target, in the robot
     // reference frame
     // The translation part of this Transform2d is from the above step, and the

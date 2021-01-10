@@ -58,8 +58,8 @@ class PhotonUtilTest {
         var cameraToRobot = new Transform2d();
 
         var fieldToRobot = PhotonUtils.estimateFieldToRobot(
-            PhotonUtils.estimateCameraToTarget(
-                PhotonUtils.estimateTargetTranslation(
+            PhotonUtils.estimateCameraToTargetTranslation2d(
+                PhotonUtils.estimateCameraToTargetTranslation2d(
                     PhotonUtils.calculateDistanceToTargetMeters(
                         camHeight, tgtHeight, camPitch, tgtPitch
                     ), tgtYaw

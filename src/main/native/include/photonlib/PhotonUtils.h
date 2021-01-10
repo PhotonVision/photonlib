@@ -53,13 +53,13 @@ class PhotonUtils {
 
   /**
    * Estimate the Translation2d of the target relative to the camera.
-   * 
+   *
    * @param targetDistance The distance to the target.
    * @param yaw            The observed yaw of the target.
    *
    * @return The target's camera-relative translation.
    */
-  static frc::Translation2d EstimateTargetTranslation(
+  static frc::Translation2d EstimateCameraToTargetTranslation2d(
       units::meter_t targetDistance, const frc::Rotation2d& yaw) {
     return {targetDistance * yaw.Cos(), targetDistance * yaw.Sin()};
   }
@@ -146,9 +146,9 @@ class PhotonUtils {
    *                       frc::Transform2d(3 inches, 0 inches, 0 degrees).
    * @return The position of the robot in the field.
    */
-  static frc::Pose2d EstimateFieldToRobot(const frc::Transform2d& cameraToTarget,
-                                          const frc::Pose2d& fieldToTarget,
-                                          const frc::Transform2d& cameraToRobot) {
+  static frc::Pose2d EstimateFieldToRobot(
+      const frc::Transform2d& cameraToTarget, const frc::Pose2d& fieldToTarget,
+      const frc::Transform2d& cameraToRobot) {
     return EstimateFieldToCamera(cameraToTarget, fieldToTarget)
         .TransformBy(cameraToRobot);
   }
