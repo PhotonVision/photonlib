@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2020 Photon Vision.
+ * Copyright (C) 2020-2021 Photon Vision.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,10 +45,12 @@ PhotonPipelineResult PhotonCamera::GetLatestResult() const {
   PhotonPipelineResult result;
 
   // Fill the packet with latest data and populate result.
-  packet << rawBytesEntry.GetRaw(std::string());
-  packet >> result;
+  std::string value = rawBytesEntry.GetValue()->GetRaw();
+  std::vector<char> bytes{value.begin(), value.end()};
 
-  // Return result
+  photonlib::Packet packet{bytes};
+
+  packet >> result;
   return result;
 }
 
